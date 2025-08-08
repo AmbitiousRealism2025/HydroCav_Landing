@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HydroCav - Advanced Water Treatment</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <style>
+        /* --- Global Styles --- */
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background-color: #f8fafc; /* A light background for contrast */
+        }
+
+        /* --- Bubble Animation Style --- */
+        .bubble {
+            position: absolute;
+            bottom: -100px;
+            border-radius: 50%;
+            animation-name: rise;
+            animation-timing-function: ease-in;
+            animation-iteration-count: infinite;
+        }
+
+        .blue-bubble {
+            background: radial-gradient(circle at 30% 30%, rgba(49, 155, 224, 0.4), rgba(49, 155, 224, 0.1));
+            box-shadow: 0 4px 15px rgba(49, 155, 224, 0.1);
+        }
+
+        .white-bubble {
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.1));
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes rise {
+            0% { transform: translateY(0); opacity: 0; }
+            10% { opacity: 1; }
+            95% { opacity: 1; }
+            100% { transform: translateY(-110vh); opacity: 0; }
+        }
+
+        /* --- Liquid Glass Button Style --- */
+        .liquid-glass-button {
+            position: relative;
+            display: inline-block;
+            border: none;
+            border-radius: 9999px;
+            font-weight: 500;
+            color: #000;
+            cursor: pointer;
+            outline: none;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+            text-decoration: none;
+            padding: 12px 28px; /* Slightly smaller padding for nav */
+            font-size: 0.95rem;
+        }
+
+        .liquid-glass-button-large {
+            padding: 16px 32px;
+            font-size: 1rem;
+        }
+
+        .liquid-glass-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0) 60%);
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .liquid-glass-button:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .liquid-glass-button:hover::before {
+            opacity: 1;
+        }
+
+        .liquid-glass-button:active {
+            transform: translateY(1px) scale(0.98);
+            box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.2);
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        /* --- Liquid Glass Card Style --- */
+        .liquid-glass-card {
+            width: 100%;
+            max-width: 360px; /* Slightly increased max-width */
+            padding: 2rem;
+            background-color: rgba(107, 175, 220, 0.2);
+            backdrop-filter: blur(12px) saturate(150%);
+            -webkit-backdrop-filter: blur(12px) saturate(150%);
+            border-radius: 24px;
+            border: 1px solid rgba(107, 175, 220, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37),
+                        0 1px 2px 0 rgba(255, 255, 255, 0.25) inset;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .liquid-glass-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 48px 0 rgba(0, 0, 0, 0.45),
+                        0 1px 2px 0 rgba(255, 255, 255, 0.25) inset;
+            background-color: rgba(107, 175, 220, 0.3);
+        }
+
+        .card-content h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #1e293b;
+        }
+
+        .card-content p {
+            color: #475569;
+        }
+
+        /* --- Enhanced Navigation Menu Styles --- */
+        .menu-link {
+            position: relative;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 1.125rem;
+            font-weight: 500;
+            letter-spacing: 0.025em;
+            color: #374151;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            text-decoration: none;
+        }
+
+        .menu-link:hover {
+            color: #319be0;
+            background: rgba(107, 175, 220, 0.15);
+            backdrop-filter: blur(8px);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(49, 155, 224, 0.15);
+        }
+
+        .menu-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #319be0, #6bafdc);
+            transition: all 0.3s ease-out;
+            transform: translateX(-50%);
+        }
+
+        .menu-link:hover::after {
+            width: 80%;
+        }
+
+        .menu-link-active {
+            color: #319be0;
+            background: rgba(107, 175, 220, 0.2);
+            backdrop-filter: blur(8px);
+        }
+
+        .menu-link-active::after {
+            width: 80%;
+        }
+
+        .logo-container {
+            filter: drop-shadow(0 2px 8px rgba(49, 155, 224, 0.15));
+            transition: all 0.3s ease;
+        }
+
+        .logo-container:hover {
+            filter: drop-shadow(0 4px 12px rgba(49, 155, 224, 0.25));
+            transform: translateY(-1px);
+        }
+
+        /* --- Process Step Bubble Style --- */
+        .process-step-bubble {
+            width: 64px; /* w-16 */
+            height: 64px; /* h-16 */
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.25rem; /* mb-5 */
+            font-size: 1.875rem; /* text-3xl */
+            font-weight: 700; /* font-bold */
+            color: black;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2));
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 
+                        inset 0 2px 4px rgba(255, 255, 255, 0.7), 
+                        inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+
+<!-- ====================================================================== -->
+<!-- NAVIGATION BAR -->
+<!-- ====================================================================== -->
+<nav class="sticky top-0 z-50 bg-gradient-to-r from-white/30 via-blue-50/20 to-white/30 backdrop-blur-xl shadow-lg py-6">
+    <div class="container mx-auto px-8 lg:px-12 flex justify-between items-center">
+        <!-- Enhanced Logo -->
+        <div class="flex items-center">
+            <a href="#" class="flex items-center logo-container">
+                <img src="assets/images/HydroCav_Logo.PNG" alt="HydroCav Logo" class="h-24 md:h-20 lg:h-24 w-auto">
+            </a>
+        </div>
+
+        <!-- Enhanced Menu Items -->
+        <div class="hidden md:flex items-center space-x-2">
+            <a href="#advantages" class="menu-link">Advantages</a>
+            <a href="#how-it-works" class="menu-link">How It Works</a>
+            <a href="#contact" class="menu-link">Contact</a>
+        </div>
+        
+        <!-- Enhanced Mobile Menu Button -->
+        <div class="md:hidden flex items-center">
+            <button class="w-12 h-12 p-2 text-slate-700 hover:bg-blue-100/50 hover:backdrop-blur-sm rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+</nav>
+
+<!-- ====================================================================== -->
+<!-- HERO SECTION -->
+<!-- ====================================================================== -->
+<header class="relative overflow-hidden" style="background-color: #6bafdc;">
+    <div id="bubble-container-hero" class="absolute inset-0 z-0"></div>
+    <div class="relative z-10 container mx-auto px-6 py-20 lg:py-32">
+        <div class="flex justify-center">
+            <div class="text-center max-w-3xl">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-black text-black leading-tight mb-8">
+                    Revolutionize Your Water Treatment
+                </h1>
+                <p class="text-lg text-black mb-10 mx-auto">
+                    Tired of high chemical costs, inconsistent quality, and constant maintenance? HydroCav offers a cutting-edge solution to transform water management for any application.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
+                    <a href="#advantages" class="liquid-glass-button liquid-glass-button-large">Discover the Advantage</a>
+                    <a href="#contact" class="liquid-glass-button liquid-glass-button-large">Request a Quote</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- ====================================================================== -->
+<!-- ADVANTAGES SECTION -->
+<!-- ====================================================================== -->
+<section id="advantages" class="py-20 lg:py-24 relative overflow-hidden bg-white">
+    <div id="bubble-container-advantages" class="absolute inset-0 z-0 opacity-50"></div>
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-slate-800">The HydroCav Advantage</h2>
+            <p class="text-lg text-slate-600 mt-4 max-w-3xl mx-auto">
+                Discover how our technology delivers unmatched efficiency, safety, and cost savings.
+            </p>
+        </div>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center">
+            <!-- Card 1 -->
+            <div class="liquid-glass-card text-center">
+                <div class="mb-6 flex justify-center">
+                    <svg class="w-16 h-16" style="color: #319be0;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                    </svg>
+                </div>
+                <div class="card-content">
+                    <h3>Dramatic Chemical Reduction</h3>
+                    <p>Reduce chlorine and other chemical usage by up to 75%, creating a more sustainable and healthier environment.</p>
+                </div>
+            </div>
+            <!-- Card 2 -->
+            <div class="liquid-glass-card text-center">
+                <div class="mb-6 flex justify-center">
+                    <svg class="w-16 h-16" style="color: #319be0;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div class="card-content">
+                    <h3>Crystal-Clear, Safe Water</h3>
+                    <p>Advanced cavitation neutralizes bacteria like Legionella and removes heavy metals for pristine, safe water.</p>
+                </div>
+            </div>
+            <!-- Card 3 -->
+            <div class="liquid-glass-card text-center">
+                <div class="mb-6 flex justify-center">
+                    <svg class="w-16 h-16" style="color: #319be0;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.25 6L9 12.75l4.286-4.286a11.948 11.948 0 014.306 6.43l.776 2.898m0 0l3.182-5.511m-3.182 5.511l-5.511-3.182"></path>
+                    </svg>
+                </div>
+                <div class="card-content">
+                    <h3>Significant Cost Savings</h3>
+                    <p>Minimize chemical and labor costs, often achieving a full return on investment within 12 to 18 months.</p>
+                </div>
+            </div>
+            <!-- Card 4 -->
+            <div class="liquid-glass-card text-center">
+                <div class="mb-6 flex justify-center">
+                    <svg class="w-16 h-16" style="color: #319be0;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div class="card-content">
+                    <h3>Enhanced Guest Experience</h3>
+                    <p>Eliminate strong chloramine odors and provide crystal-clear water for higher guest and user satisfaction.</p>
+                </div>
+            </div>
+            <!-- Card 5 -->
+            <div class="liquid-glass-card text-center">
+                <div class="mb-6 flex justify-center">
+                    <svg class="w-16 h-16" style="color: #319be0;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 12 2 2 4-4"></path>
+                    </svg>
+                </div>
+                <div class="card-content">
+                    <h3>Failsafe Protection</h3>
+                    <p>Our HydroLoop system ensures continuous operation and maintains safe water quality, even during system failures.</p>
+                </div>
+            </div>
+            <!-- Card 6 -->
+            <div class="liquid-glass-card text-center">
+                <div class="mb-6 flex justify-center">
+                    <svg class="w-16 h-16" style="color: #319be0;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                    </svg>
+                </div>
+                <div class="card-content">
+                    <h3>Exceeds Compliance</h3>
+                    <p>Meets and exceeds all relevant health and safety regulations, proactively preventing microbial growth.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ====================================================================== -->
+<!-- HOW IT WORKS SECTION -->
+<!-- ====================================================================== -->
+<section id="how-it-works" class="py-20 lg:py-24 relative overflow-hidden" style="background-color: #6bafdc;">
+    <div id="bubble-container-how" class="absolute inset-0 z-0"></div>
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-black text-black">Simple Process, Powerful Results</h2>
+            <p class="text-lg text-black mt-4 max-w-3xl mx-auto">
+                Our three-step hydrodynamic cavitation process is elegant and effective.
+            </p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-8 md:gap-12 items-start">
+            <!-- Step 1 -->
+            <div class="liquid-glass-card text-center p-8 flex flex-col items-center" style="background-color: rgba(255, 255, 255, 0.15); border-color: rgba(255, 255, 255, 0.2);">
+                <div class="process-step-bubble">1</div>
+                <h3 class="text-xl font-bold text-black mb-3">Intake & Flow</h3>
+                <p class="text-black/80">Water is drawn from your system and directed into the HydroCav unit, with no major changes to your existing plumbing.</p>
+            </div>
+            <!-- Step 2 -->
+            <div class="liquid-glass-card text-center p-8 flex flex-col items-center" style="background-color: rgba(255, 255, 255, 0.15); border-color: rgba(255, 255, 255, 0.2);">
+                <div class="process-step-bubble">2</div>
+                <h3 class="text-xl font-bold text-black mb-3">Cavitation Zone</h3>
+                <p class="text-black/80">The water passes through our patented cavitation chamber, where microscopic bubbles form and implode, creating intense energy waves.</p>
+            </div>
+            <!-- Step 3 -->
+            <div class="liquid-glass-card text-center p-8 flex flex-col items-center" style="background-color: rgba(255, 255, 255, 0.15); border-color: rgba(255, 255, 255, 0.2);">
+                <div class="process-step-bubble">3</div>
+                <h3 class="text-xl font-bold text-black mb-3">Purified Output</h3>
+                <p class="text-black/80">These energy waves instantly neutralize contaminants and pathogens, returning crystal-clear, safe water to your system.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ====================================================================== -->
+<!-- CTA SECTION -->
+<!-- ====================================================================== -->
+<section id="cta" class="relative overflow-hidden" style="background-color: #6bafdc;">
+    <div id="bubble-container-cta" class="absolute inset-0 z-0"></div>
+    <div class="relative z-10 max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:py-24 lg:px-8 text-center">
+        <h2 class="text-3xl font-extrabold tracking-tight text-black sm:text-4xl">
+            <span class="block">Ready to Improve Your Water Quality?</span>
+            <span class="block mt-2" style="color: #fff; text-shadow: 1px 1px 4px rgba(0,0,0,0.2);">See the difference HydroCav can make.</span>
+        </h2>
+        <div class="mt-8 flex justify-center">
+            <a href="#contact" class="liquid-glass-button liquid-glass-button-large">Get a Free Quote</a>
+        </div>
+    </div>
+</section>
+
+<!-- ====================================================================== -->
+<!-- CONTACT SECTION -->
+<!-- ====================================================================== -->
+<section id="contact" class="py-20 lg:py-24 relative overflow-hidden bg-white">
+    <div id="bubble-container-contact" class="absolute inset-0 z-0 opacity-50"></div>
+    <div class="container mx-auto px-6 relative z-10 flex justify-center">
+        <div class="liquid-glass-card max-w-2xl w-full p-8 md:p-12">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-800">Contact Us</h2>
+                <p class="text-lg text-slate-600 mt-4 max-w-2xl mx-auto">
+                    Have questions or ready to get started? Fill out the form below and a specialist will be in touch shortly.
+                </p>
+            </div>
+            <form action="#" method="POST" class="space-y-6">
+                <div>
+                    <label for="name" class="sr-only">Full Name</label>
+                    <input type="text" name="name" id="name" autocomplete="name" class="block w-full rounded-md border-slate-300 shadow-sm py-3 px-4 focus:border-blue-500 focus:ring-blue-500" placeholder="Full Name">
+                </div>
+                <div>
+                    <label for="email" class="sr-only">Email</label>
+                    <input type="email" name="email" id="email" autocomplete="email" class="block w-full rounded-md border-slate-300 shadow-sm py-3 px-4 focus:border-blue-500 focus:ring-blue-500" placeholder="Email Address">
+                </div>
+                <div>
+                    <label for="company" class="sr-only">Company</label>
+                    <input type="text" name="company" id="company" autocomplete="organization" class="block w-full rounded-md border-slate-300 shadow-sm py-3 px-4 focus:border-blue-500 focus:ring-blue-500" placeholder="Company Name">
+                </div>
+                <div>
+                    <label for="message" class="sr-only">Message</label>
+                    <textarea id="message" name="message" rows="4" class="block w-full rounded-md border-slate-300 shadow-sm py-3 px-4 focus:border-blue-500 focus:ring-blue-500" placeholder="How can we help?"></textarea>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="liquid-glass-button liquid-glass-button-large" style="background-color: rgba(49, 155, 224, 0.8); border-color: rgba(49, 155, 224, 0.9); color: white;">Send Message</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- ====================================================================== -->
+<!-- FOOTER -->
+<!-- ====================================================================== -->
+<footer class="bg-slate-800 text-slate-400">
+    <div class="container mx-auto py-6 px-6 text-center">
+        <p>&copy; 2024 HydroCav Technologies. All Rights Reserved.</p>
+    </div>
+</footer>
+
+<!-- ====================================================================== -->
+<!-- CENTRALIZED SCRIPT -->
+<!-- ====================================================================== -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // Centralized function to create bubbles
+    function createBubbles(container, count, bubbleClass) {
+        if (!container) return;
+        
+        for (let i = 0; i < count; i++) {
+            const bubble = document.createElement('div');
+            bubble.classList.add('bubble', bubbleClass);
+            
+            const size = Math.random() * 60 + 10;
+            bubble.style.width = `${size}px`;
+            bubble.style.height = `${size}px`;
+            bubble.style.left = `${Math.random() * 100}%`;
+            
+            // Make animation durations more varied
+            const duration = Math.random() * 20 + 15; // Slower, more ambient bubbles
+            bubble.style.animationDuration = `${duration}s`;
+            bubble.style.animationDelay = `${Math.random() * 10}s`;
+            
+            container.appendChild(bubble);
+        }
+    }
+
+    // Get all bubble containers
+    const heroBubbleContainer = document.getElementById('bubble-container-hero');
+    const advantagesBubbleContainer = document.getElementById('bubble-container-advantages');
+    const howBubbleContainer = document.getElementById('bubble-container-how');
+    const ctaBubbleContainer = document.getElementById('bubble-container-cta');
+    const contactBubbleContainer = document.getElementById('bubble-container-contact');
+
+    // Create bubbles for each section with appropriate colors
+    createBubbles(heroBubbleContainer, 30, 'white-bubble');
+    createBubbles(advantagesBubbleContainer, 30, 'blue-bubble');
+    createBubbles(howBubbleContainer, 30, 'white-bubble');
+    createBubbles(ctaBubbleContainer, 30, 'white-bubble');
+    createBubbles(contactBubbleContainer, 30, 'blue-bubble');
+});
+</script>
+
+</body>
+</html>
