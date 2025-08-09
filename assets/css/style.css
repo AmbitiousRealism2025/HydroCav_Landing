@@ -1,0 +1,243 @@
+/* --- Global Styles --- */
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            background-color: #f8fafc; /* A light background for contrast */
+        }
+
+        /* --- Bubble Animation Style --- */
+        .bubble {
+            position: absolute;
+            bottom: -100px;
+            border-radius: 50%;
+            animation-name: rise;
+            animation-timing-function: ease-in;
+            animation-iteration-count: infinite;
+        }
+
+        .blue-bubble {
+            background: radial-gradient(circle at 30% 30%, rgba(49, 155, 224, 0.4), rgba(49, 155, 224, 0.1));
+            box-shadow: 0 4px 15px rgba(49, 155, 224, 0.1);
+        }
+
+        .white-bubble {
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.1));
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        @keyframes rise {
+            0% { transform: translateY(0); opacity: 0; }
+            10% { opacity: 1; }
+            95% { opacity: 1; }
+            100% { transform: translateY(-110vh); opacity: 0; }
+        }
+
+        /* --- Liquid Glass Button Style --- */
+        .liquid-glass-button {
+            position: relative;
+            display: inline-block;
+            border: none;
+            border-radius: 9999px;
+            font-weight: 500;
+            color: #000;
+            cursor: pointer;
+            outline: none;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+            text-decoration: none;
+            padding: 12px 28px; /* Slightly smaller padding for nav */
+            font-size: 0.95rem;
+        }
+
+        .liquid-glass-button-large {
+            padding: 16px 32px;
+            font-size: 1rem;
+        }
+
+        .liquid-glass-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0) 60%);
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .liquid-glass-button:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .liquid-glass-button:hover::before {
+            opacity: 1;
+        }
+
+        .liquid-glass-button:active {
+            transform: translateY(1px) scale(0.98);
+            box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.2);
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        /* --- Liquid Glass Card Style --- */
+        .liquid-glass-card {
+            width: 100%;
+            max-width: 360px; /* Slightly increased max-width */
+            padding: 2rem;
+            background-color: rgba(107, 175, 220, 0.2);
+            backdrop-filter: blur(12px) saturate(150%);
+            -webkit-backdrop-filter: blur(12px) saturate(150%);
+            border-radius: 24px;
+            border: 1px solid rgba(107, 175, 220, 0.3);
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37),
+                        0 1px 2px 0 rgba(255, 255, 255, 0.25) inset;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .liquid-glass-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 16px 48px 0 rgba(0, 0, 0, 0.45),
+                        0 1px 2px 0 rgba(255, 255, 255, 0.25) inset;
+            background-color: rgba(107, 175, 220, 0.3);
+        }
+
+        .card-content h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #1e293b;
+        }
+
+        .card-content p {
+            color: #475569;
+        }
+
+        /* --- Enhanced Navigation Menu Styles --- */
+        .menu-link {
+            position: relative;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 1.125rem;
+            font-weight: 500;
+            letter-spacing: 0.025em;
+            color: #374151;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            text-decoration: none;
+        }
+
+        .menu-link:hover {
+            color: #319be0;
+            background: rgba(107, 175, 220, 0.15);
+            backdrop-filter: blur(8px);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(49, 155, 224, 0.15);
+        }
+
+        .menu-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #319be0, #6bafdc);
+            transition: all 0.3s ease-out;
+            transform: translateX(-50%);
+        }
+
+        .menu-link:hover::after {
+            width: 80%;
+        }
+
+        .menu-link-active {
+            color: #319be0;
+            background: rgba(107, 175, 220, 0.2);
+            backdrop-filter: blur(8px);
+        }
+
+        .menu-link-active::after {
+            width: 80%;
+        }
+
+        .logo-container {
+            filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.2));
+            transition: all 0.3s ease;
+        }
+
+        .logo-container:hover {
+            filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.3));
+            transform: translateY(-2px);
+        }
+
+        /* --- Process Step Bubble Style --- */
+        .process-step-bubble {
+            width: 64px; /* w-16 */
+            height: 64px; /* h-16 */
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.25rem; /* mb-5 */
+            font-size: 1.875rem; /* text-3xl */
+            font-weight: 700; /* font-bold */
+            color: black;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.2));
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2),
+                        inset 0 2px 4px rgba(255, 255, 255, 0.7),
+                        inset 0 -2px 4px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .product-showcase-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow:
+              0 8px 32px rgba(0, 0, 0, 0.15),
+              inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .product-image-container {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow:
+              0 20px 60px rgba(0, 0, 0, 0.15),
+              0 8px 20px rgba(49, 155, 224, 0.1);
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .product-image-container:hover {
+            transform: scale(1.02);
+        }
+
+        .product-image-container::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          border-radius: 20px;
+          padding: 2px;
+          background: linear-gradient(135deg,
+            rgba(255, 255, 255, 0.3) 0%,
+            rgba(255, 255, 255, 0.1) 100%);
+          -webkit-mask:
+             linear-gradient(#fff 0 0) content-box,
+             linear-gradient(#fff 0 0);
+          -webkit-mask-composite: xor;
+                  mask-composite: exclude;
+        }
