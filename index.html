@@ -182,13 +182,13 @@
         }
 
         .logo-container {
-            filter: drop-shadow(0 2px 8px rgba(49, 155, 224, 0.15));
+            filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.2));
             transition: all 0.3s ease;
         }
 
         .logo-container:hover {
-            filter: drop-shadow(0 4px 12px rgba(49, 155, 224, 0.25));
-            transform: translateY(-1px);
+            filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.3));
+            transform: translateY(-2px);
         }
 
         /* --- Process Step Bubble Style --- */
@@ -209,6 +209,48 @@
                         inset 0 -2px 4px rgba(0, 0, 0, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.4);
             text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .product-showcase-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: 
+              0 8px 32px rgba(0, 0, 0, 0.15),
+              inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .product-image-container {
+            position: relative;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 
+              0 20px 60px rgba(0, 0, 0, 0.15),
+              0 8px 20px rgba(49, 155, 224, 0.1);
+            transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .product-image-container:hover {
+            transform: scale(1.02);
+        }
+
+        .product-image-container::before {
+          content: '';
+          position: absolute;
+          inset: 0;
+          border-radius: 20px; 
+          padding: 2px; 
+          background: linear-gradient(135deg, 
+            rgba(255, 255, 255, 0.3) 0%, 
+            rgba(255, 255, 255, 0.1) 100%);
+          -webkit-mask: 
+             linear-gradient(#fff 0 0) content-box, 
+             linear-gradient(#fff 0 0);
+          -webkit-mask-composite: xor;
+                  mask-composite: exclude; 
         }
     </style>
 </head>
@@ -266,6 +308,37 @@
         </div>
     </div>
 </header>
+
+<!-- ====================================================================== -->
+<!-- PRODUCT SHOWCASE SECTION -->
+<!-- ====================================================================== -->
+<section id="product-showcase" class="py-20 lg:py-24 relative overflow-hidden" style="background-color: #6bafdc;">
+    <div id="bubble-container-showcase" class="absolute inset-0 z-0 opacity-50"></div>
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-8 lg:gap-16 items-center min-h-[80vh]">
+            <!-- Content Column -->
+            <div class="product-showcase-card order-2 lg:order-1">
+                <h2 class="text-3xl lg:text-4xl font-bold text-white mb-6 text-center">
+                    Elevate Water Quality & Reduce Costs: The HydroLoop System by HydroCav
+                </h2>
+                <div class="text-black space-y-4" style="line-height: 1.7;">
+                    <p>Introducing the <b>HydroLoop System</b> by HydroCav, a groundbreaking solution engineered to revolutionize water quality management in hotel pools and spas. Utilizing patented <b>hydrodynamic cavitation technology</b>, HydroLoop purifies water at a microscopic level by creating and collapsing tiny bubbles that neutralize contaminants. This innovative process allows you to <b>dramatically reduce chemical usage by up to 75%</b>, significantly cutting your reliance on chlorine and other additives, while ensuring consistently <b>crystal-clear, safe water</b> that exceeds health and safety standards.</p>
+                    <p>The HydroLoop delivers substantial <b>cost savings</b> on chemicals and labor, along with <b>lower maintenance and operational expenses</b>, providing a proven <b>return on investment within 12 to 18 months</b>. Beyond cost, it enhances guest satisfaction by <b>eliminating strong, unpleasant odors</b> caused by trichloramine and proactively preventing harmful microorganisms like Legionella, Cryptosporidium, and Pseudomonas. Designed for <b>easy integration and minimal downtime</b>, HydroLoop offers reliable, <b>fail-safe operation</b> against ventilation or mechanical issues, ensuring your facilities remain operational and your guests enjoy a superior, healthier experience.</p>
+                </div>
+                <button class="liquid-glass-button liquid-glass-button-large mt-8">Learn More</button>
+            </div>
+            <!-- Image Column -->
+            <div class="order-1 lg:order-2">
+                <div class="product-image-container">
+                    <picture>
+                        <source srcset="assets/images/HydroLoop_1200px.webp" type="image/webp">
+                        <img src="assets/images/HydroLoop_1200px.webp" alt="HydroLoop System" class="w-full h-auto rounded-2xl">
+                    </picture>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 <!-- ====================================================================== -->
 <!-- ADVANTAGES SECTION -->
@@ -392,6 +465,8 @@
     </div>
 </section>
 
+
+
 <!-- ====================================================================== -->
 <!-- CTA SECTION -->
 <!-- ====================================================================== -->
@@ -486,6 +561,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const heroBubbleContainer = document.getElementById('bubble-container-hero');
     const advantagesBubbleContainer = document.getElementById('bubble-container-advantages');
     const howBubbleContainer = document.getElementById('bubble-container-how');
+    const showcaseBubbleContainer = document.getElementById('bubble-container-showcase');
     const ctaBubbleContainer = document.getElementById('bubble-container-cta');
     const contactBubbleContainer = document.getElementById('bubble-container-contact');
 
@@ -493,6 +569,7 @@ document.addEventListener('DOMContentLoaded', function () {
     createBubbles(heroBubbleContainer, 30, 'white-bubble');
     createBubbles(advantagesBubbleContainer, 30, 'blue-bubble');
     createBubbles(howBubbleContainer, 30, 'white-bubble');
+    createBubbles(showcaseBubbleContainer, 15, 'white-bubble');
     createBubbles(ctaBubbleContainer, 30, 'white-bubble');
     createBubbles(contactBubbleContainer, 30, 'blue-bubble');
 });
