@@ -5,6 +5,21 @@
             background-color: #f8fafc; /* A light background for contrast */
         }
 
+        /* Smooth scroll with offset for sticky navigation */
+        html {
+            scroll-padding-top: 120px; /* Offset for sticky nav height */
+        }
+
+        /* --- Section Divider Line --- */
+        .section-divider {
+            width: 100%;
+            height: 3px;
+            background-color: #000000;
+            border: none;
+            margin: 0;
+            padding: 0;
+        }
+
         /* --- Bubble Animation Style --- */
         .bubble {
             position: absolute;
@@ -114,38 +129,67 @@
 
         .card-content h3 {
             font-size: 1.25rem;
-            font-weight: 600;
+            font-weight: bold;
             margin-bottom: 0.75rem;
-            color: #1e293b;
+            color: #000000; /* Match other sections - black text */
         }
 
         .card-content p {
-            color: #475569;
+            color: #000000; /* Match other sections - black text */
+            line-height: 1.6;
         }
 
-        /* --- Enhanced Navigation Menu Styles --- */
+        /* --- Enhanced Navigation Menu Styles - Liquid Glass Aesthetic --- */
         .menu-link {
             position: relative;
-            padding: 12px 24px;
-            border-radius: 12px;
+            padding: 16px 28px;
+            border-radius: 16px;
             font-size: 1.125rem;
-            font-weight: 600; /* Increased for better contrast */
-            letter-spacing: 0.025em;
-            color: #1e293b; /* Darker color for WCAG AA compliance */
-            text-shadow: 0 1px 3px rgba(255, 255, 255, 0.5);
-            background: rgba(255, 255, 255, 0.3); /* Added background for contrast */
+            font-weight: 400; /* Reduced for elegance */
+            letter-spacing: 0.05em; /* Increased for premium spacing */
+            color: #1e293b;
+            text-shadow: none; /* Removed dated embossed effect */
+            background: transparent; /* Removed background boxes */
+            border: 2px solid transparent;
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
             text-decoration: none;
+            min-height: 48px; /* Accessibility compliance */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        /* Glassmorphism effect on hover - subtle glass surface */
+        .menu-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.1) 0%, 
+                rgba(255, 255, 255, 0.05) 100%);
+            backdrop-filter: blur(8px);
+            border-radius: 14px;
+            opacity: 0;
+            transition: opacity 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            z-index: -1;
         }
 
         .menu-link:hover {
-            color: #0c4a6e; /* Darker blue for better contrast */
-            background: rgba(255, 255, 255, 0.6);
-            backdrop-filter: blur(8px);
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(49, 155, 224, 0.25);
+            border-color: rgba(49, 155, 224, 0.4);
+            transform: translateY(-3px) scale(1.02);
+            color: #319be0;
+            text-shadow: 0 2px 8px rgba(49, 155, 224, 0.3);
         }
 
+        .menu-link:hover::before {
+            opacity: 1;
+        }
+
+        /* Bottom border effect for hover */
         .menu-link::after {
             content: '';
             position: absolute;
@@ -162,14 +206,39 @@
             width: 80%;
         }
 
+        /* Focus state for accessibility - Compatible with site-wide focus styling */
+        .menu-link:focus-visible {
+            outline: 3px solid #ffd700;
+            outline-offset: 2px;
+            box-shadow: 0 0 0 2px rgba(49, 155, 224, 0.5);
+            border-color: rgba(49, 155, 224, 0.4);
+        }
+
+        /* Active/pressed state */
+        .menu-link:active {
+            transform: translateY(-1px) scale(0.98);
+        }
+
+        /* Active link state */
         .menu-link-active {
             color: #319be0;
-            background: rgba(107, 175, 220, 0.2);
-            backdrop-filter: blur(8px);
+            border-color: rgba(49, 155, 224, 0.3);
+        }
+
+        .menu-link-active::before {
+            opacity: 0.5;
         }
 
         .menu-link-active::after {
             width: 80%;
+        }
+
+        /* --- Enhanced Logo Scaling for Maximum Impact --- */
+        .logo-enhanced {
+            height: 2rem; /* 32px mobile */
+            width: auto;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1));
         }
 
         .logo-container {
@@ -180,6 +249,134 @@
         .logo-container:hover {
             filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.3));
             transform: translateY(-2px);
+        }
+
+        /* Responsive Logo Scaling */
+        @media (min-width: 640px) {
+            .logo-enhanced {
+                height: 2.5rem; /* 40px tablet */
+            }
+        }
+
+        @media (min-width: 768px) {
+            .logo-enhanced {
+                height: 3.5rem; /* 56px desktop */
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .logo-enhanced {
+                height: 4rem; /* 64px large desktop */
+            }
+            
+            .menu-link {
+                font-size: 1.2rem;
+                padding: 18px 32px;
+            }
+        }
+
+        @media (min-width: 1280px) {
+            .logo-enhanced {
+                height: 5rem; /* 80px extra large displays (32" monitors) */
+            }
+        }
+
+        /* Reduced motion support for accessibility */
+        @media (prefers-reduced-motion: reduce) {
+            .menu-link,
+            .menu-link::before,
+            .menu-link::after,
+            .logo-enhanced {
+                transition: none;
+            }
+            
+            .menu-link:hover {
+                transform: none;
+            }
+            
+            .menu-link:active {
+                transform: none;
+            }
+        }
+
+        /* Mobile menu enhancements */
+        @media (max-width: 767px) {
+            .menu-link {
+                padding: 14px 20px;
+                font-size: 1rem;
+                min-height: 44px; /* Slightly smaller for mobile while maintaining accessibility */
+            }
+            
+            .menu-link:hover {
+                transform: translateY(-2px) scale(1.01);
+            }
+        }
+
+        /* --- Frosted Glass Navigation --- */
+        nav.frosted-nav {
+            /* Multi-layer frosted glass background with HydroCav blue tinting */
+            background: linear-gradient(
+                135deg, 
+                rgba(49, 155, 224, 0.15) 0%,     /* Increased opacity for visibility */
+                rgba(255, 255, 255, 0.20) 25%,   /* White frosted highlight */
+                rgba(107, 175, 220, 0.12) 50%,   /* Secondary blue */
+                rgba(255, 255, 255, 0.18) 75%,   /* White mid-tone diffusion */
+                rgba(49, 155, 224, 0.10) 100%    /* Primary blue soft fade */
+            ) !important;
+            
+            /* Advanced backdrop filters for authentic frosted glass effect */
+            backdrop-filter: 
+                blur(8px)            /* Reduced blur for more transparency */
+                saturate(1.2)        /* Slight saturation boost for color richness */
+                brightness(1.05)     /* Subtle brightness lift for premium feel */
+                contrast(0.95) !important;      /* Gentle contrast reduction for softer appearance */
+            -webkit-backdrop-filter: 
+                blur(8px)            /* Reduced blur for more transparency */
+                saturate(1.2)        
+                brightness(1.05)     
+                contrast(0.95) !important;
+            
+            /* Refined border system for frosted glass definition */
+            border: 1px solid rgba(255, 255, 255, 0.2) !important;
+            border-bottom: 1px solid rgba(49, 155, 224, 0.15) !important;
+            
+            /* Multi-layered shadow system for depth and authenticity */
+            box-shadow: 
+                0 4px 32px rgba(49, 155, 224, 0.08),     /* Primary blue ambient glow */
+                0 8px 64px rgba(0, 0, 0, 0.02),          /* Subtle depth shadow */
+                inset 0 1px 0 rgba(255, 255, 255, 0.25), /* Top frosted highlight */
+                inset 0 -1px 0 rgba(49, 155, 224, 0.1) !important;  /* Bottom blue accent line */
+        }
+
+        /* Enhanced nav link interactions within frosted glass */
+        nav.frosted-nav .menu-link {
+            /* Preserve existing liquid glass button styling but enhance for frosted context */
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        nav.frosted-nav .menu-link:hover {
+            /* Enhanced hover state with frosted glass harmony */
+            background: rgba(255, 255, 255, 0.15) !important;
+            backdrop-filter: blur(8px) !important;
+            -webkit-backdrop-filter: blur(8px) !important;
+            box-shadow: 
+                0 2px 16px rgba(49, 155, 224, 0.12),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+        }
+
+        /* Responsive frosted glass adjustments */
+        @media (max-width: 768px) {
+            nav.frosted-nav {
+                /* Slightly reduce blur on mobile for performance */
+                backdrop-filter: 
+                    blur(10px)
+                    saturate(1.15)
+                    brightness(1.03) !important;
+                -webkit-backdrop-filter: 
+                    blur(10px)
+                    saturate(1.15)
+                    brightness(1.03) !important;
+            }
         }
 
         /* --- Process Step Bubble Style --- */
@@ -200,6 +397,12 @@
                         inset 0 -2px 4px rgba(0, 0, 0, 0.1);
             border: 1px solid rgba(255, 255, 255, 0.4);
             text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+        }
+
+        /* --- Process Step Cards Equal Heights --- */
+        .process-step-card {
+            height: 100%;
+            min-height: 280px; /* Ensure consistent minimum height */
         }
 
         .product-showcase-card {
@@ -247,7 +450,6 @@
         /* === PHASE 2A ENHANCEMENTS === */
         
         /* --- Enhanced Focus Indicators --- */
-        .menu-link:focus-visible,
         .liquid-glass-button:focus-visible,
         input:focus-visible,
         textarea:focus-visible,
