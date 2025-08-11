@@ -185,7 +185,7 @@
             );
         }
 
-        /* Lazy Drift with Subtle Lateral Motion - Pattern 1 */
+        /* Gentle Lazy Drift - Pattern 1 */
         @keyframes lazyFloatWithDrift {
             0% { 
                 transform: translateY(100vh) translateX(0px);
@@ -193,84 +193,23 @@
             }
             10% {
                 opacity: 0.8;
-                transform: translateY(90vh) translateX(5px);
+                transform: translateY(90vh) translateX(2px);
             }
             25% {
-                transform: translateY(75vh) translateX(-3px);
+                transform: translateY(75vh) translateX(-1px);
             }
             40% {
-                transform: translateY(60vh) translateX(8px);
+                transform: translateY(60vh) translateX(3px);
             }
             60% {
                 transform: translateY(40vh) translateX(-2px);
             }
             75% {
-                transform: translateY(25vh) translateX(6px);
+                transform: translateY(25vh) translateX(2px);
             }
             90% {
                 opacity: 0.8;
-                transform: translateY(10vh) translateX(-4px);
-            }
-            100% {
-                transform: translateY(-120vh) translateX(2px);
-                opacity: 0;
-            }
-        }
-
-        /* Alternative Drift Pattern 2 */
-        @keyframes lazyFloatWithDrift2 {
-            0% { 
-                transform: translateY(100vh) translateX(0px);
-                opacity: 0;
-            }
-            15% {
-                opacity: 0.8;
-                transform: translateY(85vh) translateX(-4px);
-            }
-            35% {
-                transform: translateY(65vh) translateX(7px);
-            }
-            50% {
-                transform: translateY(50vh) translateX(-6px);
-            }
-            70% {
-                transform: translateY(30vh) translateX(3px);
-            }
-            85% {
-                opacity: 0.8;
-                transform: translateY(15vh) translateX(-2px);
-            }
-            100% {
-                transform: translateY(-120vh) translateX(5px);
-                opacity: 0;
-            }
-        }
-
-        /* Alternative Drift Pattern 3 */
-        @keyframes lazyFloatWithDrift3 {
-            0% { 
-                transform: translateY(100vh) translateX(0px);
-                opacity: 0;
-            }
-            12% {
-                opacity: 0.8;
-                transform: translateY(88vh) translateX(3px);
-            }
-            30% {
-                transform: translateY(70vh) translateX(-5px);
-            }
-            45% {
-                transform: translateY(55vh) translateX(4px);
-            }
-            65% {
-                transform: translateY(35vh) translateX(-7px);
-            }
-            80% {
-                transform: translateY(20vh) translateX(2px);
-            }
-            95% {
-                opacity: 0.8;
-                transform: translateY(5vh) translateX(-3px);
+                transform: translateY(10vh) translateX(-1px);
             }
             100% {
                 transform: translateY(-120vh) translateX(1px);
@@ -278,25 +217,86 @@
             }
         }
 
-        /* 5 Speed Variations - More Gradual Steps Around Original Speeds */
+        /* Gentle Drift Pattern 2 */
+        @keyframes lazyFloatWithDrift2 {
+            0% { 
+                transform: translateY(100vh) translateX(0px);
+                opacity: 0;
+            }
+            15% {
+                opacity: 0.8;
+                transform: translateY(85vh) translateX(-2px);
+            }
+            35% {
+                transform: translateY(65vh) translateX(3px);
+            }
+            50% {
+                transform: translateY(50vh) translateX(-1px);
+            }
+            70% {
+                transform: translateY(30vh) translateX(2px);
+            }
+            85% {
+                opacity: 0.8;
+                transform: translateY(15vh) translateX(-1px);
+            }
+            100% {
+                transform: translateY(-120vh) translateX(2px);
+                opacity: 0;
+            }
+        }
+
+        /* Gentle Drift Pattern 3 */
+        @keyframes lazyFloatWithDrift3 {
+            0% { 
+                transform: translateY(100vh) translateX(0px);
+                opacity: 0;
+            }
+            12% {
+                opacity: 0.8;
+                transform: translateY(88vh) translateX(1px);
+            }
+            30% {
+                transform: translateY(70vh) translateX(-2px);
+            }
+            45% {
+                transform: translateY(55vh) translateX(3px);
+            }
+            65% {
+                transform: translateY(35vh) translateX(-1px);
+            }
+            80% {
+                transform: translateY(20vh) translateX(2px);
+            }
+            95% {
+                opacity: 0.8;
+                transform: translateY(5vh) translateX(-1px);
+            }
+            100% {
+                transform: translateY(-120vh) translateX(1px);
+                opacity: 0;
+            }
+        }
+
+        /* 5 Speed Variations - Truly Lazy and Calming */
         .bubble-very-slow {
-            animation: lazyFloatWithDrift 35s linear infinite;
+            animation: lazyFloatWithDrift 60s linear infinite;
         }
 
         .bubble-slow {
-            animation: lazyFloatWithDrift 25s linear infinite;
+            animation: lazyFloatWithDrift 50s linear infinite;
         }
 
         .bubble-medium {
-            animation: lazyFloatWithDrift 20s linear infinite;
+            animation: lazyFloatWithDrift 40s linear infinite;
         }
 
         .bubble-fast {
-            animation: lazyFloatWithDrift 16s linear infinite;
+            animation: lazyFloatWithDrift 32s linear infinite;
         }
 
         .bubble-very-fast {
-            animation: lazyFloatWithDrift 12s linear infinite;
+            animation: lazyFloatWithDrift 25s linear infinite;
         }
 
         /* Legacy animation for backward compatibility */
