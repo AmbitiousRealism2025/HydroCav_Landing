@@ -11,51 +11,63 @@ if ('scrollRestoration' in history) {
 document.addEventListener('DOMContentLoaded', function () {
     // Force scroll to top when DOM loads
     window.scrollTo(0, 0);
-    // Enhanced 3D bubble creation system with weighted distribution
-    function create3DBubbles(container, count = 15) {
+    // Enhanced 3D bubble creation system with randomized speeds
+    function create3DBubbles(container, count = 18) {
         if (!container) return;
 
-        // Bubble type configurations with weights
-        const bubbleTypes = [
-            { size: 'xl', colorClass: 'bubble-primary', speedClass: 'bubble-slow', weight: 0.1 },
-            { size: 'lg', colorClass: 'bubble-secondary', speedClass: 'bubble-medium', weight: 0.2 },
-            { size: 'md', colorClass: 'bubble-primary', speedClass: 'bubble-medium', weight: 0.3 },
-            { size: 'sm', colorClass: 'bubble-neutral', speedClass: 'bubble-fast', weight: 0.25 },
-            { size: 'xs', colorClass: 'bubble-secondary', speedClass: 'bubble-fast', weight: 0.15 }
+        // Bubble size configurations with weights
+        const bubbleSizes = [
+            { size: 'xl', weight: 0.1 },
+            { size: 'lg', weight: 0.2 },
+            { size: 'md', weight: 0.3 },
+            { size: 'sm', weight: 0.25 },
+            { size: 'xs', weight: 0.15 }
         ];
 
-        // Helper function for weighted random selection
-        function getWeightedRandomType() {
+        // Color variants for variety
+        const colorClasses = ['bubble-primary', 'bubble-secondary', 'bubble-neutral'];
+
+        // 3 Speed classes for randomization
+        const speedClasses = ['bubble-slow', 'bubble-medium', 'bubble-fast'];
+
+        // Helper function for weighted random size selection
+        function getWeightedRandomSize() {
             const random = Math.random();
             let cumulativeWeight = 0;
             
-            for (const type of bubbleTypes) {
-                cumulativeWeight += type.weight;
+            for (const sizeConfig of bubbleSizes) {
+                cumulativeWeight += sizeConfig.weight;
                 if (random <= cumulativeWeight) {
-                    return type;
+                    return sizeConfig.size;
                 }
             }
-            return bubbleTypes[bubbleTypes.length - 1]; // Fallback
+            return bubbleSizes[bubbleSizes.length - 1].size; // Fallback
         }
 
         for (let i = 0; i < count; i++) {
             const bubble = document.createElement('div');
-            const bubbleType = getWeightedRandomType();
+            
+            // Random size selection
+            const bubbleSize = getWeightedRandomSize();
+            
+            // Random color and speed selection
+            const randomColor = colorClasses[Math.floor(Math.random() * colorClasses.length)];
+            const randomSpeed = speedClasses[Math.floor(Math.random() * speedClasses.length)];
             
             // Apply bubble classes for 3D effect
             bubble.classList.add(
                 'bubble', 
                 'bubble-3d',
-                `bubble-${bubbleType.size}`,
-                bubbleType.colorClass,
-                bubbleType.speedClass
+                `bubble-${bubbleSize}`,
+                randomColor,
+                randomSpeed
             );
 
-            // Position bubbles with better distribution
+            // Random position across the width
             bubble.style.left = `${Math.random() * 100}%`;
             
-            // Add varied animation delays for organic feel
-            bubble.style.animationDelay = `${Math.random() * 12}s`;
+            // Random animation delay to stagger bubble appearances
+            bubble.style.animationDelay = `${Math.random() * 15}s`;
 
             container.appendChild(bubble);
         }
@@ -89,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const ctaBubbleContainer = document.getElementById('bubble-container-cta');
 
     // Create enhanced 3D bubbles for Hero section (Phase 1 - Hero only)
-    create3DBubbles(heroBubbleContainer, 15);
+    create3DBubbles(heroBubbleContainer, 18);
     
     // Keep legacy bubbles for other sections until Phase 3
     createBubbles(advantagesBubbleContainer, 15, 'blue-bubble');
