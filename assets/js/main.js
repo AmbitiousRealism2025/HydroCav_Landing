@@ -89,7 +89,9 @@ document.addEventListener('DOMContentLoaded', function () {
     const ctaBubbleContainer = document.getElementById('bubble-container-cta');
 
     // Create enhanced 3D bubbles for Hero section (Phase 1 - Hero only)
+    console.log('Hero container found:', heroBubbleContainer);
     create3DBubbles(heroBubbleContainer, 15);
+    console.log('3D bubbles created, container children count:', heroBubbleContainer?.children.length);
     
     // Keep legacy bubbles for other sections until Phase 3
     createBubbles(advantagesBubbleContainer, 15, 'blue-bubble');
