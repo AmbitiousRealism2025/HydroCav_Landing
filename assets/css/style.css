@@ -36,10 +36,13 @@
 
         /* Enhanced 3D Glass Bubble Base */
         .bubble-3d {
+            /* Temporary debugging - make bubbles more visible */
+            background: rgba(255, 0, 0, 0.3) !important; /* Temporary red for debugging */
+            border: 2px solid rgba(255, 255, 255, 0.8) !important; /* More visible border */
+            
             /* Advanced glassmorphism effects - reduced blur for better visibility */
             backdrop-filter: blur(8px) saturate(160%);
             -webkit-backdrop-filter: blur(8px) saturate(160%);
-            border: 1px solid rgba(255, 255, 255, 0.3);
             
             /* 3D depth shadows with multiple layers */
             box-shadow: 

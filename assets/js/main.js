@@ -89,8 +89,8 @@ document.addEventListener('DOMContentLoaded', function () {
             // Random position across the width
             bubble.style.left = `${Math.random() * 100}%`;
             
-            // Random animation delay to stagger bubble appearances  
-            bubble.style.animationDelay = `${Math.random() * 15}s`;
+            // Reduced animation delay to ensure bubbles appear quickly
+            bubble.style.animationDelay = `${Math.random() * 5}s`;
 
             container.appendChild(bubble);
         }
@@ -124,15 +124,22 @@ document.addEventListener('DOMContentLoaded', function () {
     const ctaBubbleContainer = document.getElementById('bubble-container-cta');
 
     // Create enhanced 3D bubbles for all sections with appropriate colors
+    console.log('Creating bubbles...');
     
     // Hero section - white bubbles on blue background
+    console.log('Hero container:', heroBubbleContainer);
     create3DBubbles(heroBubbleContainer, 18, 'blue');
+    console.log('Hero bubbles created:', heroBubbleContainer?.children.length);
     
     // Advantages section - blue bubbles on white background  
+    console.log('Advantages container:', advantagesBubbleContainer);
     create3DBubbles(advantagesBubbleContainer, 18, 'white');
+    console.log('Advantages bubbles created:', advantagesBubbleContainer?.children.length);
     
     // CTA section - white bubbles on blue background
+    console.log('CTA container:', ctaBubbleContainer);
     create3DBubbles(ctaBubbleContainer, 18, 'blue');
+    console.log('CTA bubbles created:', ctaBubbleContainer?.children.length);
     
     // Initialize enhanced navigation
     initializeEnhancedNavigation();
