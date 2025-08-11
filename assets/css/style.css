@@ -29,8 +29,8 @@
             will-change: transform, opacity;
             transform-style: preserve-3d;
             transform: translateZ(0); /* Force GPU layer */
-            /* Default lazy drift animation */
-            animation: lazyFloat 20s linear infinite;
+            /* Default lazy drift animation with subtle lateral motion */
+            animation: lazyFloatWithDrift 20s linear infinite;
             animation-fill-mode: both;
         }
 
@@ -185,35 +185,118 @@
             );
         }
 
-        /* Simplified Lazy Drift Animation */
-        @keyframes lazyFloat {
+        /* Lazy Drift with Subtle Lateral Motion - Pattern 1 */
+        @keyframes lazyFloatWithDrift {
             0% { 
-                transform: translateY(100vh);
+                transform: translateY(100vh) translateX(0px);
                 opacity: 0;
             }
             10% {
                 opacity: 0.8;
+                transform: translateY(90vh) translateX(5px);
+            }
+            25% {
+                transform: translateY(75vh) translateX(-3px);
+            }
+            40% {
+                transform: translateY(60vh) translateX(8px);
+            }
+            60% {
+                transform: translateY(40vh) translateX(-2px);
+            }
+            75% {
+                transform: translateY(25vh) translateX(6px);
             }
             90% {
                 opacity: 0.8;
+                transform: translateY(10vh) translateX(-4px);
             }
             100% {
-                transform: translateY(-120vh);
+                transform: translateY(-120vh) translateX(2px);
                 opacity: 0;
             }
         }
 
-        /* 3 Speed Variants for Random Assignment */
+        /* Alternative Drift Pattern 2 */
+        @keyframes lazyFloatWithDrift2 {
+            0% { 
+                transform: translateY(100vh) translateX(0px);
+                opacity: 0;
+            }
+            15% {
+                opacity: 0.8;
+                transform: translateY(85vh) translateX(-4px);
+            }
+            35% {
+                transform: translateY(65vh) translateX(7px);
+            }
+            50% {
+                transform: translateY(50vh) translateX(-6px);
+            }
+            70% {
+                transform: translateY(30vh) translateX(3px);
+            }
+            85% {
+                opacity: 0.8;
+                transform: translateY(15vh) translateX(-2px);
+            }
+            100% {
+                transform: translateY(-120vh) translateX(5px);
+                opacity: 0;
+            }
+        }
+
+        /* Alternative Drift Pattern 3 */
+        @keyframes lazyFloatWithDrift3 {
+            0% { 
+                transform: translateY(100vh) translateX(0px);
+                opacity: 0;
+            }
+            12% {
+                opacity: 0.8;
+                transform: translateY(88vh) translateX(3px);
+            }
+            30% {
+                transform: translateY(70vh) translateX(-5px);
+            }
+            45% {
+                transform: translateY(55vh) translateX(4px);
+            }
+            65% {
+                transform: translateY(35vh) translateX(-7px);
+            }
+            80% {
+                transform: translateY(20vh) translateX(2px);
+            }
+            95% {
+                opacity: 0.8;
+                transform: translateY(5vh) translateX(-3px);
+            }
+            100% {
+                transform: translateY(-120vh) translateX(1px);
+                opacity: 0;
+            }
+        }
+
+        /* 5 Speed Variations for More Natural Movement */
+        .bubble-very-slow {
+            animation: lazyFloatWithDrift 35s linear infinite;
+        }
+
         .bubble-slow {
-            animation: lazyFloat 30s linear infinite;
+            animation: lazyFloatWithDrift 28s linear infinite;
         }
 
         .bubble-medium {
-            animation: lazyFloat 20s linear infinite;
+            animation: lazyFloatWithDrift 20s linear infinite;
         }
 
         .bubble-fast {
-            animation: lazyFloat 12s linear infinite;
+            animation: lazyFloatWithDrift 14s linear infinite;
+        }
+
+        .bubble-very-fast {
+            animation: lazyFloatWithDrift 10s linear infinite;
         }
 
         /* Legacy animation for backward compatibility */

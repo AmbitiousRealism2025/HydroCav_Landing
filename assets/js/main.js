@@ -34,8 +34,21 @@ document.addEventListener('DOMContentLoaded', function () {
             colorClasses = ['bubble-white-on-blue', 'bubble-light-white', 'bubble-neutral'];
         }
 
-        // 3 Speed classes for randomization
-        const speedClasses = ['bubble-slow', 'bubble-medium', 'bubble-fast'];
+        // 5 Speed variations
+        const speeds = [
+            { name: 'very-slow', duration: '35s' },
+            { name: 'slow', duration: '28s' },
+            { name: 'medium', duration: '20s' },
+            { name: 'fast', duration: '14s' },
+            { name: 'very-fast', duration: '10s' }
+        ];
+
+        // 3 Different drift patterns for variety
+        const driftPatterns = [
+            'lazyFloatWithDrift',
+            'lazyFloatWithDrift2', 
+            'lazyFloatWithDrift3'
+        ];
 
         // Helper function for weighted random size selection
         function getWeightedRandomSize() {
@@ -57,23 +70,26 @@ document.addEventListener('DOMContentLoaded', function () {
             // Random size selection
             const bubbleSize = getWeightedRandomSize();
             
-            // Random color and speed selection
+            // Random selections
             const randomColor = colorClasses[Math.floor(Math.random() * colorClasses.length)];
-            const randomSpeed = speedClasses[Math.floor(Math.random() * speedClasses.length)];
+            const randomSpeed = speeds[Math.floor(Math.random() * speeds.length)];
+            const randomDrift = driftPatterns[Math.floor(Math.random() * driftPatterns.length)];
             
             // Apply bubble classes for 3D effect
             bubble.classList.add(
                 'bubble', 
                 'bubble-3d',
                 `bubble-${bubbleSize}`,
-                randomColor,
-                randomSpeed
+                randomColor
             );
+
+            // Apply random drift pattern and speed
+            bubble.style.animation = `${randomDrift} ${randomSpeed.duration} linear infinite`;
 
             // Random position across the width
             bubble.style.left = `${Math.random() * 100}%`;
             
-            // Random animation delay to stagger bubble appearances
+            // Random animation delay to stagger bubble appearances  
             bubble.style.animationDelay = `${Math.random() * 15}s`;
 
             container.appendChild(bubble);
