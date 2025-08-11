@@ -11,8 +11,8 @@ if ('scrollRestoration' in history) {
 document.addEventListener('DOMContentLoaded', function () {
     // Force scroll to top when DOM loads
     window.scrollTo(0, 0);
-    // Enhanced 3D bubble creation system with randomized speeds
-    function create3DBubbles(container, count = 18) {
+    // Enhanced 3D bubble creation system with background-specific colors
+    function create3DBubbles(container, count = 18, backgroundType = 'blue') {
         if (!container) return;
 
         // Bubble size configurations with weights
@@ -24,8 +24,15 @@ document.addEventListener('DOMContentLoaded', function () {
             { size: 'xs', weight: 0.15 }
         ];
 
-        // Color variants for variety
-        const colorClasses = ['bubble-primary', 'bubble-secondary', 'bubble-neutral'];
+        // Color variants based on background type
+        let colorClasses;
+        if (backgroundType === 'white') {
+            // Blue bubbles for white backgrounds (Advantages section)
+            colorClasses = ['bubble-blue-on-white', 'bubble-secondary-blue', 'bubble-neutral'];
+        } else {
+            // White bubbles for blue backgrounds (Hero, Contact, etc.)
+            colorClasses = ['bubble-white-on-blue', 'bubble-light-white', 'bubble-neutral'];
+        }
 
         // 3 Speed classes for randomization
         const speedClasses = ['bubble-slow', 'bubble-medium', 'bubble-fast'];
@@ -100,12 +107,16 @@ document.addEventListener('DOMContentLoaded', function () {
     const advantagesBubbleContainer = document.getElementById('bubble-container-advantages');
     const ctaBubbleContainer = document.getElementById('bubble-container-cta');
 
-    // Create enhanced 3D bubbles for Hero section (Phase 1 - Hero only)
-    create3DBubbles(heroBubbleContainer, 18);
+    // Create enhanced 3D bubbles for all sections with appropriate colors
     
-    // Keep legacy bubbles for other sections until Phase 3
-    createBubbles(advantagesBubbleContainer, 15, 'blue-bubble');
-    createBubbles(ctaBubbleContainer, 15, 'white-bubble');
+    // Hero section - white bubbles on blue background
+    create3DBubbles(heroBubbleContainer, 18, 'blue');
+    
+    // Advantages section - blue bubbles on white background  
+    create3DBubbles(advantagesBubbleContainer, 18, 'white');
+    
+    // CTA section - white bubbles on blue background
+    create3DBubbles(ctaBubbleContainer, 18, 'blue');
     
     // Initialize enhanced navigation
     initializeEnhancedNavigation();
