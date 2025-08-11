@@ -139,98 +139,106 @@
             line-height: 1.6;
         }
 
-        /* --- Enhanced Navigation Menu Styles - Liquid Glass Aesthetic --- */
+        /* --- Enhanced Navigation Menu Styles - Matching Liquid Glass Buttons --- */
         .menu-link {
             position: relative;
-            padding: 16px 28px;
-            border-radius: 16px;
-            font-size: 1.125rem;
-            font-weight: 400; /* Reduced for elegance */
-            letter-spacing: 0.05em; /* Increased for premium spacing */
-            color: #1e293b;
-            text-shadow: none; /* Removed dated embossed effect */
-            background: transparent; /* Removed background boxes */
-            border: 2px solid transparent;
-            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            text-decoration: none;
-            min-height: 48px; /* Accessibility compliance */
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
+            padding: 12px 28px; /* Match liquid-glass-button padding */
+            border-radius: 9999px; /* Match liquid-glass-button fully rounded */
+            font-size: 0.95rem; /* Match liquid-glass-button font size */
+            font-weight: 600; /* Match liquid-glass-button weight */
+            letter-spacing: 0.025em;
+            color: #ffffff; /* Match liquid-glass-button white text */
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); /* Match liquid-glass-button text shadow */
+            text-decoration: none;
+            cursor: pointer;
+            outline: none;
             overflow: hidden;
+            min-height: 44px;
+            background-color: rgba(49, 155, 224, 0.7); /* Match liquid-glass-button blue background */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.25); /* Match liquid-glass-button border */
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2); /* Match liquid-glass-button shadow */
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        /* Glassmorphism effect on hover - subtle glass surface */
+        /* Add the radial gradient overlay like liquid-glass-button */
         .menu-link::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, 
-                rgba(255, 255, 255, 0.1) 0%, 
-                rgba(255, 255, 255, 0.05) 100%);
-            backdrop-filter: blur(8px);
-            border-radius: 14px;
-            opacity: 0;
-            transition: opacity 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            z-index: -1;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0) 60%);
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
         }
 
+        /* Enhanced Hover State - Match Liquid Glass Button Hover */
         .menu-link:hover {
-            border-color: rgba(49, 155, 224, 0.4);
-            transform: translateY(-3px) scale(1.02);
-            color: #319be0;
-            text-shadow: 0 2px 8px rgba(49, 155, 224, 0.3);
+            background-color: rgba(255, 255, 255, 0.2); /* Match liquid-glass-button hover */
+            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.25); /* Match liquid-glass-button hover shadow */
+            transform: translateY(-2px); /* Match liquid-glass-button hover transform */
         }
 
+        /* Match liquid-glass-button hover ::before opacity */
         .menu-link:hover::before {
             opacity: 1;
         }
 
-        /* Bottom border effect for hover */
-        .menu-link::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            width: 0;
-            height: 2px;
-            background: linear-gradient(90deg, #319be0, #6bafdc);
-            transition: all 0.3s ease-out;
-            transform: translateX(-50%);
+        /* Enhanced Active State for Scroll-Spy - Enhanced Blue Glow */
+        .menu-link.active {
+            background-color: rgba(49, 155, 224, 0.9); /* More prominent blue background */
+            box-shadow: 
+                0 8px 32px 0 rgba(0, 0, 0, 0.2),
+                0 0 20px rgba(49, 155, 224, 0.6); /* Add blue glow */
+            animation: subtle-glow 3s ease-in-out infinite alternate;
         }
 
-        .menu-link:hover::after {
-            width: 80%;
+        /* Active + Hover Combined State */
+        .menu-link.active:hover {
+            transform: translateY(-2px);
+            background-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 
+                0 12px 40px 0 rgba(0, 0, 0, 0.25),
+                0 0 25px rgba(49, 155, 224, 0.7); /* Enhanced blue glow on hover */
         }
 
-        /* Focus state for accessibility - Compatible with site-wide focus styling */
+        /* Subtle glow animation for active state */
+        @keyframes subtle-glow {
+            0% {
+                box-shadow: 
+                    0 8px 24px rgba(49, 155, 224, 0.3),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.25),
+                    0 0 20px rgba(49, 155, 224, 0.2);
+            }
+            100% {
+                box-shadow: 
+                    0 8px 24px rgba(49, 155, 224, 0.4),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+                    0 0 25px rgba(49, 155, 224, 0.25);
+            }
+        }
+
+        /* Focus state for accessibility */
         .menu-link:focus-visible {
-            outline: 3px solid #ffd700;
+            outline: 2px solid rgba(49, 155, 224, 0.8);
             outline-offset: 2px;
-            box-shadow: 0 0 0 2px rgba(49, 155, 224, 0.5);
-            border-color: rgba(49, 155, 224, 0.4);
+            box-shadow: 
+                0 8px 24px rgba(0, 0, 0, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.2),
+                0 0 0 4px rgba(49, 155, 224, 0.3);
         }
 
-        /* Active/pressed state */
+        /* Active/pressed state - Match liquid-glass-button */
         .menu-link:active {
-            transform: translateY(-1px) scale(0.98);
-        }
-
-        /* Active link state */
-        .menu-link-active {
-            color: #319be0;
-            border-color: rgba(49, 155, 224, 0.3);
-        }
-
-        .menu-link-active::before {
-            opacity: 0.5;
-        }
-
-        .menu-link-active::after {
-            width: 80%;
+            transform: translateY(1px) scale(0.98); /* Match liquid-glass-button active transform */
+            box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.2); /* Match liquid-glass-button active shadow */
+            background-color: rgba(255, 255, 255, 0.05); /* Match liquid-glass-button active background */
         }
 
         /* --- Enhanced Logo Scaling for Maximum Impact --- */
@@ -281,34 +289,52 @@
             }
         }
 
-        /* Reduced motion support for accessibility */
+        /* Reduced motion support for accessibility - Liquid Glass Compatible */
         @media (prefers-reduced-motion: reduce) {
             .menu-link,
-            .menu-link::before,
-            .menu-link::after,
             .logo-enhanced {
-                transition: none;
+                transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+                animation: none;
             }
             
-            .menu-link:hover {
+            .menu-link:hover,
+            .menu-link.active,
+            .menu-link.active:hover {
                 transform: none;
             }
             
             .menu-link:active {
                 transform: none;
             }
+            
+            /* Maintain glassmorphism effects without motion */
+            .menu-link.active {
+                animation: none;
+            }
         }
 
-        /* Mobile menu enhancements */
+        /* Mobile menu enhancements - Liquid Glass Responsive */
         @media (max-width: 767px) {
             .menu-link {
-                padding: 14px 20px;
-                font-size: 1rem;
-                min-height: 44px; /* Slightly smaller for mobile while maintaining accessibility */
+                padding: 10px 20px;
+                font-size: 0.95rem;
+                min-height: 44px;
+                backdrop-filter: blur(8px); /* Reduced for mobile performance */
+                -webkit-backdrop-filter: blur(8px);
+                box-shadow: 
+                    0 2px 12px rgba(0, 0, 0, 0.08),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.08);
             }
             
             .menu-link:hover {
-                transform: translateY(-2px) scale(1.01);
+                transform: translateY(-1px) scale(1.01);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+            }
+            
+            .menu-link.active {
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
             }
         }
 
@@ -317,35 +343,37 @@
             /* Multi-layer frosted glass background with HydroCav blue tinting */
             background: linear-gradient(
                 135deg, 
-                rgba(49, 155, 224, 0.15) 0%,     /* Increased opacity for visibility */
-                rgba(255, 255, 255, 0.20) 25%,   /* White frosted highlight */
-                rgba(107, 175, 220, 0.12) 50%,   /* Secondary blue */
-                rgba(255, 255, 255, 0.18) 75%,   /* White mid-tone diffusion */
-                rgba(49, 155, 224, 0.10) 100%    /* Primary blue soft fade */
+                rgba(49, 155, 224, 0.45) 0%,     /* Intense blue base for strong presence */
+                rgba(107, 175, 220, 0.40) 25%,   /* Rich secondary blue */
+                rgba(49, 155, 224, 0.42) 50%,    /* Deep primary blue core */
+                rgba(107, 175, 220, 0.38) 75%,   /* Vibrant light blue */
+                rgba(49, 155, 224, 0.40) 100%    /* Strong blue finish */
             ) !important;
             
             /* Advanced backdrop filters for authentic frosted glass effect */
             backdrop-filter: 
-                blur(8px)            /* Reduced blur for more transparency */
-                saturate(1.2)        /* Slight saturation boost for color richness */
-                brightness(1.05)     /* Subtle brightness lift for premium feel */
-                contrast(0.95) !important;      /* Gentle contrast reduction for softer appearance */
+                blur(12px)           /* Enhanced blur for better frosted effect */
+                saturate(1.4)        /* Increased saturation for richer blue tones */
+                brightness(1.1)      /* Slightly brighter for better bubble visibility */
+                contrast(0.9)        /* Reduced contrast for more transparency */
+                opacity(0.85) !important;       /* Added transparency for bubble visibility */
             -webkit-backdrop-filter: 
-                blur(8px)            /* Reduced blur for more transparency */
-                saturate(1.2)        
-                brightness(1.05)     
-                contrast(0.95) !important;
+                blur(12px)           /* Enhanced blur for better frosted effect */
+                saturate(1.4)        /* Increased saturation for richer blue tones */
+                brightness(1.1)      /* Slightly brighter for better bubble visibility */
+                contrast(0.9)        /* Reduced contrast for more transparency */
+                opacity(0.85) !important;
             
             /* Refined border system for frosted glass definition */
-            border: 1px solid rgba(255, 255, 255, 0.2) !important;
-            border-bottom: 1px solid rgba(49, 155, 224, 0.15) !important;
+            border: 1px solid rgba(49, 155, 224, 0.5) !important;
+            border-bottom: 1px solid rgba(49, 155, 224, 0.6) !important;
             
             /* Multi-layered shadow system for depth and authenticity */
             box-shadow: 
-                0 4px 32px rgba(49, 155, 224, 0.08),     /* Primary blue ambient glow */
+                0 4px 32px rgba(49, 155, 224, 0.30),     /* Intense primary blue ambient glow */
                 0 8px 64px rgba(0, 0, 0, 0.02),          /* Subtle depth shadow */
-                inset 0 1px 0 rgba(255, 255, 255, 0.25), /* Top frosted highlight */
-                inset 0 -1px 0 rgba(49, 155, 224, 0.1) !important;  /* Bottom blue accent line */
+                inset 0 1px 0 rgba(107, 175, 220, 0.25), /* Enhanced top blue frosted highlight */
+                inset 0 -1px 0 rgba(49, 155, 224, 0.35) !important;  /* Intense bottom blue accent line */
         }
 
         /* Enhanced nav link interactions within frosted glass */
@@ -357,8 +385,8 @@
         nav.frosted-nav .menu-link:hover {
             /* Enhanced hover state with frosted glass harmony */
             background: rgba(255, 255, 255, 0.15) !important;
-            backdrop-filter: blur(8px) !important;
-            -webkit-backdrop-filter: blur(8px) !important;
+            backdrop-filter: blur(10px) !important;
+            -webkit-backdrop-filter: blur(10px) !important;
             box-shadow: 
                 0 2px 16px rgba(49, 155, 224, 0.12),
                 inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
@@ -367,15 +395,19 @@
         /* Responsive frosted glass adjustments */
         @media (max-width: 768px) {
             nav.frosted-nav {
-                /* Slightly reduce blur on mobile for performance */
+                /* Optimized mobile settings maintaining blue intensity */
                 backdrop-filter: 
-                    blur(10px)
-                    saturate(1.15)
-                    brightness(1.03) !important;
+                    blur(10px)        /* Slightly reduced blur for mobile performance */
+                    saturate(1.3)     /* Strong saturation for blue richness */
+                    brightness(1.08)  /* Good brightness for bubble visibility */
+                    contrast(0.92)    /* Balanced contrast */
+                    opacity(0.87) !important;    /* Slight opacity for bubble hints */
                 -webkit-backdrop-filter: 
                     blur(10px)
-                    saturate(1.15)
-                    brightness(1.03) !important;
+                    saturate(1.3)
+                    brightness(1.08)
+                    contrast(0.92)
+                    opacity(0.87) !important;
             }
         }
 
@@ -705,3 +737,703 @@
                 max-width: none;
             }
         }
+
+/* ====================================================================== */
+/* FROSTED GLASS FOOTER STYLING */
+/* ====================================================================== */
+footer.frosted-footer {
+    /* Light multi-layer gradient matching nav bar */
+    background: linear-gradient(
+        135deg,
+        rgba(255, 255, 255, 0.25) 0%,     /* White frost dominant */
+        rgba(49, 155, 224, 0.08) 25%,     /* Subtle primary blue tint */
+        rgba(255, 255, 255, 0.20) 50%,    /* White mid-layer */
+        rgba(107, 175, 220, 0.06) 75%,    /* Light secondary blue */
+        rgba(255, 255, 255, 0.18) 100%    /* White base layer */
+    );
+    
+    /* Frosted glass backdrop effects - matching nav bar */
+    backdrop-filter: 
+        blur(8px)            /* Same blur as nav bar */
+        saturate(1.2)        /* Subtle saturation */
+        brightness(1.05);    /* Bright, light appearance */
+    -webkit-backdrop-filter: 
+        blur(8px)
+        saturate(1.2)
+        brightness(1.05);
+    
+    /* 3px divider border at top */
+    border-top: 3px solid rgba(0, 0, 0, 1);  /* Black divider for consistency */
+    box-shadow: 
+        0 -2px 16px rgba(49, 155, 224, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    
+    /* Text styling for readability on light background */
+    color: rgba(51, 65, 85, 0.9);  /* Dark slate for contrast on light background */
+}
+
+footer.frosted-footer p {
+    text-shadow: 0 1px 1px rgba(255, 255, 255, 0.5);  /* Light shadow for text clarity */
+    color: rgba(51, 65, 85, 0.9);  /* Ensure paragraph text is also dark */
+}
+
+/* Mobile responsiveness for frosted footer */
+@media (max-width: 768px) {
+    footer.frosted-footer {
+        backdrop-filter: 
+            blur(6px)          /* Reduced blur for performance */
+            saturate(1.15)
+            brightness(1.05);
+        -webkit-backdrop-filter: 
+            blur(6px)
+            saturate(1.15)
+            brightness(1.05);
+    }
+}
+
+/* ====================================================================== */
+/* HERO SECTION ENHANCED ANIMATIONS */
+/* ====================================================================== */
+
+/* Fade-in and slide-up animations for hero elements */
+.hero-title {
+    opacity: 0;
+    animation: heroFadeInUp 1s ease-out 0.5s forwards;
+}
+
+.hero-subtitle {
+    opacity: 0;
+    animation: heroFadeInUp 1s ease-out 1s forwards;
+}
+
+.hero-cta {
+    opacity: 0;
+    animation: heroFadeInUp 1s ease-out 1.5s forwards;
+}
+
+@keyframes heroFadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Improved Typewriter Effect */
+.typewriter-container {
+    position: relative;
+    display: inline-block;
+    line-height: 1.4;
+}
+
+.typewriter-text {
+    display: inline;
+    /* Allow natural text wrapping and formatting */
+}
+
+.typewriter-cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1.4em;
+    background-color: #000000; /* Changed to black */
+    margin-left: 1px;
+    animation: cursorBlink 1s infinite;
+    vertical-align: text-bottom; /* Better alignment */
+    opacity: 0; /* Start hidden until typing begins */
+}
+
+@keyframes cursorBlink {
+    0%, 50% {
+        opacity: 1;
+    }
+    51%, 100% {
+        opacity: 0;
+    }
+}
+
+/* Enhanced CTA Button with Pulse/Glow Effect */
+.cta-button {
+    position: relative;
+    animation: ctaPulseGlow 3s infinite;
+    overflow: hidden;
+}
+
+.cta-button::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border-radius: inherit;
+    background: linear-gradient(135deg, #319be0, #6bafdc);
+    opacity: 0;
+    animation: ctaGlowRing 3s infinite;
+    z-index: -1;
+}
+
+.cta-button:hover {
+    animation-play-state: paused;
+    box-shadow: 
+        0 8px 25px rgba(49, 155, 224, 0.5),
+        0 4px 15px rgba(49, 155, 224, 0.3),
+        0 0 20px rgba(49, 155, 224, 0.2);
+}
+
+@keyframes ctaPulseGlow {
+    0%, 100% {
+        box-shadow: 
+            0 4px 15px rgba(49, 155, 224, 0.3),
+            0 2px 8px rgba(49, 155, 224, 0.2);
+    }
+    50% {
+        box-shadow: 
+            0 8px 25px rgba(49, 155, 224, 0.5),
+            0 4px 15px rgba(49, 155, 224, 0.3),
+            0 0 20px rgba(49, 155, 224, 0.2);
+    }
+}
+
+@keyframes ctaGlowRing {
+    0%, 100% {
+        opacity: 0;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.3;
+        transform: scale(1.05);
+    }
+}
+
+/* Mobile responsive typewriter */
+@media (max-width: 768px) {
+    .typewriter-cursor {
+        width: 1.5px; /* Slightly thinner cursor on mobile */
+        height: 1.3em;
+    }
+    
+    .typewriter-container {
+        line-height: 1.3; /* Tighter line spacing on mobile */
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .hero-title,
+    .hero-subtitle,
+    .hero-cta {
+        animation: none;
+        opacity: 1;
+    }
+    
+    .typewriter-cursor {
+        animation: none;
+        opacity: 1; /* Show static cursor */
+    }
+    
+    .cta-button {
+        animation: none;
+    }
+    
+    .cta-button::before {
+        animation: none;
+        opacity: 0;
+    }
+}
+
+/* ====================================================================== */
+/* ENHANCED NAVIGATION FEATURES */
+/* ====================================================================== */
+
+/* Scroll Progress Indicator */
+.scroll-progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background: linear-gradient(90deg, #319be0 0%, #6bafdc 100%);
+    z-index: 999;
+    transition: width 0.1s ease-out;
+    box-shadow: 0 1px 3px rgba(49, 155, 224, 0.3);
+}
+
+/* Enhanced Menu Link Styles - Unified Liquid Glass Implementation */
+/* Note: Main menu-link styles defined above in navigation section */
+
+/* Additional responsive enhancements for enhanced navigation */
+
+/* Smooth Scrolling */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Navigation responsive and accessibility improvements */
+@media (prefers-reduced-motion: reduce) {
+    .menu-link {
+        transition: background-color 0.3s ease, color 0.3s ease;
+        transform: none !important;
+    }
+    
+    .menu-link:hover {
+        transform: none !important;
+    }
+    
+    .scroll-progress-bar {
+        transition: none;
+    }
+    
+    html {
+        scroll-behavior: auto;
+    }
+}
+
+/* Mobile Navigation Enhancements */
+@media (max-width: 768px) {
+    .scroll-progress-bar {
+        height: 2px;
+    }
+    
+    .menu-link:hover {
+        transform: scale(1.02);
+    }
+    
+    .menu-link.active:hover {
+        transform: scale(1.04);
+    }
+    
+    /* Mobile Logo Centering and Sizing */
+    nav .container {
+        position: relative;
+        justify-content: center; /* Center the logo on mobile */
+    }
+    
+    .logo-enhanced {
+        height: 3.5rem !important; /* Larger logo on mobile (56px) */
+        filter: drop-shadow(0 3px 12px rgba(0, 0, 0, 0.15)); /* Enhanced shadow for prominence */
+    }
+    
+    .logo-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    
+    /* Position hamburger menu button on the right */
+    nav .md\\:hidden {
+        position: absolute;
+        right: 3rem; /* Increased spacing between logo and hamburger */
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    
+    /* Hide desktop menu on mobile */
+    nav .hidden.md\\:flex {
+        display: none !important;
+    }
+}
+
+/* Extra small mobile devices */
+@media (max-width: 480px) {
+    .logo-enhanced {
+        height: 4rem !important; /* Even larger on very small screens (64px) */
+    }
+    
+    nav .md\\:hidden {
+        right: 1.5rem; /* Appropriate spacing on small screens */
+    }
+}
+
+/* ====================================================================== */
+/* MOBILE MENU STYLING */
+/* ====================================================================== */
+
+/* Mobile Menu Overlay */
+.mobile-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.mobile-menu-overlay:not(.hidden) {
+    opacity: 1;
+}
+
+/* Mobile Menu Panel */
+.mobile-menu-panel {
+    position: absolute;
+    top: 80px;
+    right: 16px;
+    width: 280px;
+    max-width: calc(100vw - 32px);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(20px) saturate(150%);
+    -webkit-backdrop-filter: blur(20px) saturate(150%);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 
+        0 20px 40px rgba(0, 0, 0, 0.15),
+        0 8px 32px rgba(49, 155, 224, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    transform: translateY(-20px) scale(0.95);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.mobile-menu-overlay:not(.hidden) .mobile-menu-panel {
+    transform: translateY(0) scale(1);
+}
+
+/* Mobile Menu Header */
+.mobile-menu-header {
+    display: flex;
+    justify-content: between;
+    align-items: center;
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid rgba(49, 155, 224, 0.1);
+}
+
+.mobile-menu-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 4px;
+    background: rgba(49, 155, 224, 0.1);
+    border: 1px solid rgba(49, 155, 224, 0.2);
+    border-radius: 8px;
+    color: #319be0;
+    transition: all 0.2s ease;
+    cursor: pointer;
+    margin-left: auto;
+}
+
+.mobile-menu-close:hover {
+    background: rgba(49, 155, 224, 0.2);
+    transform: scale(1.05);
+}
+
+/* Mobile Menu Navigation */
+.mobile-menu-nav {
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.mobile-menu-link {
+    display: block;
+    padding: 12px 28px; /* Match liquid-glass-button padding */
+    color: #ffffff; /* Match liquid-glass-button white text */
+    text-decoration: none;
+    font-weight: 600; /* Match liquid-glass-button weight */
+    border-radius: 9999px; /* Match liquid-glass-button fully rounded */
+    font-size: 0.95rem; /* Match liquid-glass-button font size */
+    position: relative;
+    background-color: rgba(49, 155, 224, 0.7); /* Match liquid-glass-button blue background */
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.25); /* Match liquid-glass-button border */
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2); /* Match liquid-glass-button shadow */
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); /* Match liquid-glass-button text shadow */
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    overflow: hidden; /* For the ::before element */
+}
+
+/* Add the radial gradient overlay like liquid-glass-button */
+.mobile-menu-link::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0) 60%);
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+}
+
+.mobile-menu-link:hover {
+    background-color: rgba(255, 255, 255, 0.2); /* Match liquid-glass-button hover */
+    box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.25); /* Match liquid-glass-button hover shadow */
+    transform: translateY(-2px); /* Match liquid-glass-button hover transform */
+}
+
+/* Match liquid-glass-button hover ::before opacity */
+.mobile-menu-link:hover::before {
+    opacity: 1;
+}
+
+.mobile-menu-link.active {
+    background-color: rgba(49, 155, 224, 0.9); /* More prominent blue background like desktop */
+    box-shadow: 
+        0 8px 32px 0 rgba(0, 0, 0, 0.2),
+        0 0 20px rgba(49, 155, 224, 0.6); /* Add blue glow */
+}
+
+.mobile-menu-link.active:hover {
+    transform: translateY(-2px);
+    background-color: rgba(255, 255, 255, 0.2);
+    box-shadow: 
+        0 12px 40px 0 rgba(0, 0, 0, 0.25),
+        0 0 25px rgba(49, 155, 224, 0.7); /* Enhanced blue glow on hover */
+}
+
+/* Mobile Menu Responsive */
+@media (max-width: 320px) {
+    .mobile-menu-panel {
+        right: 8px;
+        width: calc(100vw - 16px);
+    }
+}
+
+/* Mobile Menu Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .mobile-menu-overlay,
+    .mobile-menu-panel,
+    .mobile-menu-link {
+        transition: none;
+    }
+}
+
+/* ====================================================================== */
+/* ADVANTAGES SECTION SCROLL ANIMATIONS */
+/* ====================================================================== */
+
+/* Scroll Animation States */
+.advantages-card {
+    opacity: 0;
+    transform: translateY(40px) scale(0.95);
+    transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    will-change: transform, opacity;
+}
+
+.advantages-card.animate-in {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+/* Enhanced icon animations */
+.advantage-icon {
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    will-change: transform;
+}
+
+.advantages-card.animate-in .advantage-icon {
+    animation: iconPulse 1.2s ease-out 0.3s;
+}
+
+/* Backdrop blur progressive enhancement */
+.advantages-card {
+    backdrop-filter: blur(0px);
+    transition: backdrop-filter 0.6s ease-out, all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.advantages-card.animate-in {
+    backdrop-filter: blur(10px);
+}
+
+/* Icon pulse animation */
+@keyframes iconPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Reduced motion compliance */
+@media (prefers-reduced-motion: reduce) {
+    .advantages-card {
+        transition-duration: 0.2s;
+        transform: none;
+        opacity: 1;
+        backdrop-filter: blur(10px);
+    }
+    
+    .advantage-icon {
+        animation: none;
+    }
+}
+
+/* Performance optimizations */
+.advantages-section {
+    contain: layout style paint;
+}
+
+/* ====================================================================== */
+/* PROCESS SECTION INTERACTIVE ENHANCEMENTS */
+/* ====================================================================== */
+
+/* Process container with grid layout for connectors */
+.process-container {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Process step cards with animation states */
+.process-step {
+    position: relative;
+    opacity: 0;
+    transform: translateY(30px) scale(0.95);
+    transition: all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.process-step.animate-in {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+}
+
+/* Enhanced hover effects for process cards */
+.process-step:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 
+        0 20px 40px rgba(49, 155, 224, 0.15),
+        0 10px 20px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(20px);
+}
+
+/* Process step number enhancement */
+.process-step .step-number {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, rgba(49, 155, 224, 0.8), rgba(107, 175, 220, 0.6));
+    backdrop-filter: blur(15px);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: white;
+    margin: 0 auto 1rem auto; /* Center the number horizontally */
+    transition: all 0.3s ease;
+    box-shadow: 
+        0 8px 16px rgba(49, 155, 224, 0.2),
+        inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
+.process-step:hover .step-number {
+    transform: scale(1.1);
+    box-shadow: 
+        0 12px 24px rgba(49, 155, 224, 0.3),
+        inset 0 1px 0 rgba(255, 255, 255, 0.4);
+    background: linear-gradient(135deg, rgba(49, 155, 224, 0.9), rgba(107, 175, 220, 0.7));
+}
+
+/* Progress connector lines */
+.progress-connector {
+    position: absolute;
+    height: 3px;
+    background: linear-gradient(90deg, 
+        rgba(49, 155, 224, 0.3) 0%, 
+        rgba(107, 175, 220, 0.6) 50%, 
+        rgba(49, 155, 224, 0.3) 100%);
+    border-radius: 2px;
+    top: 50%;
+    transform: translateY(-50%);
+    opacity: 0;
+    transition: all 0.8s ease;
+    z-index: 1;
+}
+
+.progress-connector::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, 
+        rgba(49, 155, 224, 0.8), 
+        rgba(107, 175, 220, 0.9));
+    border-radius: 2px;
+    transition: width 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 0 0 8px rgba(49, 155, 224, 0.4);
+}
+
+.progress-connector.animate {
+    opacity: 1;
+}
+
+.progress-connector.animate::before {
+    width: 100%;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .process-container {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .process-step {
+        margin-bottom: 1rem;
+    }
+    
+    .progress-connector {
+        display: none; /* Hide connectors on mobile for better UX */
+    }
+    
+    .process-step:hover {
+        transform: translateY(-4px) scale(1.01);
+    }
+}
+
+/* Desktop connector positioning */
+@media (min-width: 769px) {
+    .process-container {
+        grid-template-columns: repeat(4, 1fr);
+    }
+    
+    .progress-connector:nth-of-type(1) {
+        left: calc(25% - 1rem);
+        width: calc(25% - 2rem);
+    }
+    
+    .progress-connector:nth-of-type(2) {
+        left: calc(50% - 1rem);
+        width: calc(25% - 2rem);
+    }
+    
+    .progress-connector:nth-of-type(3) {
+        left: calc(75% - 1rem);
+        width: calc(25% - 2rem);
+    }
+}
+
+/* Reduced motion compliance */
+@media (prefers-reduced-motion: reduce) {
+    .process-step {
+        transform: none;
+        transition: opacity 0.3s ease;
+        opacity: 1;
+    }
+    
+    .process-step:hover {
+        transform: none;
+    }
+}
+
+/* Animation delay classes for sequential reveal */
+.process-step:nth-child(1) { transition-delay: 0.1s; }
+.process-step:nth-child(2) { transition-delay: 0.2s; }
+.process-step:nth-child(3) { transition-delay: 0.3s; }
+.process-step:nth-child(4) { transition-delay: 0.4s; }
+

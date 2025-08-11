@@ -56,33 +56,58 @@
         
         <!-- Enhanced Mobile Menu Button -->
         <div class="md:hidden flex items-center">
-            <button class="w-12 h-12 p-2 text-slate-700 hover:bg-blue-100/50 hover:backdrop-blur-sm rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
-                <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+            <button id="mobile-menu-button" class="w-12 h-12 p-2 text-slate-700 hover:bg-blue-100/50 hover:backdrop-blur-sm rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" aria-label="Open mobile menu">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
                 </svg>
             </button>
         </div>
     </div>
 </nav>
 
+<!-- Mobile Menu Overlay -->
+<div id="mobile-menu" class="mobile-menu-overlay hidden">
+    <div class="mobile-menu-panel">
+        <div class="mobile-menu-header">
+            <h3 class="text-lg font-semibold text-slate-800">Navigation</h3>
+            <button id="mobile-menu-close" class="mobile-menu-close" aria-label="Close mobile menu">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+        <nav class="mobile-menu-nav">
+            <a href="#home" class="mobile-menu-link">Home</a>
+            <a href="#advantages" class="mobile-menu-link">Advantages</a>
+            <a href="#how-it-works" class="mobile-menu-link">How It Works</a>
+            <a href="#contact" class="mobile-menu-link">Contact</a>
+        </nav>
+    </div>
+</div>
+
+<!-- Scroll Progress Indicator -->
+<div id="scroll-progress" class="scroll-progress-bar"></div>
+
 <!-- ====================================================================== -->
 <!-- HERO SECTION -->
 <!-- ====================================================================== -->
 <main id="main-content" role="main">
-<header class="relative overflow-hidden" style="background-color: #6bafdc;">
+<header id="home" class="relative overflow-hidden" style="background-color: #6bafdc;" data-nav="home">
     <div id="bubble-container-hero" class="absolute inset-0 z-0"></div>
     <div class="relative z-10 container mx-auto px-6 py-20 lg:py-32">
         <div class="flex justify-center">
             <div class="text-center max-w-3xl">
-                <h1 class="text-4xl md:text-5xl lg:text-6xl font-black text-black leading-tight mb-8">
+                <h1 class="hero-title text-4xl md:text-5xl lg:text-6xl font-black text-black leading-tight mb-8">
                     Revolutionize Your Water Treatment
                 </h1>
-                <p class="text-lg text-black mb-10 mx-auto">
-                    Tired of high chemical costs, inconsistent quality, and constant maintenance? HydroCav offers a cutting-edge solution to transform water management for any application.
+                <p class="hero-subtitle text-lg text-black mb-10 mx-auto">
+                    <span class="typewriter-container">
+                        <span class="typewriter-text" id="typewriter-text"></span>
+                        <span class="typewriter-cursor"></span>
+                    </span>
                 </p>
-                <div class="flex flex-col sm:flex-row justify-center items-center space-y-4 sm:space-y-0 sm:space-x-4">
-                    <a href="#advantages" class="liquid-glass-button liquid-glass-button-large">Discover the Advantage</a>
-                    <a href="#contact" class="liquid-glass-button liquid-glass-button-large">Request a Quote</a>
+                <div class="hero-cta flex justify-center">
+                    <a href="#advantages" class="liquid-glass-button liquid-glass-button-large">Discover the HydroCav Advantage</a>
                 </div>
             </div>
         </div>
@@ -108,7 +133,9 @@
                     <p>Introducing the <b>HydroLoop System</b> by HydroCav, a groundbreaking solution engineered to revolutionize water quality management in hotel pools and spas. Utilizing patented <b>hydrodynamic cavitation technology</b>, HydroLoop purifies water at a microscopic level by creating and collapsing tiny bubbles that neutralize contaminants. This innovative process allows you to <b>dramatically reduce chemical usage by up to 75%</b>, significantly cutting your reliance on chlorine and other additives, while ensuring consistently <b>crystal-clear, safe water</b> that exceeds health and safety standards.</p>
                     <p>The HydroLoop delivers substantial <b>cost savings</b> on chemicals and labor, along with <b>lower maintenance and operational expenses</b>, providing a proven <b>return on investment within 12 to 18 months</b>. Beyond cost, it enhances guest satisfaction by <b>eliminating strong, unpleasant odors</b> caused by trichloramine and proactively preventing harmful microorganisms like Legionella, Cryptosporidium, and Pseudomonas. Designed for <b>easy integration and minimal downtime</b>, HydroLoop offers reliable, <b>fail-safe operation</b> against ventilation or mechanical issues, ensuring your facilities remain operational and your guests enjoy a superior, healthier experience.</p>
                 </div>
-                <button class="liquid-glass-button liquid-glass-button-large mt-8">Learn More</button>
+                <div class="text-center">
+                    <button class="liquid-glass-button liquid-glass-button-large mt-8">Learn More</button>
+                </div>
             </div>
             <!-- Image Column -->
             <div class="order-1 lg:order-2">
@@ -129,7 +156,7 @@
 <!-- ====================================================================== -->
 <!-- ADVANTAGES SECTION -->
 <!-- ====================================================================== -->
-<section id="advantages" class="py-20 lg:py-24 relative overflow-hidden bg-white">
+<section id="advantages" class="py-20 lg:py-24 relative overflow-hidden bg-white" data-nav="advantages">
     <div id="bubble-container-advantages" class="absolute inset-0 z-0 opacity-50"></div>
     <div class="container mx-auto px-6 relative z-10">
         <div class="text-center mb-16">
@@ -222,7 +249,7 @@
 <!-- ====================================================================== -->
 <!-- HOW IT WORKS SECTION -->
 <!-- ====================================================================== -->
-<section id="how-it-works" class="py-20 lg:py-24 relative overflow-hidden" style="background-color: #6bafdc;">
+<section id="how-it-works" class="py-20 lg:py-24 relative overflow-hidden" style="background-color: #6bafdc;" data-nav="how-it-works">
     <div id="bubble-container-how" class="absolute inset-0 z-0"></div>
     <div class="container mx-auto px-6 relative z-10">
         <div class="text-center mb-16">
@@ -234,19 +261,16 @@
         <div class="grid md:grid-cols-3 gap-8 md:gap-12 items-start">
             <!-- Step 1 -->
             <div class="liquid-glass-card process-step-card text-center p-8 flex flex-col items-center" style="background-color: rgba(255, 255, 255, 0.15); border-color: rgba(255, 255, 255, 0.2);">
-                <div class="process-step-bubble">1</div>
                 <h3 class="text-xl font-bold text-black mb-3">Intake & Flow</h3>
                 <p class="text-black/80">Water is drawn from your system and directed into the HydroCav unit, with no major changes to your existing plumbing.</p>
             </div>
             <!-- Step 2 -->
             <div class="liquid-glass-card process-step-card text-center p-8 flex flex-col items-center" style="background-color: rgba(255, 255, 255, 0.15); border-color: rgba(255, 255, 255, 0.2);">
-                <div class="process-step-bubble">2</div>
                 <h3 class="text-xl font-bold text-black mb-3">Cavitation Zone</h3>
                 <p class="text-black/80">The water passes through our patented cavitation chamber, where microscopic bubbles form and implode, creating intense energy waves.</p>
             </div>
             <!-- Step 3 -->
             <div class="liquid-glass-card process-step-card text-center p-8 flex flex-col items-center" style="background-color: rgba(255, 255, 255, 0.15); border-color: rgba(255, 255, 255, 0.2);">
-                <div class="process-step-bubble">3</div>
                 <h3 class="text-xl font-bold text-black mb-3">Purified Output</h3>
                 <p class="text-black/80">These energy waves instantly neutralize contaminants and pathogens, returning crystal-clear, safe water to your system.</p>
             </div>
@@ -260,7 +284,7 @@
 <!-- ====================================================================== -->
 <!-- CTA SECTION -->
 <!-- ====================================================================== -->
-<section id="cta" class="relative overflow-hidden" style="background-color: #6bafdc;">
+<section id="contact" class="relative overflow-hidden" style="background-color: #6bafdc;" data-nav="contact">
     <div id="bubble-container-cta" class="absolute inset-0 z-0"></div>
     <div class="relative z-10 max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:py-24 lg:px-8 text-center">
         <h2 class="text-4xl font-extrabold tracking-tight text-black sm:text-5xl lg:text-6xl">
@@ -378,7 +402,7 @@
 <!-- ====================================================================== -->
 <!-- FOOTER -->
 <!-- ====================================================================== -->
-<footer class="bg-slate-800 text-slate-400">
+<footer class="frosted-footer">
     <div class="container mx-auto py-6 px-6 text-center">
         <p>&copy; 2025 HydroCav. All Rights Reserved.</p>
     </div>
