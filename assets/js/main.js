@@ -34,13 +34,13 @@ document.addEventListener('DOMContentLoaded', function () {
             colorClasses = ['bubble-white-on-blue', 'bubble-light-white', 'bubble-neutral'];
         }
 
-        // 5 Speed variations
+        // 5 Speed variations - Gradual steps around original speeds
         const speeds = [
-            { name: 'very-slow', duration: '35s' },
-            { name: 'slow', duration: '28s' },
-            { name: 'medium', duration: '20s' },
-            { name: 'fast', duration: '14s' },
-            { name: 'very-fast', duration: '10s' }
+            { name: 'very-slow', duration: '35s' },    // Slowest
+            { name: 'slow', duration: '25s' },         // Between original slow (30s) and medium (20s)
+            { name: 'medium', duration: '20s' },       // Original medium speed
+            { name: 'fast', duration: '16s' },         // Between medium (20s) and original fast (12s)
+            { name: 'very-fast', duration: '12s' }     // Slower than original fast
         ];
 
         // 3 Different drift patterns for variety

@@ -278,13 +278,13 @@
             }
         }
 
-        /* 5 Speed Variations for More Natural Movement */
+        /* 5 Speed Variations - More Gradual Steps Around Original Speeds */
         .bubble-very-slow {
             animation: lazyFloatWithDrift 35s linear infinite;
         }
 
         .bubble-slow {
-            animation: lazyFloatWithDrift 28s linear infinite;
+            animation: lazyFloatWithDrift 25s linear infinite;
         }
 
         .bubble-medium {
@@ -292,11 +292,11 @@
         }
 
         .bubble-fast {
-            animation: lazyFloatWithDrift 14s linear infinite;
+            animation: lazyFloatWithDrift 16s linear infinite;
         }
 
         .bubble-very-fast {
-            animation: lazyFloatWithDrift 10s linear infinite;
+            animation: lazyFloatWithDrift 12s linear infinite;
         }
 
         /* Legacy animation for backward compatibility */
