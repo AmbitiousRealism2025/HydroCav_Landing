@@ -139,106 +139,89 @@
             line-height: 1.6;
         }
 
-        /* --- Enhanced Navigation Menu Styles - Matching Liquid Glass Buttons --- */
+        /* --- Enhanced Navigation Menu Styles - Minimalist with Red Accent --- */
         .menu-link {
             position: relative;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 12px 28px; /* Match liquid-glass-button padding */
-            border-radius: 9999px; /* Match liquid-glass-button fully rounded */
-            font-size: 0.95rem; /* Match liquid-glass-button font size */
-            font-weight: 600; /* Match liquid-glass-button weight */
+            padding: 12px 28px;
+            border-radius: 9999px;
+            font-size: 0.95rem;
+            font-weight: 600;
             letter-spacing: 0.025em;
-            color: #ffffff; /* Match liquid-glass-button white text */
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5); /* Match liquid-glass-button text shadow */
+            color: #ffffff;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
             text-decoration: none;
             cursor: pointer;
             outline: none;
-            overflow: hidden;
+            overflow: visible; /* Changed to show underline */
             min-height: 44px;
-            background-color: rgba(49, 155, 224, 0.7); /* Match liquid-glass-button blue background */
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.25); /* Match liquid-glass-button border */
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2); /* Match liquid-glass-button shadow */
+            background-color: transparent; /* Transparent background */
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid transparent; /* Invisible border by default */
+            box-shadow: none;
             transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
-        /* Add the radial gradient overlay like liquid-glass-button */
-        .menu-link::before {
+        /* Red underline indicator for active section */
+        .menu-link::after {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0) 60%);
-            opacity: 0.7;
-            transition: opacity 0.3s ease;
+            bottom: -6px;
+            left: 50%;
+            transform: translateX(-50%) scaleX(0);
+            width: 70%;
+            height: 3px;
+            background-color: #DC2626; /* Red from logo */
+            border-radius: 2px;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-origin: center;
         }
 
-        /* Enhanced Hover State - Match Liquid Glass Button Hover */
-        .menu-link:hover {
-            background-color: rgba(255, 255, 255, 0.2); /* Match liquid-glass-button hover */
-            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.25); /* Match liquid-glass-button hover shadow */
-            transform: translateY(-2px); /* Match liquid-glass-button hover transform */
+        /* Show red underline when active */
+        .menu-link.active::after {
+            transform: translateX(-50%) scaleX(1);
         }
 
-        /* Match liquid-glass-button hover ::before opacity */
-        .menu-link:hover::before {
-            opacity: 1;
+        /* Black border on hover - desktop only */
+        @media (min-width: 768px) {
+            .menu-link:hover {
+                border-color: #000000;
+                background-color: rgba(255, 255, 255, 0.1);
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            }
+            
+            /* Active + Hover Combined State */
+            .menu-link.active:hover {
+                border-color: #000000;
+                background-color: rgba(255, 255, 255, 0.1);
+                transform: translateY(-1px);
+            }
         }
 
-        /* Enhanced Active State for Scroll-Spy - Enhanced Blue Glow */
+        /* Remove old animation and glow effects */
         .menu-link.active {
-            background-color: rgba(49, 155, 224, 0.9); /* More prominent blue background */
-            box-shadow: 
-                0 8px 32px 0 rgba(0, 0, 0, 0.2),
-                0 0 20px rgba(49, 155, 224, 0.6); /* Add blue glow */
-            animation: subtle-glow 3s ease-in-out infinite alternate;
+            background-color: transparent;
+            box-shadow: none;
+            animation: none;
         }
 
-        /* Active + Hover Combined State */
-        .menu-link.active:hover {
-            transform: translateY(-2px);
-            background-color: rgba(255, 255, 255, 0.2);
-            box-shadow: 
-                0 12px 40px 0 rgba(0, 0, 0, 0.25),
-                0 0 25px rgba(49, 155, 224, 0.7); /* Enhanced blue glow on hover */
-        }
-
-        /* Subtle glow animation for active state */
-        @keyframes subtle-glow {
-            0% {
-                box-shadow: 
-                    0 8px 24px rgba(49, 155, 224, 0.3),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.25),
-                    0 0 20px rgba(49, 155, 224, 0.2);
-            }
-            100% {
-                box-shadow: 
-                    0 8px 24px rgba(49, 155, 224, 0.4),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.3),
-                    0 0 25px rgba(49, 155, 224, 0.25);
-            }
-        }
 
         /* Focus state for accessibility */
         .menu-link:focus-visible {
-            outline: 2px solid rgba(49, 155, 224, 0.8);
+            outline: 2px solid #DC2626;
             outline-offset: 2px;
-            box-shadow: 
-                0 8px 24px rgba(0, 0, 0, 0.15),
-                inset 0 1px 0 rgba(255, 255, 255, 0.2),
-                0 0 0 4px rgba(49, 155, 224, 0.3);
         }
 
-        /* Active/pressed state - Match liquid-glass-button */
-        .menu-link:active {
-            transform: translateY(1px) scale(0.98); /* Match liquid-glass-button active transform */
-            box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.2); /* Match liquid-glass-button active shadow */
-            background-color: rgba(255, 255, 255, 0.05); /* Match liquid-glass-button active background */
+        /* Active/pressed state */
+        @media (min-width: 768px) {
+            .menu-link:active {
+                transform: translateY(0) scale(0.98);
+                background-color: rgba(255, 255, 255, 0.05);
+            }
         }
 
         /* --- Enhanced Logo Scaling for Maximum Impact --- */
@@ -313,28 +296,39 @@
             }
         }
 
-        /* Mobile menu enhancements - Liquid Glass Responsive */
+        /* Mobile menu enhancements - Keep original liquid glass style */
         @media (max-width: 767px) {
             .menu-link {
                 padding: 10px 20px;
                 font-size: 0.95rem;
                 min-height: 44px;
-                backdrop-filter: blur(8px); /* Reduced for mobile performance */
+                background-color: rgba(49, 155, 224, 0.7); /* Restore liquid glass background */
+                backdrop-filter: blur(8px);
                 -webkit-backdrop-filter: blur(8px);
-                box-shadow: 
-                    0 2px 12px rgba(0, 0, 0, 0.08),
-                    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+                border: 1px solid rgba(255, 255, 255, 0.25); /* Restore visible border */
+                box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.2);
+            }
+            
+            /* Hide the red underline on mobile */
+            .menu-link::after {
+                display: none;
             }
             
             .menu-link:hover {
+                border-color: rgba(255, 255, 255, 0.25); /* Keep original border */
                 transform: translateY(-1px) scale(1.01);
+                background-color: rgba(255, 255, 255, 0.2);
                 backdrop-filter: blur(10px);
                 -webkit-backdrop-filter: blur(10px);
             }
             
             .menu-link.active {
+                background-color: rgba(49, 155, 224, 0.9); /* Restore active blue */
                 backdrop-filter: blur(12px);
                 -webkit-backdrop-filter: blur(12px);
+                box-shadow: 
+                    0 8px 32px 0 rgba(0, 0, 0, 0.2),
+                    0 0 20px rgba(49, 155, 224, 0.6);
             }
         }
 
@@ -376,20 +370,21 @@
                 inset 0 -1px 0 rgba(49, 155, 224, 0.35) !important;  /* Intense bottom blue accent line */
         }
 
-        /* Enhanced nav link interactions within frosted glass */
-        nav.frosted-nav .menu-link {
-            /* Preserve existing liquid glass button styling but enhance for frosted context */
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+        /* Enhanced nav link interactions within frosted glass - Desktop only */
+        @media (min-width: 768px) {
+            nav.frosted-nav .menu-link {
+                /* Preserve minimalist styling in frosted context */
+                transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            }
 
-        nav.frosted-nav .menu-link:hover {
-            /* Enhanced hover state with frosted glass harmony */
-            background: rgba(255, 255, 255, 0.15) !important;
-            backdrop-filter: blur(10px) !important;
-            -webkit-backdrop-filter: blur(10px) !important;
-            box-shadow: 
-                0 2px 16px rgba(49, 155, 224, 0.12),
-                inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+            nav.frosted-nav .menu-link:hover {
+                /* Black border on hover for frosted nav too */
+                border-color: #000000 !important;
+                background: rgba(255, 255, 255, 0.1) !important;
+                backdrop-filter: blur(10px) !important;
+                -webkit-backdrop-filter: blur(10px) !important;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15) !important;
+            }
         }
 
         /* Responsive frosted glass adjustments */
@@ -788,6 +783,38 @@ footer.frosted-footer p {
             blur(6px)
             saturate(1.15)
             brightness(1.05);
+    }
+}
+
+/* ====================================================================== */
+/* FOOTER LOGO STYLING */
+/* ====================================================================== */
+
+/* Footer logo with responsive sizing */
+.footer-logo {
+    height: 36px; /* Increased mobile base size */
+    width: auto;
+    opacity: 0.9;
+    filter: brightness(1.1) contrast(1.1) drop-shadow(0 1px 2px rgba(0, 0, 0, 0.1)); /* Enhance visibility on light glass background */
+    transition: opacity 0.3s ease, filter 0.3s ease;
+}
+
+.footer-logo:hover {
+    opacity: 1;
+    filter: brightness(1.2) contrast(1.15) drop-shadow(0 1px 3px rgba(0, 0, 0, 0.15));
+}
+
+/* Tablet breakpoint (768px+) */
+@media (min-width: 768px) {
+    .footer-logo {
+        height: 42px; /* Increased tablet size */
+    }
+}
+
+/* Desktop breakpoint (1024px+) */
+@media (min-width: 1024px) {
+    .footer-logo {
+        height: 48px; /* Increased desktop size */
     }
 }
 

@@ -33,21 +33,15 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Get all bubble containers
+    // Get bubble containers for sections that still have bubbles
     const heroBubbleContainer = document.getElementById('bubble-container-hero');
     const advantagesBubbleContainer = document.getElementById('bubble-container-advantages');
-    const howBubbleContainer = document.getElementById('bubble-container-how');
-    const showcaseBubbleContainer = document.getElementById('bubble-container-showcase');
     const ctaBubbleContainer = document.getElementById('bubble-container-cta');
-    const contactBubbleContainer = document.getElementById('bubble-container-contact');
 
-    // Create bubbles for each section with appropriate colors
-    createBubbles(heroBubbleContainer, 30, 'white-bubble');
-    createBubbles(advantagesBubbleContainer, 30, 'blue-bubble');
-    createBubbles(howBubbleContainer, 30, 'white-bubble');
-    createBubbles(showcaseBubbleContainer, 15, 'white-bubble');
-    createBubbles(ctaBubbleContainer, 30, 'white-bubble');
-    createBubbles(contactBubbleContainer, 30, 'blue-bubble');
+    // Create bubbles for sections that still need them (reduced by 50%)
+    createBubbles(heroBubbleContainer, 15, 'white-bubble');
+    createBubbles(advantagesBubbleContainer, 15, 'blue-bubble');
+    createBubbles(ctaBubbleContainer, 15, 'white-bubble');
     
     // Initialize enhanced navigation
     initializeEnhancedNavigation();
@@ -112,7 +106,6 @@ class ScrollSpy {
         }
         
         this.setupIntersectionObserver();
-        this.setupSmoothScrolling();
     }
     
     setupIntersectionObserver() {
@@ -132,39 +125,6 @@ class ScrollSpy {
         
         this.sections.forEach(section => {
             this.observer.observe(section);
-        });
-    }
-    
-    setupSmoothScrolling() {
-        this.navLinks.forEach(link => {
-            if (!link) return;
-            
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                const href = link.getAttribute('href');
-                
-                // Handle different href formats
-                let targetId;
-                if (href.startsWith('#')) {
-                    targetId = href.substring(1);
-                } else if (href.includes('#')) {
-                    targetId = href.split('#')[1];
-                } else {
-                    return; // No anchor found
-                }
-                
-                const targetSection = document.getElementById(targetId);
-                
-                if (targetSection) {
-                    const headerHeight = 80; // Account for fixed header
-                    const targetPosition = targetSection.offsetTop - headerHeight;
-                    
-                    window.scrollTo({
-                        top: targetPosition,
-                        behavior: 'smooth'
-                    });
-                }
-            });
         });
     }
     
@@ -192,6 +152,56 @@ class ScrollSpy {
 }
 
 /**
+ * Enhanced smooth scrolling for all anchor links
+ * Ensures contact section is fully visible with proper offset
+ */
+function initializeSmoothScrollForAllLinks() {
+    // Select all anchor links that point to sections (including CTA buttons)
+    const anchorLinks = document.querySelectorAll('a[href^="#"]:not([href="#"])');
+    
+    anchorLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const targetId = link.getAttribute('href').substring(1);
+            const targetSection = document.getElementById(targetId);
+            
+            if (targetSection) {
+                // Calculate proper offset for contact section vs other sections
+                let headerOffset = 80; // Standard offset for fixed header
+                
+                // For contact section, ensure it's fully visible from the top
+                if (targetId === 'contact') {
+                    // Calculate to show the entire contact section in viewport
+                    const viewportHeight = window.innerHeight;
+                    const sectionHeight = targetSection.offsetHeight;
+                    
+                    // If section is taller than viewport, position at top with header offset
+                    // If section fits in viewport, position to show entire section with nice spacing
+                    if (sectionHeight < viewportHeight - 160) {
+                        // Add some breathing room - position section nicely in viewport
+                        headerOffset = Math.max(100, (viewportHeight - sectionHeight) / 6);
+                    } else {
+                        // For larger sections, just use standard header offset
+                        headerOffset = 80;
+                    }
+                }
+                
+                const targetPosition = targetSection.offsetTop - headerOffset;
+                
+                window.scrollTo({
+                    top: Math.max(0, targetPosition), // Ensure we don't scroll above page top
+                    behavior: 'smooth'
+                });
+                
+                console.log(`📍 Scrolling to ${targetId} with offset ${headerOffset}px`);
+            }
+        });
+    });
+    
+    console.log(`✅ Enhanced smooth scrolling initialized for ${anchorLinks.length} anchor links`);
+}
+
+/**
  * Enhanced Navigation Controller
  * Manages all navigation enhancements
  */
@@ -199,6 +209,9 @@ function initializeEnhancedNavigation() {
     try {
         // Initialize scroll spy
         const scrollSpy = new ScrollSpy();
+        
+        // Initialize smooth scrolling for all anchor links
+        initializeSmoothScrollForAllLinks();
         
         // Set up scroll progress indicator
         updateScrollProgress();
