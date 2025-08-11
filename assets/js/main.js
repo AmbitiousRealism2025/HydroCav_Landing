@@ -11,7 +11,57 @@ if ('scrollRestoration' in history) {
 document.addEventListener('DOMContentLoaded', function () {
     // Force scroll to top when DOM loads
     window.scrollTo(0, 0);
-    // Centralized function to create bubbles
+    // Enhanced 3D bubble creation system with weighted distribution
+    function create3DBubbles(container, count = 15) {
+        if (!container) return;
+
+        // Bubble type configurations with weights
+        const bubbleTypes = [
+            { size: 'xl', colorClass: 'bubble-primary', speedClass: 'bubble-slow', weight: 0.1 },
+            { size: 'lg', colorClass: 'bubble-secondary', speedClass: 'bubble-medium', weight: 0.2 },
+            { size: 'md', colorClass: 'bubble-primary', speedClass: 'bubble-medium', weight: 0.3 },
+            { size: 'sm', colorClass: 'bubble-neutral', speedClass: 'bubble-fast', weight: 0.25 },
+            { size: 'xs', colorClass: 'bubble-secondary', speedClass: 'bubble-fast', weight: 0.15 }
+        ];
+
+        // Helper function for weighted random selection
+        function getWeightedRandomType() {
+            const random = Math.random();
+            let cumulativeWeight = 0;
+            
+            for (const type of bubbleTypes) {
+                cumulativeWeight += type.weight;
+                if (random <= cumulativeWeight) {
+                    return type;
+                }
+            }
+            return bubbleTypes[bubbleTypes.length - 1]; // Fallback
+        }
+
+        for (let i = 0; i < count; i++) {
+            const bubble = document.createElement('div');
+            const bubbleType = getWeightedRandomType();
+            
+            // Apply bubble classes for 3D effect
+            bubble.classList.add(
+                'bubble', 
+                'bubble-3d',
+                `bubble-${bubbleType.size}`,
+                bubbleType.colorClass,
+                bubbleType.speedClass
+            );
+
+            // Position bubbles with better distribution
+            bubble.style.left = `${Math.random() * 100}%`;
+            
+            // Add varied animation delays for organic feel
+            bubble.style.animationDelay = `${Math.random() * 12}s`;
+
+            container.appendChild(bubble);
+        }
+    }
+
+    // Legacy bubble creation function for backward compatibility
     function createBubbles(container, count, bubbleClass) {
         if (!container) return;
 
@@ -38,8 +88,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const advantagesBubbleContainer = document.getElementById('bubble-container-advantages');
     const ctaBubbleContainer = document.getElementById('bubble-container-cta');
 
-    // Create bubbles for sections that still need them (reduced by 50%)
-    createBubbles(heroBubbleContainer, 15, 'white-bubble');
+    // Create enhanced 3D bubbles for Hero section (Phase 1 - Hero only)
+    create3DBubbles(heroBubbleContainer, 15);
+    
+    // Keep legacy bubbles for other sections until Phase 3
     createBubbles(advantagesBubbleContainer, 15, 'blue-bubble');
     createBubbles(ctaBubbleContainer, 15, 'white-bubble');
     
