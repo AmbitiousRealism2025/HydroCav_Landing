@@ -3,6 +3,7 @@
   "version": "2.1.0",
   "description": "A premium, professional website showcasing HydroCav's advanced water treatment technology with sophisticated liquid glass design elements and modern user experience.",
   "main": "index.html",
+  "type": "module",
   "scripts": {
     "start": "npx serve .",
     "dev": "npx serve .",
@@ -20,7 +21,9 @@
   "author": "HydroCav",
   "license": "MIT",
   "devDependencies": {
+    "@babel/preset-env": "^7.24.7",
     "@types/jest": "^30.0.0",
+    "babel-jest": "^29.7.0",
     "jest": "^30.0.5",
     "jest-environment-jsdom": "^30.0.5",
     "jsdom": "^26.1.0",
