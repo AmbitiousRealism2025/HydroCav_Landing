@@ -201,7 +201,6 @@ class SecureConfig {
 // Export singleton instance
 const secureConfig = new SecureConfig();
 
-// Freeze to prevent tampering
-Object.freeze(secureConfig);
+// Object.freeze(secureConfig); // Temporarily disabled for debugging
 
 export default secureConfig;

@@ -8,138 +8,130 @@ if ('scrollRestoration' in history) {
     history.scrollRestoration = 'manual';
 }
 
+// Bubble animation timing configuration
+const BUBBLE_ANIMATION_CONFIG = {
+    maxDelay: 6,  // seconds (reduced from 10 for better UX)
+    distribution: 2  // exponential curve for natural staggering
+};
+
+const speedOptions = [
+    { name: 'slow', min: 40, max: 60, weight: 0.25 },
+    { name: 'medium', min: 20, max: 40, weight: 0.60 },
+    { name: 'fast', min: 15, max: 30, weight: 0.15 }
+];
+
+function getWeightedRandomSpeed() {
+    const random = Math.random();
+    let cumulativeWeight = 0;
+    
+    let selectedSpeedCategory;
+    for (const speed of speedOptions) {
+        cumulativeWeight += speed.weight;
+        if (random <= cumulativeWeight) {
+            selectedSpeedCategory = speed;
+            break;
+        }
+    }
+    if (!selectedSpeedCategory) {
+        selectedSpeedCategory = speedOptions[0]; // Fallback
+    }
+
+    const duration = Math.random() * (selectedSpeedCategory.max - selectedSpeedCategory.min) + selectedSpeedCategory.min;
+    return { duration: `${duration.toFixed(2)}s` };
+}
+
+function createSingleBubble(container, backgroundType = 'blue', startHidden = false) {
+    if (!container) return;
+
+    // Bubble size configurations with weights
+    const bubbleSizes = [
+        { size: 'lg', weight: 0.33 },
+        { size: 'md', weight: 0.34 },
+        { size: 'sm', weight: 0.33 },
+    ];
+
+    // Color variants based on background type
+    let colorClasses;
+    if (backgroundType === 'white') {
+        // Blue bubbles for white backgrounds (Advantages section)
+        colorClasses = ['bubble-blue-on-white', 'bubble-secondary-blue', 'bubble-neutral'];
+    } else {
+        // White bubbles for blue backgrounds (Hero, Contact, etc.)
+        colorClasses = ['bubble-white-on-blue', 'bubble-light-white', 'bubble-neutral'];
+    }
+
+    // 3 Different drift patterns for variety
+    const driftPatterns = [
+        'lazyFloatWithDrift',
+        'lazyFloatWithDrift2', 
+        'lazyFloatWithDrift3'
+    ];
+
+    // Helper function for weighted random size selection
+    function getWeightedRandomSize() {
+        const random = Math.random();
+        let cumulativeWeight = 0;
+        
+        for (const sizeConfig of bubbleSizes) {
+            cumulativeWeight += sizeConfig.weight;
+            if (random <= cumulativeWeight) {
+                return sizeConfig.size;
+            }
+        }
+        return bubbleSizes[bubbleSizes.length - 1].size; // Fallback
+    }
+
+    const bubble = document.createElement('div');
+    
+    // Random size selection
+    const bubbleSize = getWeightedRandomSize();
+    
+    // Random selections
+    const randomColor = colorClasses[Math.floor(Math.random() * colorClasses.length)];
+    const randomSpeed = getWeightedRandomSpeed(); // Use weighted selection
+    const randomDrift = driftPatterns[Math.floor(Math.random() * driftPatterns.length)];
+    
+    // Apply bubble classes for 3D effect
+    bubble.classList.add(
+        'bubble', 
+        'bubble-3d',
+        `bubble-${bubbleSize}`,
+        randomColor
+    );
+    
+    // Add visibility class based on startHidden parameter
+    if (startHidden) {
+        bubble.classList.add('bubbles-hidden');
+    } else {
+        // Ensure non-hero bubbles are visible
+        bubble.classList.add('bubbles-visible');
+    }
+
+    // Apply random drift pattern and speed
+    bubble.style.animation = `${randomDrift} ${randomSpeed.duration} linear infinite`;
+
+    // Random position across the width
+    bubble.style.left = `${Math.random() * 100}%`;
+    
+    // Exponential distribution delay - most bubbles start early, fewer delayed
+    const exponentialDelay = Math.pow(Math.random(), BUBBLE_ANIMATION_CONFIG.distribution) * BUBBLE_ANIMATION_CONFIG.maxDelay;
+    bubble.style.animationDelay = `${exponentialDelay.toFixed(2)}s`;
+
+    container.appendChild(bubble);
+}
+
+function create3DBubbles(container, count = 18, backgroundType = 'blue', startHidden = false) {
+    if (!container) return;
+
+    for (let i = 0; i < count; i++) {
+        createSingleBubble(container, backgroundType, startHidden);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     // Force scroll to top when DOM loads
     window.scrollTo(0, 0);
-    // Enhanced 3D bubble creation system with background-specific colors
-    function create3DBubbles(container, count = 18, backgroundType = 'blue', startHidden = false) {
-        if (!container) return;
-
-        // Bubble size configurations with weights
-        const bubbleSizes = [
-            { size: 'xl', weight: 0.1 },
-            { size: 'lg', weight: 0.2 },
-            { size: 'md', weight: 0.3 },
-            { size: 'sm', weight: 0.25 },
-            { size: 'xs', weight: 0.15 }
-        ];
-
-        // Color variants based on background type
-        let colorClasses;
-        if (backgroundType === 'white') {
-            // Blue bubbles for white backgrounds (Advantages section)
-            colorClasses = ['bubble-blue-on-white', 'bubble-secondary-blue', 'bubble-neutral'];
-        } else {
-            // White bubbles for blue backgrounds (Hero, Contact, etc.)
-            colorClasses = ['bubble-white-on-blue', 'bubble-light-white', 'bubble-neutral'];
-        }
-
-        // Speed variations with weighted distribution for more slow bubbles
-        const speedOptions = [
-            { name: 'very-slow', duration: '60s', weight: 0.35 },  // 35% - most common
-            { name: 'slow', duration: '50s', weight: 0.30 },       // 30% - common
-            { name: 'medium', duration: '40s', weight: 0.20 },     // 20% - moderate
-            { name: 'fast', duration: '32s', weight: 0.10 },       // 10% - occasional
-            { name: 'very-fast', duration: '25s', weight: 0.05 }   // 5% - rare
-        ];
-        
-        // Helper function for weighted speed selection
-        function getWeightedRandomSpeed() {
-            const random = Math.random();
-            let cumulativeWeight = 0;
-            
-            for (const speed of speedOptions) {
-                cumulativeWeight += speed.weight;
-                if (random <= cumulativeWeight) {
-                    return speed;
-                }
-            }
-            return speedOptions[0]; // Fallback to slowest
-        }
-
-        // 3 Different drift patterns for variety
-        const driftPatterns = [
-            'lazyFloatWithDrift',
-            'lazyFloatWithDrift2', 
-            'lazyFloatWithDrift3'
-        ];
-
-        // Helper function for weighted random size selection
-        function getWeightedRandomSize() {
-            const random = Math.random();
-            let cumulativeWeight = 0;
-            
-            for (const sizeConfig of bubbleSizes) {
-                cumulativeWeight += sizeConfig.weight;
-                if (random <= cumulativeWeight) {
-                    return sizeConfig.size;
-                }
-            }
-            return bubbleSizes[bubbleSizes.length - 1].size; // Fallback
-        }
-
-        for (let i = 0; i < count; i++) {
-            const bubble = document.createElement('div');
-            
-            // Random size selection
-            const bubbleSize = getWeightedRandomSize();
-            
-            // Random selections
-            const randomColor = colorClasses[Math.floor(Math.random() * colorClasses.length)];
-            const randomSpeed = getWeightedRandomSpeed(); // Use weighted selection
-            const randomDrift = driftPatterns[Math.floor(Math.random() * driftPatterns.length)];
-            
-            // Apply bubble classes for 3D effect
-            bubble.classList.add(
-                'bubble', 
-                'bubble-3d',
-                `bubble-${bubbleSize}`,
-                randomColor
-            );
-            
-            // Add visibility class based on startHidden parameter
-            if (startHidden) {
-                bubble.classList.add('bubbles-hidden');
-            } else {
-                // Ensure non-hero bubbles are visible
-                bubble.classList.add('bubbles-visible');
-            }
-
-            // Apply random drift pattern and speed
-            bubble.style.animation = `${randomDrift} ${randomSpeed.duration} linear infinite`;
-
-            // Random position across the width
-            bubble.style.left = `${Math.random() * 100}%`;
-            
-            // Reduced animation delay to ensure bubbles appear quickly
-            bubble.style.animationDelay = `${Math.random() * 5}s`;
-
-            container.appendChild(bubble);
-        }
-    }
-
-    // Legacy bubble creation function for backward compatibility
-    function createBubbles(container, count, bubbleClass) {
-        if (!container) return;
-
-        for (let i = 0; i < count; i++) {
-            const bubble = document.createElement('div');
-            bubble.classList.add('bubble', bubbleClass);
-
-            const size = Math.random() * 60 + 10;
-            bubble.style.width = `${size}px`;
-            bubble.style.height = `${size}px`;
-            bubble.style.left = `${Math.random() * 100}%`;
-
-            // Make animation durations more varied
-            const duration = Math.random() * 20 + 15; // Slower, more ambient bubbles
-            bubble.style.animationDuration = `${duration}s`;
-            bubble.style.animationDelay = `${Math.random() * 10}s`;
-
-            container.appendChild(bubble);
-        }
-    }
-
+    
     // Get bubble containers for sections that still have bubbles
     const heroBubbleContainer = document.getElementById('bubble-container-hero');
     const advantagesBubbleContainer = document.getElementById('bubble-container-advantages');
@@ -148,10 +140,15 @@ document.addEventListener('DOMContentLoaded', function () {
     // Create enhanced 3D bubbles for all sections with appropriate colors
     console.log('Creating bubbles...');
     
-    // Hero section - white bubbles on blue background (start hidden)
+    // Hero section - white bubbles on blue background
     console.log('Hero container:', heroBubbleContainer);
-    create3DBubbles(heroBubbleContainer, 30, 'blue', true); // Increased to 30 bubbles, start hidden
+    create3DBubbles(heroBubbleContainer, 25, 'blue', false); // Start with 25 bubbles
     console.log('Hero bubbles created:', heroBubbleContainer?.children.length);
+
+    // Manage bubble count for hero section (temporarily disabled)
+    // setInterval(() => {
+    //     manageBubbleCount(heroBubbleContainer, 5, 15);
+    // }, 2000); // Check every 2 seconds
     
     // Store hero bubble container globally for typewriter callback
     window.heroBubbleContainer = heroBubbleContainer;
@@ -510,24 +507,10 @@ function initializeTypewriter() {
             cursor: cursor,
             onHalfway: () => {
                 console.log('Hero typewriter reached halfway point');
-                
-                // Trigger hero bubble animations at halfway point
-                if (window.heroBubbleContainer) {
-                    const heroBubbles = window.heroBubbleContainer.querySelectorAll('.bubble');
-                    
-                    // Reveal bubbles with staggered effect
-                    heroBubbles.forEach((bubble, index) => {
-                        setTimeout(() => {
-                            bubble.classList.remove('bubbles-hidden');
-                            bubble.classList.add('bubbles-visible');
-                        }, index * 30); // 30ms stagger for smoother reveal with more bubbles
-                    });
-                    
-                    console.log('✨ Hero bubbles animation triggered at halfway point');
-                }
             },
             onComplete: () => {
                 console.log('Hero typewriter animation completed');
+                // Bubble animation is now decoupled from the typewriter
             }
         });
         
