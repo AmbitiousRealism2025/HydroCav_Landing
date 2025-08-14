@@ -13,16 +13,38 @@
     <!-- Supabase JavaScript Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
-    <script>
-        // Supabase configuration (safe to expose anon key)
-        const SUPABASE_URL = 'https://icfombdnbaeckgivfkdw.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImljZm9tYmRuYmFlY2tnaXZma2R3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ4MzA1MjIsImV4cCI6MjA3MDQwNjUyMn0.6E7SSsyQpmkpyiHQLLMzKSXL9S8bHMY4THeW_iiSFlw';
+    <!-- Security Configuration -->
+    <!-- These meta tags are injected during build/deployment -->
+    <meta name="config:supabase_url" content="https://icfombdnbaeckgivfkdw.supabase.co">
+    <meta name="config:supabase_anon_key" content="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImljZm9tYmRuYmFlY2tnaXZma2R3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ4MzA1MjIsImV4cCI6MjA3MDQwNjUyMn0.6E7SSsyQpmkpyiHQLLMzKSXL9S8bHMY4THeW_iiSFlw">
+    <meta name="config:enable_csrf" content="true">
+    <meta name="config:enable_xss_protection" content="true">
+    <meta name="config:enable_rate_limiting" content="true">
+    
+    <!-- Load DOMPurify for XSS Protection -->
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js" 
+            integrity="sha384-JjYlFe/KF9WlDQqEdjqC5vDMtGYL5SxROTYQdoyEWKP5n7z3SThzJ3I6lQj2XQQY" 
+            crossorigin="anonymous"></script>
+    
+    <!-- Load Security Modules -->
+    <script type="module">
+        import security from './assets/js/security.js';
         
-        // Initialize Supabase client
-        let supabaseClient;
-        if (typeof window.supabase !== 'undefined') {
-            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        }
+        // Initialize security and make it globally available
+        window.security = security;
+        
+        // Initialize security features when DOM is ready
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                await security.initialize();
+                console.log('Security features initialized');
+                
+                // Get secure Supabase client
+                window.supabaseClient = security.getSupabaseClient();
+            } catch (error) {
+                console.error('Failed to initialize security:', error);
+            }
+        });
     </script>
 </head>
 <body id="top">
@@ -668,7 +690,7 @@ function showStatusMessage(message, type) {
     }
 }
 
-// Contact form submission handler
+// Contact form submission handler - Now with security features
 async function handleContactSubmission(event) {
     event.preventDefault();
     
@@ -682,53 +704,59 @@ async function handleContactSubmission(event) {
         return;
     }
     
-    // Check if Supabase is initialized
-    if (!supabaseClient) {
+    // Check if security is initialized
+    if (!window.security || !window.security.initialized) {
         isFormSubmitting = false; // Reset flag
-        showStatusMessage('Unable to connect to the server. Please try again later.', 'error');
-        toastManager.show('Connection error. Please check your internet connection.', 'error');
+        showStatusMessage('Security features are loading. Please try again in a moment.', 'error');
         return;
     }
     
-    // Get form element and data
     const form = event.target;
-    const formData = new FormData(form);
-    
-    // Extract form values
-    const submission = {
-        name: formData.get('name')?.trim(),
-        email: formData.get('email')?.trim().toLowerCase(),
-        company: formData.get('company')?.trim() || null,
-        message: formData.get('message')?.trim(),
-        user_agent: navigator.userAgent
-    };
     
     try {
         // Show loading state
         showLoadingState(true);
         
-        // Submit to Supabase
-        const { data, error } = await supabaseClient
-            .from('contact_submissions')
-            .insert([submission])
-            .select('id');
-        
-        if (error) {
-            console.error('Submission error:', error);
+        // Use secure form submission
+        const result = await window.security.submitForm(form, async (sanitizedData) => {
+            // Custom handler for the sanitized data
+            const submission = {
+                name: sanitizedData.name,
+                email: sanitizedData.email,
+                company: sanitizedData.company || null,
+                message: sanitizedData.message,
+                user_agent: navigator.userAgent.substring(0, 255), // Limit length
+                submitted_at: new Date().toISOString()
+            };
             
-            // Handle specific error types
-            if (error.message.includes('rate_limit') || error.message.includes('check_submission_rate_limit')) {
-                showStatusMessage('Please wait a few minutes before submitting another message.', 'error');
-            } else if (error.message.includes('check constraint')) {
-                showStatusMessage('Please check your input and try again.', 'error');
-            } else {
-                showStatusMessage('There was an error submitting your message. Please try again.', 'error');
+            // Get secure Supabase client
+            const supabaseClient = window.security.getSupabaseClient();
+            
+            // Submit to Supabase
+            const { data, error } = await supabaseClient
+                .from('contact_submissions')
+                .insert([submission])
+                .select('id');
+            
+            if (error) {
+                console.error('Submission error:', error);
+                
+                // Handle specific error types
+                if (error.message.includes('rate_limit') || error.message.includes('check_submission_rate_limit')) {
+                    throw new Error('Please wait a few minutes before submitting another message.');
+                } else if (error.message.includes('check constraint')) {
+                    throw new Error('Please check your input and try again.');
+                } else {
+                    throw new Error('There was an error submitting your message. Please try again.');
+                }
             }
-            return;
-        }
+            
+            return data;
+        });
         
         // Success!
         showStatusMessage('Thank you for your message! We\'ll be in touch soon.', 'success');
+        toastManager.show('Message sent successfully!', 'success');
         
         // Show success animation
         const submitButton = document.getElementById('submit-button');
@@ -743,6 +771,10 @@ async function handleContactSubmission(event) {
             document.querySelectorAll('.char-counter').forEach(counter => {
                 counter.textContent = counter.textContent.replace(/\d+/, '0');
             });
+            // Regenerate CSRF token for next submission
+            if (window.security && window.security.initialized) {
+                window.csrfProtection?.refreshToken();
+            }
             submitButton.innerHTML = originalContent;
             submitButton.style.backgroundColor = 'rgba(49, 155, 224, 0.8)';
         }, 2000);
@@ -751,11 +783,15 @@ async function handleContactSubmission(event) {
         document.getElementById('name').focus();
         
         // Optional: Track successful submission
-        console.log('Contact submission successful:', data[0]?.id);
+        console.log('Contact submission successful with security features');
         
     } catch (error) {
-        console.error('Unexpected error:', error);
-        showStatusMessage('An unexpected error occurred. Please try again or contact us directly.', 'error');
+        console.error('Submission error:', error);
+        
+        // Show user-friendly error message
+        const errorMessage = error.message || 'An unexpected error occurred. Please try again.';
+        showStatusMessage(errorMessage, 'error');
+        toastManager.show(errorMessage, 'error');
         
     } finally {
         showLoadingState(false);

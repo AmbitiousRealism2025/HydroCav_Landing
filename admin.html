@@ -7,6 +7,12 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
+    <!-- Security Modules - Load in correct order -->
+    <script src="assets/js/secure-config.js"></script>
+    <script src="assets/js/xss-protection.js"></script>
+    <script src="assets/js/csrf-protection.js"></script>
+    <script src="assets/js/security.js"></script>
+    
     <style>
         /* Liquid Glass Design System */
         .liquid-glass-card {
@@ -280,12 +286,32 @@
 
         // Check authentication on page load
         window.addEventListener('DOMContentLoaded', async function() {
+            // Initialize security logging
+            window.SecurityManager?.logSecurityEvent('admin_dashboard_loaded', {
+                timestamp: new Date().toISOString(),
+                userAgent: navigator.userAgent,
+                url: window.location.href
+            });
+
             const { data: { user } } = await supabaseClient.auth.getUser();
             currentUser = user;
             
             if (!currentUser) {
+                // Log unauthenticated access attempt
+                window.SecurityManager?.logSecurityEvent('unauthenticated_access', {
+                    page: 'admin_dashboard',
+                    timestamp: new Date().toISOString(),
+                    userAgent: navigator.userAgent
+                });
                 showLoginModal();
             } else {
+                // Log authenticated access
+                window.SecurityManager?.logSecurityEvent('authenticated_access', {
+                    userId: user.id,
+                    email: user.email,
+                    page: 'admin_dashboard',
+                    timestamp: new Date().toISOString()
+                });
                 initializeDashboard();
             }
             
@@ -322,21 +348,65 @@
 
         async function handleLogin(email, password) {
             try {
+                // Security Step 1: CSRF Token Validation
+                if (!window.CSRFProtection || !window.CSRFProtection.validateToken()) {
+                    console.warn('CSRF validation failed during admin login');
+                    window.SecurityManager?.logSecurityEvent('csrf_validation_failed', {
+                        action: 'admin_login',
+                        timestamp: new Date().toISOString(),
+                        userAgent: navigator.userAgent
+                    });
+                    showAuthError('Security validation failed. Please refresh the page and try again.');
+                    return false;
+                }
+
+                // Security Step 2: XSS Protection - Sanitize inputs
+                const sanitizedEmail = window.XSSProtection?.sanitizeInput(email) || email;
+                const sanitizedPassword = window.XSSProtection?.sanitizeInput(password) || password;
+
+                // Log sanitization if occurred
+                if (sanitizedEmail !== email || sanitizedPassword !== password) {
+                    window.SecurityManager?.logSecurityEvent('xss_sanitization', {
+                        action: 'admin_login',
+                        sanitized: true,
+                        timestamp: new Date().toISOString()
+                    });
+                }
+
                 const { data, error } = await supabaseClient.auth.signInWithPassword({
-                    email: email,
-                    password: password
+                    email: sanitizedEmail,
+                    password: sanitizedPassword
                 });
 
                 if (error) {
+                    // Log failed login attempt
+                    window.SecurityManager?.logSecurityEvent('login_failed', {
+                        email: sanitizedEmail,
+                        error: error.message,
+                        timestamp: new Date().toISOString(),
+                        userAgent: navigator.userAgent
+                    });
                     showAuthError(error.message);
                     return false;
                 }
+
+                // Log successful login
+                window.SecurityManager?.logSecurityEvent('login_success', {
+                    userId: data.user?.id,
+                    email: data.user?.email,
+                    timestamp: new Date().toISOString()
+                });
 
                 currentUser = data.user;
                 hideLoginModal();
                 initializeDashboard();
                 return true;
             } catch (error) {
+                // Log unexpected error
+                window.SecurityManager?.logSecurityEvent('login_error', {
+                    error: error.message,
+                    timestamp: new Date().toISOString()
+                });
                 showAuthError('Login failed: ' + error.message);
                 return false;
             }
@@ -344,26 +414,75 @@
 
         async function handleSignup(email, password) {
             try {
+                // Security Step 1: CSRF Token Validation
+                if (!window.CSRFProtection || !window.CSRFProtection.validateToken()) {
+                    console.warn('CSRF validation failed during admin signup');
+                    window.SecurityManager?.logSecurityEvent('csrf_validation_failed', {
+                        action: 'admin_signup',
+                        timestamp: new Date().toISOString(),
+                        userAgent: navigator.userAgent
+                    });
+                    showAuthError('Security validation failed. Please refresh the page and try again.');
+                    return false;
+                }
+
+                // Security Step 2: XSS Protection - Sanitize inputs
+                const sanitizedEmail = window.XSSProtection?.sanitizeInput(email) || email;
+                const sanitizedPassword = window.XSSProtection?.sanitizeInput(password) || password;
+
+                // Log sanitization if occurred
+                if (sanitizedEmail !== email || sanitizedPassword !== password) {
+                    window.SecurityManager?.logSecurityEvent('xss_sanitization', {
+                        action: 'admin_signup',
+                        sanitized: true,
+                        timestamp: new Date().toISOString()
+                    });
+                }
+
                 const { data, error } = await supabaseClient.auth.signUp({
-                    email: email,
-                    password: password
+                    email: sanitizedEmail,
+                    password: sanitizedPassword
                 });
 
                 if (error) {
+                    // Log failed signup attempt
+                    window.SecurityManager?.logSecurityEvent('signup_failed', {
+                        email: sanitizedEmail,
+                        error: error.message,
+                        timestamp: new Date().toISOString(),
+                        userAgent: navigator.userAgent
+                    });
                     showAuthError(error.message);
                     return false;
                 }
 
                 if (data.user && !data.session) {
+                    // Log successful signup (pending confirmation)
+                    window.SecurityManager?.logSecurityEvent('signup_success_pending', {
+                        email: data.user.email,
+                        timestamp: new Date().toISOString()
+                    });
                     showAuthSuccess('Please check your email to confirm your account');
                     return true;
                 }
+
+                // Log successful signup with immediate session
+                window.SecurityManager?.logSecurityEvent('signup_success', {
+                    userId: data.user?.id,
+                    email: data.user?.email,
+                    timestamp: new Date().toISOString()
+                });
 
                 currentUser = data.user;
                 hideLoginModal();
                 initializeDashboard();
                 return true;
             } catch (error) {
+                // Log unexpected error
+                window.SecurityManager?.logSecurityEvent('signup_error', {
+                    error: error.message,
+                    timestamp: new Date().toISOString()
+                });
                 showAuthError('Signup failed: ' + error.message);
                 return false;
             }
@@ -371,10 +490,29 @@
 
         async function handleLogout() {
             try {
+                // Log logout attempt
+                window.SecurityManager?.logSecurityEvent('logout_initiated', {
+                    userId: currentUser?.id,
+                    email: currentUser?.email,
+                    timestamp: new Date().toISOString()
+                });
+
                 await supabaseClient.auth.signOut();
+                
+                // Log successful logout
+                window.SecurityManager?.logSecurityEvent('logout_success', {
+                    userId: currentUser?.id,
+                    timestamp: new Date().toISOString()
+                });
+
                 currentUser = null;
                 showLoginModal();
             } catch (error) {
+                // Log logout error
+                window.SecurityManager?.logSecurityEvent('logout_error', {
+                    error: error.message,
+                    timestamp: new Date().toISOString()
+                });
                 console.error('Logout error:', error);
             }
         }
@@ -789,14 +927,53 @@
         async function updateSubmission(event, id) {
             event.preventDefault();
             
-            const formData = new FormData(event.target);
-            const updateData = {
-                status: formData.get('status'),
-                priority: formData.get('priority'),
-                notes: formData.get('notes') || null
-            };
-
             try {
+                // Security Step 1: CSRF Token Validation
+                if (!window.CSRFProtection || !window.CSRFProtection.validateToken()) {
+                    console.warn('CSRF validation failed during submission update');
+                    window.SecurityManager?.logSecurityEvent('csrf_validation_failed', {
+                        action: 'update_submission',
+                        submissionId: id,
+                        timestamp: new Date().toISOString(),
+                        userAgent: navigator.userAgent
+                    });
+                    alert('Security validation failed. Please refresh the page and try again.');
+                    return;
+                }
+
+                const formData = new FormData(event.target);
+                const rawData = {
+                    status: formData.get('status'),
+                    priority: formData.get('priority'),
+                    notes: formData.get('notes') || null
+                };
+
+                // Security Step 2: XSS Protection - Sanitize all inputs
+                const updateData = {};
+                let sanitizationOccurred = false;
+
+                for (const [key, value] of Object.entries(rawData)) {
+                    if (value !== null && typeof value === 'string') {
+                        const sanitized = window.XSSProtection?.sanitizeInput(value) || value;
+                        updateData[key] = sanitized;
+                        if (sanitized !== value) {
+                            sanitizationOccurred = true;
+                        }
+                    } else {
+                        updateData[key] = value;
+                    }
+                }
+
+                // Log sanitization if occurred
+                if (sanitizationOccurred) {
+                    window.SecurityManager?.logSecurityEvent('xss_sanitization', {
+                        action: 'update_submission',
+                        submissionId: id,
+                        sanitized: true,
+                        timestamp: new Date().toISOString()
+                    });
+                }
+
                 const { data, error } = await supabaseClient
                     .from('contact_submissions')
                     .update(updateData)
@@ -804,9 +981,23 @@
                     .select();
 
                 if (error) {
+                    // Log database error
+                    window.SecurityManager?.logSecurityEvent('update_submission_failed', {
+                        submissionId: id,
+                        error: error.message,
+                        timestamp: new Date().toISOString()
+                    });
                     alert('Error updating submission: ' + error.message);
                     return;
                 }
+
+                // Log successful update
+                window.SecurityManager?.logSecurityEvent('update_submission_success', {
+                    submissionId: id,
+                    updatedFields: Object.keys(updateData),
+                    userId: currentUser?.id,
+                    timestamp: new Date().toISOString()
+                });
 
                 // Update local data
                 const submissionIndex = allSubmissions.findIndex(s => s.id === id);
@@ -819,6 +1010,12 @@
                 alert('Submission updated successfully');
                 
             } catch (error) {
+                // Log unexpected error
+                window.SecurityManager?.logSecurityEvent('update_submission_error', {
+                    submissionId: id,
+                    error: error.message,
+                    timestamp: new Date().toISOString()
+                });
                 console.error('Error updating submission:', error);
                 alert('An unexpected error occurred');
             }
