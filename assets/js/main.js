@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Force scroll to top when DOM loads
     window.scrollTo(0, 0);
     // Enhanced 3D bubble creation system with background-specific colors
-    function create3DBubbles(container, count = 18, backgroundType = 'blue') {
+    function create3DBubbles(container, count = 18, backgroundType = 'blue', startHidden = false) {
         if (!container) return;
 
         // Bubble size configurations with weights
@@ -34,14 +34,28 @@ document.addEventListener('DOMContentLoaded', function () {
             colorClasses = ['bubble-white-on-blue', 'bubble-light-white', 'bubble-neutral'];
         }
 
-        // 5 Speed variations - Truly lazy and calming
-        const speeds = [
-            { name: 'very-slow', duration: '60s' },    // Ultra lazy - 1 minute
-            { name: 'slow', duration: '50s' },         // Very relaxed
-            { name: 'medium', duration: '40s' },       // Gentle pace
-            { name: 'fast', duration: '32s' },         // Still quite slow
-            { name: 'very-fast', duration: '25s' }     // Fastest but still lazy
+        // Speed variations with weighted distribution for more slow bubbles
+        const speedOptions = [
+            { name: 'very-slow', duration: '60s', weight: 0.35 },  // 35% - most common
+            { name: 'slow', duration: '50s', weight: 0.30 },       // 30% - common
+            { name: 'medium', duration: '40s', weight: 0.20 },     // 20% - moderate
+            { name: 'fast', duration: '32s', weight: 0.10 },       // 10% - occasional
+            { name: 'very-fast', duration: '25s', weight: 0.05 }   // 5% - rare
         ];
+        
+        // Helper function for weighted speed selection
+        function getWeightedRandomSpeed() {
+            const random = Math.random();
+            let cumulativeWeight = 0;
+            
+            for (const speed of speedOptions) {
+                cumulativeWeight += speed.weight;
+                if (random <= cumulativeWeight) {
+                    return speed;
+                }
+            }
+            return speedOptions[0]; // Fallback to slowest
+        }
 
         // 3 Different drift patterns for variety
         const driftPatterns = [
@@ -72,7 +86,7 @@ document.addEventListener('DOMContentLoaded', function () {
             
             // Random selections
             const randomColor = colorClasses[Math.floor(Math.random() * colorClasses.length)];
-            const randomSpeed = speeds[Math.floor(Math.random() * speeds.length)];
+            const randomSpeed = getWeightedRandomSpeed(); // Use weighted selection
             const randomDrift = driftPatterns[Math.floor(Math.random() * driftPatterns.length)];
             
             // Apply bubble classes for 3D effect
@@ -82,6 +96,14 @@ document.addEventListener('DOMContentLoaded', function () {
                 `bubble-${bubbleSize}`,
                 randomColor
             );
+            
+            // Add visibility class based on startHidden parameter
+            if (startHidden) {
+                bubble.classList.add('bubbles-hidden');
+            } else {
+                // Ensure non-hero bubbles are visible
+                bubble.classList.add('bubbles-visible');
+            }
 
             // Apply random drift pattern and speed
             bubble.style.animation = `${randomDrift} ${randomSpeed.duration} linear infinite`;
@@ -126,10 +148,13 @@ document.addEventListener('DOMContentLoaded', function () {
     // Create enhanced 3D bubbles for all sections with appropriate colors
     console.log('Creating bubbles...');
     
-    // Hero section - white bubbles on blue background
+    // Hero section - white bubbles on blue background (start hidden)
     console.log('Hero container:', heroBubbleContainer);
-    create3DBubbles(heroBubbleContainer, 18, 'blue');
+    create3DBubbles(heroBubbleContainer, 30, 'blue', true); // Increased to 30 bubbles, start hidden
     console.log('Hero bubbles created:', heroBubbleContainer?.children.length);
+    
+    // Store hero bubble container globally for typewriter callback
+    window.heroBubbleContainer = heroBubbleContainer;
     
     // Advantages section - blue bubbles on white background  
     console.log('Advantages container:', advantagesBubbleContainer);
@@ -362,7 +387,9 @@ class TypewriterEffect {
         this.delay = options.delay || 2000; // 2 second delay before starting
         this.cursor = options.cursor || document.querySelector('.typewriter-cursor');
         this.onComplete = options.onComplete || null;
+        this.onHalfway = options.onHalfway || null; // New callback for halfway point
         this.respectsReducedMotion = options.respectsReducedMotion !== false;
+        this.halfwayTriggered = false; // Track if halfway callback was triggered
         
         // Mobile optimization
         this.isMobile = window.innerWidth <= 768;
@@ -401,6 +428,15 @@ class TypewriterEffect {
             this.currentText += this.fullText[this.index];
             this.element.textContent = this.currentText;
             this.index++;
+            
+            // Check if we've reached halfway point
+            if (!this.halfwayTriggered && this.index >= Math.floor(this.fullText.length / 2)) {
+                this.halfwayTriggered = true;
+                if (this.onHalfway) {
+                    this.onHalfway();
+                    console.log('🎯 Typewriter reached halfway point');
+                }
+            }
             
             // Variable speed for more natural typing (slight randomization)
             const variance = Math.random() * 20 - 10; // ±10ms variance
@@ -472,8 +508,25 @@ function initializeTypewriter() {
             speed: 50,        // 50ms per character
             delay: 2000,      // Start after 2 seconds
             cursor: cursor,
+            onHalfway: () => {
+                console.log('Hero typewriter reached halfway point');
+                
+                // Trigger hero bubble animations at halfway point
+                if (window.heroBubbleContainer) {
+                    const heroBubbles = window.heroBubbleContainer.querySelectorAll('.bubble');
+                    
+                    // Reveal bubbles with staggered effect
+                    heroBubbles.forEach((bubble, index) => {
+                        setTimeout(() => {
+                            bubble.classList.remove('bubbles-hidden');
+                            bubble.classList.add('bubbles-visible');
+                        }, index * 30); // 30ms stagger for smoother reveal with more bubbles
+                    });
+                    
+                    console.log('✨ Hero bubbles animation triggered at halfway point');
+                }
+            },
             onComplete: () => {
-                // Optional: Do something when typing is complete
                 console.log('Hero typewriter animation completed');
             }
         });

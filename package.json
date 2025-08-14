@@ -1,0 +1,23 @@
+{
+  "name": "hydrocav-website",
+  "version": "2.1.0",
+  "description": "A premium, professional website showcasing HydroCav's advanced water treatment technology with sophisticated liquid glass design elements and modern user experience.",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve .",
+    "dev": "npx serve .",
+    "test": "echo \"No tests specified\" && exit 0"
+  },
+  "keywords": [
+    "water-treatment",
+    "hydrocav",
+    "liquid-glass",
+    "glassmorphism",
+    "static-website"
+  ],
+  "author": "HydroCav",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.2.0"
+  }
+}

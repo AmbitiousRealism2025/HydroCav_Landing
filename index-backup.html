@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HydroCav - Advanced Water Treatment</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    
+    <!-- Supabase JavaScript Client -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <script>
+        // Supabase configuration (safe to expose anon key)
+        const SUPABASE_URL = 'https://icfombdnbaeckgivfkdw.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImljZm9tYmRuYmFlY2tnaXZma2R3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ4MzA1MjIsImV4cCI6MjA3MDQwNjUyMn0.6E7SSsyQpmkpyiHQLLMzKSXL9S8bHMY4THeW_iiSFlw';
+        
+        // Initialize Supabase client
+        let supabaseClient;
+        if (typeof window.supabase !== 'undefined') {
+            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        }
+    </script>
+</head>
+<body id="top">
+
+<!-- Skip to main content link for accessibility -->
+<a href="#main-content" class="skip-nav">Skip to main content</a>
+
+<!-- Toast notification container -->
+<div class="toast-container" id="toast-container"></div>
+
+<!-- ====================================================================== -->
+<!-- NAVIGATION BAR -->
+<!-- ====================================================================== -->
+<nav class="sticky top-0 z-50 frosted-nav py-6">
+    <div class="container mx-auto px-8 lg:px-12 flex justify-between items-center">
+        <!-- Enhanced Logo -->
+        <div class="flex items-center">
+            <a href="#" class="flex items-center logo-container">
+                <img src="assets/images/HydroCav_Logo.PNG" alt="HydroCav Logo" class="logo-enhanced">
+            </a>
+        </div>
+
+        <!-- Enhanced Menu Items -->
+        <div class="hidden md:flex items-center space-x-2">
+            <a href="#top" class="menu-link" id="home-link">Home</a>
+            <a href="#advantages" class="menu-link">Advantages</a>
+            <a href="#how-it-works" class="menu-link">How It Works</a>
+            <!-- <a href="#testimonials" class="menu-link">Testimonials</a> --> <!-- Disabled for Phase III UI/UX Polish -->
+            <a href="#contact" class="menu-link">Contact</a>
+        </div>
+        
+        <!-- Enhanced Mobile Menu Button -->
+        <div class="md:hidden flex items-center">
+            <button id="mobile-menu-button" class="w-12 h-12 p-2 text-slate-700 hover:bg-blue-100/50 hover:backdrop-blur-sm rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2" aria-label="Open mobile menu">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+</nav>
+
+<!-- Mobile Menu Overlay -->
+<div id="mobile-menu" class="mobile-menu-overlay hidden">
+    <div class="mobile-menu-panel">
+        <div class="mobile-menu-header">
+            <h3 class="text-lg font-semibold text-slate-800">Navigation</h3>
+            <button id="mobile-menu-close" class="mobile-menu-close" aria-label="Close mobile menu">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+        <nav class="mobile-menu-nav">
+            <a href="#home" class="mobile-menu-link">Home</a>
+            <a href="#advantages" class="mobile-menu-link">Advantages</a>
+            <a href="#how-it-works" class="mobile-menu-link">How It Works</a>
+            <a href="#contact" class="mobile-menu-link">Contact</a>
+        </nav>
+    </div>
+</div>
+
+<!-- Scroll Progress Indicator -->
+<div id="scroll-progress" class="scroll-progress-bar"></div>
+
+<!-- ====================================================================== -->
+<!-- HERO SECTION -->
+<!-- ====================================================================== -->
+<main id="main-content" role="main">
+<header id="home" class="relative overflow-hidden" style="background-color: #6bafdc;" data-nav="home">
+    <div id="bubble-container-hero" class="absolute inset-0 z-0"></div>
+    <div class="relative z-10 container mx-auto px-6 py-20 lg:py-32">
+        <div class="flex justify-center">
+            <div class="text-center max-w-3xl">
+                <h1 class="hero-title text-4xl md:text-5xl lg:text-6xl font-black text-black leading-tight mb-8">
+                    Revolutionize Your Water Treatment
+                </h1>
+                <p class="hero-subtitle text-lg text-black mb-10 mx-auto">
+                    <span class="typewriter-container">
+                        <span class="typewriter-text" id="typewriter-text"></span>
+                        <span class="typewriter-cursor"></span>
+                    </span>
+                </p>
+                <div class="hero-cta flex justify-center">
+                    <a href="#advantages" class="liquid-glass-button liquid-glass-button-large">Discover the HydroCav Advantage</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Section Divider -->
+<hr class="section-divider">
+
+<!-- ====================================================================== -->
+<!-- PRODUCT SHOWCASE SECTION -->
+<!-- ====================================================================== -->
+<section id="product-showcase" class="py-16 lg:py-24 relative overflow-hidden" style="background-color: #6bafdc;">
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-[1fr_1.2fr] gap-8 lg:gap-16 items-center">
+            <!-- Content Column -->
+            <div class="product-showcase-card order-2 lg:order-1">
+                <h2 class="text-3xl lg:text-4xl font-bold text-white mb-6 text-center">
+                    Elevate Water Quality & Reduce Costs: The HydroLoop System by HydroCav
+                </h2>
+                <div class="text-black space-y-4" style="line-height: 1.7;">
+                    <p>Introducing the <b>HydroLoop System</b> by HydroCav, a groundbreaking solution engineered to revolutionize water quality management in hotel pools and spas. Utilizing patented <b>hydrodynamic cavitation technology</b>, HydroLoop purifies water at a microscopic level by creating and collapsing tiny bubbles that neutralize contaminants. This innovative process allows you to <b>dramatically reduce chemical usage by up to 75%</b>, significantly cutting your reliance on chlorine and other additives, while ensuring consistently <b>crystal-clear, safe water</b> that exceeds health and safety standards.</p>
+                    <p>The HydroLoop delivers substantial <b>cost savings</b> on chemicals and labor, along with <b>lower maintenance and operational expenses</b>, providing a proven <b>return on investment within 12 to 18 months</b>. Beyond cost, it enhances guest satisfaction by <b>eliminating strong, unpleasant odors</b> caused by trichloramine and proactively preventing harmful microorganisms like Legionella, Cryptosporidium, and Pseudomonas. Designed for <b>easy integration and minimal downtime</b>, HydroLoop offers reliable, <b>fail-safe operation</b> against ventilation or mechanical issues, ensuring your facilities remain operational and your guests enjoy a superior, healthier experience.</p>
+                </div>
+                <div class="text-center">
+                    <button class="liquid-glass-button liquid-glass-button-large mt-8">Learn More</button>
+                </div>
+            </div>
+            <!-- Image Column -->
+            <div class="order-1 lg:order-2">
+                <div class="product-image-container">
+                    <picture>
+                        <source srcset="assets/images/HydroLoop_1200px.webp" type="image/webp">
+                        <img src="assets/images/HydroLoop_1200px.webp" alt="HydroLoop System" class="w-full h-auto rounded-2xl">
+                    </picture>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Section Divider -->
+<hr class="section-divider">
+
+<!-- ====================================================================== -->
+<!-- ADVANTAGES SECTION -->
+<!-- ====================================================================== -->
+<section id="advantages" class="py-20 lg:py-24 relative overflow-hidden bg-white" data-nav="advantages">
+    <div id="bubble-container-advantages" class="absolute inset-0 z-0 opacity-50"></div>
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-slate-800">The HydroCav Advantage</h2>
+            <p class="text-lg text-slate-600 mt-4 max-w-3xl mx-auto">
+                Discover how our technology delivers unmatched efficiency, safety, and cost savings.
+            </p>
+        </div>
+        <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center">
+            <!-- Card 1 -->
+            <div class="liquid-glass-card text-center">
+                <div class="mb-6 flex justify-center">
+                    <svg class="w-16 h-16" style="color: #319be0;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                    </svg>
+                </div>
+                <div class="card-content">
+                    <h3>Dramatic Chemical Reduction</h3>
+                    <p>Reduce chlorine and other chemical usage by up to 75%, creating a more sustainable and healthier environment.</p>
+                </div>
+            </div>
+            <!-- Card 2 -->
+            <div class="liquid-glass-card text-center">
+                <div class="mb-6 flex justify-center">
+                    <svg class="w-16 h-16" style="color: #319be0;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div class="card-content">
+                    <h3>Crystal-Clear, Safe Water</h3>
+                    <p>Advanced cavitation neutralizes bacteria like Legionella and removes heavy metals for pristine, safe water.</p>
+                </div>
+            </div>
+            <!-- Card 3 -->
+            <div class="liquid-glass-card text-center">
+                <div class="mb-6 flex justify-center">
+                    <svg class="w-16 h-16" style="color: #319be0;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.25 6L9 12.75l4.286-4.286a11.948 11.948 0 014.306 6.43l.776 2.898m0 0l3.182-5.511m-3.182 5.511l-5.511-3.182"></path>
+                    </svg>
+                </div>
+                <div class="card-content">
+                    <h3>Significant Cost Savings</h3>
+                    <p>Minimize chemical and labor costs, often achieving a full return on investment within 12 to 18 months.</p>
+                </div>
+            </div>
+            <!-- Card 4 -->
+            <div class="liquid-glass-card text-center">
+                <div class="mb-6 flex justify-center">
+                    <svg class="w-16 h-16" style="color: #319be0;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
+                <div class="card-content">
+                    <h3>Enhanced Guest Experience</h3>
+                    <p>Eliminate strong chloramine odors and provide crystal-clear water for higher guest and user satisfaction.</p>
+                </div>
+            </div>
+            <!-- Card 5 -->
+            <div class="liquid-glass-card text-center">
+                <div class="mb-6 flex justify-center">
+                    <svg class="w-16 h-16" style="color: #319be0;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 12 2 2 4-4"></path>
+                    </svg>
+                </div>
+                <div class="card-content">
+                    <h3>Failsafe Protection</h3>
+                    <p>Our HydroLoop system ensures continuous operation and maintains safe water quality, even during system failures.</p>
+                </div>
+            </div>
+            <!-- Card 6 -->
+            <div class="liquid-glass-card text-center">
+                <div class="mb-6 flex justify-center">
+                    <svg class="w-16 h-16" style="color: #319be0;" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+                    </svg>
+                </div>
+                <div class="card-content">
+                    <h3>Exceeds Compliance</h3>
+                    <p>Meets and exceeds all relevant health and safety regulations, proactively preventing microbial growth.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Section Divider -->
+<hr class="section-divider">
+
+<!-- ====================================================================== -->
+<!-- HOW IT WORKS SECTION -->
+<!-- ====================================================================== -->
+<section id="how-it-works" class="py-20 lg:py-24 relative overflow-hidden" style="background-color: #6bafdc;" data-nav="how-it-works">
+    <div class="container mx-auto px-6 relative z-10">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-black text-black">Simple Process, Powerful Results</h2>
+            <p class="text-lg text-black mt-4 max-w-3xl mx-auto">
+                Our three-step hydrodynamic cavitation process is elegant and effective.
+            </p>
+        </div>
+        <div class="grid md:grid-cols-3 gap-8 md:gap-12 items-start">
+            <!-- Step 1 -->
+            <div class="liquid-glass-card process-step-card text-center p-8 flex flex-col items-center" style="background-color: rgba(255, 255, 255, 0.15); border-color: rgba(255, 255, 255, 0.2);">
+                <h3 class="text-xl font-bold text-black mb-3">Intake & Flow</h3>
+                <p class="text-black/80">Water is drawn from your system and directed into the HydroCav unit, with no major changes to your existing plumbing.</p>
+            </div>
+            <!-- Step 2 -->
+            <div class="liquid-glass-card process-step-card text-center p-8 flex flex-col items-center" style="background-color: rgba(255, 255, 255, 0.15); border-color: rgba(255, 255, 255, 0.2);">
+                <h3 class="text-xl font-bold text-black mb-3">Cavitation Zone</h3>
+                <p class="text-black/80">The water passes through our patented cavitation chamber, where microscopic bubbles form and implode, creating intense energy waves.</p>
+            </div>
+            <!-- Step 3 -->
+            <div class="liquid-glass-card process-step-card text-center p-8 flex flex-col items-center" style="background-color: rgba(255, 255, 255, 0.15); border-color: rgba(255, 255, 255, 0.2);">
+                <h3 class="text-xl font-bold text-black mb-3">Purified Output</h3>
+                <p class="text-black/80">These energy waves instantly neutralize contaminants and pathogens, returning crystal-clear, safe water to your system.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Section Divider -->
+<hr class="section-divider">
+
+<!-- ====================================================================== -->
+<!-- CTA SECTION -->
+<!-- ====================================================================== -->
+<section id="contact" class="relative overflow-hidden" style="background-color: #6bafdc;" data-nav="contact">
+    <div id="bubble-container-cta" class="absolute inset-0 z-0"></div>
+    <div class="relative z-10 max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:py-24 lg:px-8 text-center">
+        <h2 class="text-4xl font-extrabold tracking-tight text-black sm:text-5xl lg:text-6xl">
+            <span class="block">Ready to Improve Your Water Quality?</span>
+            <span class="block mt-2 text-3xl sm:text-4xl lg:text-5xl" style="color: #fff; text-shadow: 1px 1px 4px rgba(0,0,0,0.2);">See the difference HydroCav can make.</span>
+        </h2>
+        <div class="mt-8 flex justify-center">
+            <a href="#contact" class="liquid-glass-button liquid-glass-button-large cta-scroll-link">Request a Free Quote</a>
+        </div>
+    </div>
+</section>
+
+<!-- Section Divider -->
+<hr class="section-divider">
+
+<!-- ====================================================================== -->
+<!-- TESTIMONIALS SECTION - COMPLETELY REMOVED FOR PHASE III UI/UX POLISH -->
+<!-- Note: Section did not match liquid glass design aesthetic -->
+<!-- Backend database structure preserved for Phase III enhancement -->
+<!-- All testimonials, case studies, and newsletter content disabled -->
+<!-- ====================================================================== -->
+
+<!-- ====================================================================== -->
+<!-- CONTACT SECTION -->
+<!-- ====================================================================== -->
+<section id="contact" class="py-20 lg:py-24 relative overflow-hidden bg-white" data-nav="contact">
+    <div class="container mx-auto px-6 relative z-10 flex justify-center">
+        <div class="liquid-glass-card max-w-2xl w-full p-8 md:p-12">
+            <div class="text-center mb-12">
+                <h2 class="text-3xl md:text-4xl font-bold text-slate-800">Contact Us</h2>
+                <p class="text-lg text-slate-600 mt-4 max-w-2xl mx-auto">
+                    Have questions or ready to get started? Fill out the form below and a specialist will be in touch shortly.
+                </p>
+                <p class="text-base text-slate-600 mt-3 max-w-2xl mx-auto font-medium">
+                    If you would like to speak to someone about a quote, please include basic information about your current pool size and setup.
+                </p>
+            </div>
+            <form id="contact-form" onsubmit="handleContactSubmission(event)" novalidate aria-labelledby="contact-heading">
+                <div class="form-group">
+                    <label for="name" class="form-label">Full Name <span class="required" aria-label="required">*</span></label>
+                    <input 
+                        type="text" 
+                        name="name" 
+                        id="name" 
+                        autocomplete="name" 
+                        required
+                        maxlength="100"
+                        class="form-input block w-full rounded-md shadow-sm py-3 px-4" 
+                        aria-describedby="name-error name-counter"
+                        aria-required="true"
+                    >
+                    <span id="name-counter" class="char-counter">0 / 100</span>
+                    <div id="name-error" class="error-message" role="alert" aria-live="polite"></div>
+                </div>
+                <div class="form-group">
+                    <label for="email" class="form-label">Email Address <span class="required" aria-label="required">*</span></label>
+                    <input 
+                        type="email" 
+                        name="email" 
+                        id="email" 
+                        autocomplete="email" 
+                        required
+                        maxlength="254"
+                        class="form-input block w-full rounded-md shadow-sm py-3 px-4" 
+                        aria-describedby="email-error"
+                        aria-required="true"
+                    >
+                    <div id="email-error" class="error-message" role="alert" aria-live="polite"></div>
+                </div>
+                <div class="form-group">
+                    <label for="company" class="form-label">Company Name <span class="text-slate-500">(Optional)</span></label>
+                    <input 
+                        type="text" 
+                        name="company" 
+                        id="company" 
+                        autocomplete="organization" 
+                        maxlength="100"
+                        class="form-input block w-full rounded-md shadow-sm py-3 px-4" 
+                        aria-describedby="company-counter"
+                    >
+                    <span id="company-counter" class="char-counter">0 / 100</span>
+                </div>
+                <div class="form-group">
+                    <label for="message" class="form-label">Message <span class="required" aria-label="required">*</span></label>
+                    <textarea 
+                        id="message" 
+                        name="message" 
+                        rows="4" 
+                        required
+                        minlength="10"
+                        maxlength="2000"
+                        class="form-input block w-full rounded-md shadow-sm py-3 px-4" 
+                        aria-describedby="message-error message-counter"
+                        aria-required="true"
+                    ></textarea>
+                    <span id="message-counter" class="char-counter">0 / 2000</span>
+                    <div id="message-error" class="error-message" role="alert" aria-live="polite"></div>
+                </div>
+                <div class="text-center">
+                    <button 
+                        type="submit" 
+                        id="submit-button"
+                        class="liquid-glass-button liquid-glass-button-large"
+                        style="background-color: rgba(49, 155, 224, 0.8); border-color: rgba(49, 155, 224, 0.9); color: white;"
+                        aria-describedby="submit-status"
+                    >
+                        Send Message
+                    </button>
+                </div>
+                <div id="submit-status" class="status-message" role="status" aria-live="polite" style="display: none;"></div>
+            </form>
+        </div>
+    </div>
+</section>
+</main>
+
+<!-- ====================================================================== -->
+<!-- FOOTER -->
+<!-- ====================================================================== -->
+<footer class="frosted-footer">
+    <div class="container mx-auto py-6 px-6">
+        <div class="flex flex-col md:flex-row justify-center items-center gap-6 md:gap-8">
+            <!-- Logo -->
+            <div class="flex-shrink-0">
+                <img src="assets/images/HydroCav_Logo.PNG" alt="HydroCav logo" class="footer-logo">
+            </div>
+            <!-- Copyright -->
+            <div class="text-center">
+                <p>&copy; 2025 HydroCav. All Rights Reserved.</p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- ====================================================================== -->
+<!-- CENTRALIZED SCRIPT -->
+<!-- ====================================================================== -->
+<script src="assets/js/main.js"></script>
+
+<!-- ====================================================================== -->
+<!-- ENHANCED CONTACT FORM HANDLER WITH PHASE 2A IMPROVEMENTS -->
+<!-- ====================================================================== -->
+<script type="module">
+// Import modular components (Phase 1: Foundation modules implemented)
+import { SUPABASE_CONFIG, UI_CONFIG, debugLog, isFeatureEnabled } from './assets/js/config.js';
+import { showToast, showFieldError, clearFieldError, clearAllErrors, 
+         LoadingManager, CharacterCounter, TOAST_TYPES } from './assets/js/ui-feedback.js';
+
+// Initialize Supabase client using modular config
+const supabaseClient = window.supabase.createClient(SUPABASE_CONFIG.url, SUPABASE_CONFIG.key);
+
+debugLog('HydroCav website initializing with modular architecture');
+
+// ===== CONTACT FORM FUNCTIONALITY =====
+
+// Email validation function
+function isValidEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
+// Enhanced form validation using modular config
+function validateField(fieldName, value) {
+    if (!value) value = document.getElementById(fieldName)?.value || '';
+    
+    switch (fieldName) {
+        case 'name':
+            if (!value.trim()) {
+                showFieldError(fieldName, 'Name is required');
+                return false;
+            }
+            if (value.length > UI_CONFIG.form.characterLimits.name) {
+                showFieldError(fieldName, `Name must be less than ${UI_CONFIG.form.characterLimits.name} characters`);
+                return false;
+            }
+            break;
+            
+        case 'email':
+            if (!value.trim()) {
+                showFieldError(fieldName, 'Email is required');
+                return false;
+            }
+            if (!isValidEmail(value)) {
+                showFieldError(fieldName, 'Please enter a valid email address');
+                return false;
+            }
+            break;
+            
+        case 'company':
+            if (value.length > UI_CONFIG.form.characterLimits.company) {
+                showFieldError(fieldName, `Company name must be less than ${UI_CONFIG.form.characterLimits.company} characters`);
+                return false;
+            }
+            break;
+            
+        case 'message':
+            if (!value.trim()) {
+                showFieldError(fieldName, 'Message is required');
+                return false;
+            }
+            if (value.length > UI_CONFIG.form.characterLimits.message) {
+                showFieldError(fieldName, `Message must be less than ${UI_CONFIG.form.characterLimits.message} characters`);
+                return false;
+            }
+            break;
+    }
+    
+    clearFieldError(fieldName);
+    return true;
+}
+
+// Contact form submission handler
+async function handleContactSubmission(event) {
+    event.preventDefault();
+    debugLog('Contact form submission started');
+
+    const form = event.target;
+    const submitButton = form.querySelector('button[type="submit"]') || form.querySelector('#submit-btn');
+    
+    // Get form data
+    const formData = new FormData(form);
+    const name = formData.get('name')?.trim() || '';
+    const email = formData.get('email')?.trim() || '';
+    const company = formData.get('company')?.trim() || '';
+    const phone = formData.get('phone')?.trim() || '';
+    const message = formData.get('message')?.trim() || '';
+
+    // Clear previous errors
+    clearAllErrors();
+
+    // Validate all fields
+    let isValid = true;
+    if (!validateField('name', name)) isValid = false;
+    if (!validateField('email', email)) isValid = false;
+    if (!validateField('company', company)) isValid = false;
+    if (!validateField('message', message)) isValid = false;
+
+    if (!isValid) {
+        showToast('Please correct the errors above.', TOAST_TYPES.ERROR);
+        return;
+    }
+
+    // Show loading state
+    LoadingManager.show(submitButton, 'Sending...');
+
+    try {
+        const { data, error } = await supabaseClient
+            .from('contact_submissions')
+            .insert([
+                {
+                    name: name,
+                    email: email,
+                    company: company || null,
+                    phone: phone || null,
+                    message: message,
+                    created_at: new Date().toISOString()
+                }
+            ]);
+
+        if (error) {
+            console.error('Supabase error:', error);
+            showToast('There was an error sending your message. Please try again.', TOAST_TYPES.ERROR);
+        } else {
+            showToast('Thank you! Your message has been sent successfully.', TOAST_TYPES.SUCCESS);
+            form.reset();
+            
+            // Update character counters after reset
+            CharacterCounter.update('name', UI_CONFIG.form.characterLimits.name);
+            CharacterCounter.update('company', UI_CONFIG.form.characterLimits.company);
+            CharacterCounter.update('message', UI_CONFIG.form.characterLimits.message);
+            
+            debugLog('Contact form submitted successfully');
+        }
+    } catch (err) {
+        console.error('Unexpected error:', err);
+        showToast('There was an unexpected error. Please try again.', TOAST_TYPES.ERROR);
+    } finally {
+        // Hide loading state
+        LoadingManager.hide(submitButton);
+    }
+}
+        
+        // Auto-remove after duration
+        if (duration > 0) {
+            setTimeout(() => {
+                toast.style.animation = 'fadeOut 0.3s ease';
+                setTimeout(() => toast.remove(), 300);
+            }, duration);
+        }
+    }
+    
+    getIcon(type) {
+        const icons = {
+            success: '<path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/>',
+            error: '<path d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"/>',
+            info: '<path d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"/>'
+        };
+        return icons[type] || icons.info;
+    }
+}
+
+const toastManager = new ToastManager();
+
+// Character counter functionality
+function setupCharacterCounters() {
+    const fields = [
+        { id: 'name', max: 100 },
+        { id: 'company', max: 100 },
+        { id: 'message', max: 2000 }
+    ];
+    
+    fields.forEach(field => {
+        const input = document.getElementById(field.id);
+        const counter = document.getElementById(`${field.id}-counter`);
+        
+        if (input && counter) {
+            input.addEventListener('input', () => {
+                const length = input.value.length;
+                counter.textContent = `${length} / ${field.max}`;
+                
+                // Update counter color based on length
+                if (length >= field.max * 0.9) {
+                    counter.classList.add('error');
+                    counter.classList.remove('warning');
+                } else if (length >= field.max * 0.7) {
+                    counter.classList.add('warning');
+                    counter.classList.remove('error');
+                } else {
+                    counter.classList.remove('warning', 'error');
+                }
+            });
+        }
+    });
+}
+
+// Real-time validation
+function setupRealtimeValidation() {
+    const form = document.getElementById('contact-form');
+    const inputs = form.querySelectorAll('input, textarea');
+    
+    inputs.forEach(input => {
+        // Validate on blur
+        input.addEventListener('blur', () => {
+            validateField(input);
+        });
+        
+        // Clear error on input
+        input.addEventListener('input', () => {
+            const errorElement = document.getElementById(`${input.id}-error`);
+            if (errorElement) {
+                // Clear any pending auto-fade timeout
+                if (errorTimeouts.has(input.id)) {
+                    clearTimeout(errorTimeouts.get(input.id));
+                    errorTimeouts.delete(input.id);
+                }
+                
+                errorElement.classList.remove('show', 'fade-out');
+                errorElement.textContent = '';
+                input.setAttribute('aria-invalid', 'false');
+            }
+        });
+    });
+}
+
+// Store timeout IDs for auto-fade functionality
+const errorTimeouts = new Map();
+
+// Flag to control auto-fade behavior during form submission
+let isFormSubmitting = false;
+
+// Validate individual field with auto-fade functionality
+function validateField(field) {
+    const errorElement = document.getElementById(`${field.id}-error`);
+    if (!errorElement) return true;
+    
+    // Clear any existing timeout for this field
+    if (errorTimeouts.has(field.id)) {
+        clearTimeout(errorTimeouts.get(field.id));
+        errorTimeouts.delete(field.id);
+    }
+    
+    let errorMessage = '';
+    
+    switch(field.id) {
+        case 'name':
+            if (!field.value.trim()) {
+                errorMessage = 'Name is required';
+            } else if (field.value.trim().length < 2) {
+                errorMessage = 'Name must be at least 2 characters';
+            }
+            break;
+            
+        case 'email':
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!field.value.trim()) {
+                errorMessage = 'Email address is required';
+            } else if (!emailRegex.test(field.value.trim())) {
+                errorMessage = 'Please enter a valid email address';
+            }
+            break;
+            
+        case 'message':
+            if (!field.value.trim()) {
+                errorMessage = 'Message is required';
+            } else if (field.value.trim().length < 10) {
+                errorMessage = 'Message must be at least 10 characters';
+            }
+            break;
+    }
+    
+    if (errorMessage) {
+        // Show error immediately
+        errorElement.textContent = errorMessage;
+        errorElement.classList.remove('fade-out');
+        errorElement.classList.add('show');
+        field.setAttribute('aria-invalid', 'true');
+        
+        // Set timeout to auto-fade the error after 4 seconds (only if not during form submission)
+        if (!isFormSubmitting) {
+            const timeoutId = setTimeout(() => {
+                if (errorElement.classList.contains('show') && !isFormSubmitting) {
+                    errorElement.classList.add('fade-out');
+                    
+                    // Remove the element completely after fade animation completes
+                    setTimeout(() => {
+                        if (!isFormSubmitting) { // Double-check in case form submission started
+                            errorElement.classList.remove('show', 'fade-out');
+                            errorElement.textContent = '';
+                            // Keep the field marked as invalid for form submission validation
+                            // but don't visually show the error anymore
+                        }
+                    }, 500); // Match the CSS transition duration
+                }
+                errorTimeouts.delete(field.id);
+            }, 4000); // Auto-fade after 4 seconds
+            
+            errorTimeouts.set(field.id, timeoutId);
+        }
+        
+        return false;
+    } else {
+        // Clear error immediately when field becomes valid
+        errorElement.classList.remove('show', 'fade-out');
+        errorElement.textContent = '';
+        field.setAttribute('aria-invalid', 'false');
+        return true;
+    }
+}
+
+// Enhanced form validation
+function validateForm() {
+    const form = document.getElementById('contact-form');
+    const requiredFields = ['name', 'email', 'message'];
+    let isValid = true;
+    
+    requiredFields.forEach(fieldId => {
+        const field = document.getElementById(fieldId);
+        if (!validateField(field)) {
+            isValid = false;
+        }
+    });
+    
+    return isValid;
+}
+
+// Enhanced loading state with spinner
+function showLoadingState(isLoading) {
+    const submitButton = document.getElementById('submit-button');
+    
+    if (isLoading) {
+        submitButton.disabled = true;
+        submitButton.innerHTML = '<span class="loading-spinner"></span> Sending...';
+        submitButton.classList.add('opacity-75', 'cursor-not-allowed');
+    } else {
+        submitButton.disabled = false;
+        submitButton.innerHTML = 'Send Message';
+        submitButton.classList.remove('opacity-75', 'cursor-not-allowed');
+    }
+}
+
+// Show status message with animation
+function showStatusMessage(message, type) {
+    const statusElement = document.getElementById('submit-status');
+    statusElement.className = `status-message ${type}`;
+    statusElement.textContent = message;
+    statusElement.style.display = 'block';
+    
+    // Also show toast notification
+    toastManager.show(message, type);
+    
+    // Auto-hide success messages after 5 seconds
+    if (type === 'success') {
+        setTimeout(() => {
+            statusElement.style.display = 'none';
+        }, 5000);
+    }
+}
+
+// Contact form submission handler
+async function handleContactSubmission(event) {
+    event.preventDefault();
+    
+    // Set form submission flag to prevent auto-fade during validation
+    isFormSubmitting = true;
+    
+    // Validate form first
+    if (!validateForm()) {
+        isFormSubmitting = false; // Reset flag if validation fails
+        toastManager.show('Please correct the errors in the form', 'error');
+        return;
+    }
+    
+    // Check if Supabase is initialized
+    if (!supabaseClient) {
+        isFormSubmitting = false; // Reset flag
+        showStatusMessage('Unable to connect to the server. Please try again later.', 'error');
+        toastManager.show('Connection error. Please check your internet connection.', 'error');
+        return;
+    }
+    
+    // Get form element and data
+    const form = event.target;
+    const formData = new FormData(form);
+    
+    // Extract form values
+    const submission = {
+        name: formData.get('name')?.trim(),
+        email: formData.get('email')?.trim().toLowerCase(),
+        company: formData.get('company')?.trim() || null,
+        message: formData.get('message')?.trim(),
+        user_agent: navigator.userAgent
+    };
+    
+    try {
+        // Show loading state
+        showLoadingState(true);
+        
+        // Submit to Supabase
+        const { data, error } = await supabaseClient
+            .from('contact_submissions')
+            .insert([submission])
+            .select('id');
+        
+        if (error) {
+            console.error('Submission error:', error);
+            
+            // Handle specific error types
+            if (error.message.includes('rate_limit') || error.message.includes('check_submission_rate_limit')) {
+                showStatusMessage('Please wait a few minutes before submitting another message.', 'error');
+            } else if (error.message.includes('check constraint')) {
+                showStatusMessage('Please check your input and try again.', 'error');
+            } else {
+                showStatusMessage('There was an error submitting your message. Please try again.', 'error');
+            }
+            return;
+        }
+        
+        // Success!
+        showStatusMessage('Thank you for your message! We\'ll be in touch soon.', 'success');
+        
+        // Show success animation
+        const submitButton = document.getElementById('submit-button');
+        const originalContent = submitButton.innerHTML;
+        submitButton.innerHTML = '✓ Sent Successfully';
+        submitButton.style.backgroundColor = 'rgba(34, 197, 94, 0.8)';
+        
+        // Reset form and button after delay
+        setTimeout(() => {
+            form.reset();
+            // Reset character counters
+            document.querySelectorAll('.char-counter').forEach(counter => {
+                counter.textContent = counter.textContent.replace(/\d+/, '0');
+            });
+            submitButton.innerHTML = originalContent;
+            submitButton.style.backgroundColor = 'rgba(49, 155, 224, 0.8)';
+        }, 2000);
+        
+        // Focus on first field for accessibility
+        document.getElementById('name').focus();
+        
+        // Optional: Track successful submission
+        console.log('Contact submission successful:', data[0]?.id);
+        
+    } catch (error) {
+        console.error('Unexpected error:', error);
+        showStatusMessage('An unexpected error occurred. Please try again or contact us directly.', 'error');
+        
+    } finally {
+        showLoadingState(false);
+        isFormSubmitting = false; // Reset flag when submission is complete
+    }
+}
+
+// Client-side validation function
+function validateFormData(data) {
+    const errors = [];
+    
+    // Name validation
+    if (!data.name || data.name.length < 2) {
+        errors.push('Name must be at least 2 characters');
+    }
+    if (data.name && data.name.length > 100) {
+        errors.push('Name must be less than 100 characters');
+    }
+    
+    // Email validation
+    const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+    if (!data.email || !emailRegex.test(data.email)) {
+        errors.push('Please enter a valid email address');
+    }
+    
+    // Company validation (optional field)
+    if (data.company && data.company.length > 100) {
+        errors.push('Company name must be less than 100 characters');
+    }
+    
+    // Message validation
+    if (!data.message || data.message.length < 10) {
+        errors.push('Message must be at least 10 characters');
+    }
+    if (data.message && data.message.length > 2000) {
+        errors.push('Message must be less than 2000 characters');
+    }
+    
+    return {
+        isValid: errors.length === 0,
+        errors: errors
+    };
+}
+
+// UI feedback functions
+function showLoadingState(isLoading) {
+    const submitButton = document.querySelector('button[type="submit"]');
+    const loadingText = 'Sending...';
+    const normalText = 'Send Message';
+    
+    if (isLoading) {
+        submitButton.disabled = true;
+        submitButton.textContent = loadingText;
+        submitButton.classList.add('opacity-50', 'cursor-not-allowed');
+    } else {
+        submitButton.disabled = false;
+        submitButton.textContent = normalText;
+        submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
+    }
+}
+
+function showSuccessMessage(message) {
+    showMessage(message, 'success');
+}
+
+function showErrorMessage(message) {
+    showMessage(message, 'error');
+}
+
+function showMessage(message, type) {
+    // Remove existing messages
+    const existingMessages = document.querySelectorAll('.form-message');
+    existingMessages.forEach(msg => msg.remove());
+    
+    // Create message element
+    const messageDiv = document.createElement('div');
+    messageDiv.className = `form-message p-4 rounded-lg mb-4 ${
+        type === 'success' 
+            ? 'bg-green-100 text-green-800 border border-green-300' 
+            : 'bg-red-100 text-red-800 border border-red-300'
+    }`;
+    messageDiv.textContent = message;
+    
+    // Insert before form
+    const form = document.querySelector('form');
+    form.parentNode.insertBefore(messageDiv, form);
+    
+    // Auto-remove success messages after 5 seconds
+    if (type === 'success') {
+        setTimeout(() => {
+            if (messageDiv.parentNode) {
+                messageDiv.remove();
+            }
+        }, 5000);
+    }
+}
+
+// Testimonials and Business Features - DISABLED FOR PHASE III UI/UX POLISH
+/* 
+async function loadTestimonials() {
+    if (!supabaseClient) {
+        console.error('Supabase client not available for testimonials');
+        return;
+    }
+
+    try {
+        const { data, error } = await supabaseClient
+            .from('published_testimonials')
+            .select('*')
+            .eq('is_featured', true)
+            .limit(3);
+
+        if (error) {
+            console.error('Error loading testimonials:', error);
+            return;
+        }
+
+        const container = document.getElementById('testimonials-container');
+        if (!container) return;
+
+        if (!data || data.length === 0) {
+            container.innerHTML = `
+                <div class="col-span-full text-center text-white/80 py-12">
+                    <p>Testimonials will be displayed here once available.</p>
+                    <p class="text-sm mt-2">Run the business features SQL script to add sample testimonials.</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = data.map(testimonial => {
+            const stars = '★'.repeat(testimonial.rating) + '☆'.repeat(5 - testimonial.rating);
+            return `
+                <div class="liquid-glass-card p-8 text-center">
+                    <div class="mb-6">
+                        <div class="text-yellow-400 text-xl mb-4">${stars}</div>
+                        <blockquote class="text-white/90 italic mb-6 text-lg">
+                            "${testimonial.testimonial_text}"
+                        </blockquote>
+                    </div>
+                    
+                    <div class="border-t border-white/20 pt-6">
+                        <div class="font-semibold text-white">${testimonial.client_name}</div>
+                        <div class="text-white/80 text-sm">${testimonial.client_title || ''}</div>
+                        <div class="text-white/70 font-medium mt-1">${testimonial.company_name}</div>
+                        ${testimonial.location ? `<div class="text-white/60 text-sm mt-1">${testimonial.location}</div>` : ''}
+                    </div>
+                    
+                    ${testimonial.results_achieved ? `
+                        <div class="mt-4 bg-white/10 rounded-lg p-4">
+                            <div class="text-white/80 text-sm font-semibold mb-2">Results Achieved:</div>
+                            <div class="text-white/70 text-sm">${testimonial.results_achieved}</div>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }).join('');
+
+    } catch (error) {
+        console.error('Unexpected error loading testimonials:', error);
+    }
+}
+*/
+
+/* 
+async function loadCaseStudiesPreview() {
+    if (!supabaseClient) return;
+
+    try {
+        const { data, error } = await supabaseClient
+            .from('published_case_studies')
+            .select('*')
+            .eq('is_featured', true)
+            .limit(2);
+
+        if (error) {
+            console.error('Error loading case studies:', error);
+            return;
+        }
+
+        const container = document.getElementById('case-studies-preview');
+        if (!container) return;
+
+        if (!data || data.length === 0) {
+            container.innerHTML = `
+                <div class="col-span-full text-center text-white/80 py-8">
+                    <p>Case studies will be displayed here once available.</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = data.map(study => `
+            <div class="liquid-glass-card p-8">
+                <h4 class="text-xl font-bold text-white mb-4">${study.title}</h4>
+                <p class="text-white/80 mb-4">${study.subtitle || ''}</p>
+                
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div>
+                        <div class="text-white/60 text-sm">Industry</div>
+                        <div class="text-white font-medium">${study.industry}</div>
+                    </div>
+                    <div>
+                        <div class="text-white/60 text-sm">Location</div>
+                        <div class="text-white font-medium">${study.location || 'N/A'}</div>
+                    </div>
+                </div>
+                
+                <p class="text-white/80 text-sm mb-6">${study.challenge_preview}...</p>
+                
+                ${study.key_metrics ? `
+                    <div class="bg-white/10 rounded-lg p-4 mb-6">
+                        <div class="text-white/80 text-sm font-semibold mb-2">Key Results:</div>
+                        <div class="grid grid-cols-2 gap-2 text-sm">
+                            ${Object.entries(JSON.parse(study.key_metrics)).slice(0, 4).map(([key, value]) => 
+                                `<div class="text-white/70">${key.replace(/_/g, ' ')}: <span class="text-white font-medium">${value}</span></div>`
+                            ).join('')}
+                        </div>
+                    </div>
+                ` : ''}
+                
+                <button onclick="viewCaseStudy('${study.slug}')" class="liquid-glass-button w-full py-2 text-white">
+                    Read Full Case Study
+                </button>
+            </div>
+        `).join('');
+
+    } catch (error) {
+        console.error('Unexpected error loading case studies:', error);
+    }
+}
+*/
+
+/* 
+async function handleNewsletterSubmission(event) {
+    event.preventDefault();
+    
+    if (!supabaseClient) {
+        toastManager.show('Newsletter service unavailable', 'error');
+        return;
+    }
+
+    const form = event.target;
+    const formData = new FormData(form);
+    const email = formData.get('email')?.trim().toLowerCase();
+
+    if (!email) {
+        toastManager.show('Please enter your email address', 'error');
+        return;
+    }
+
+    // Email validation
+    const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+    if (!emailRegex.test(email)) {
+        toastManager.show('Please enter a valid email address', 'error');
+        return;
+    }
+
+    try {
+        // Show loading state
+        const submitButton = form.querySelector('button[type="submit"]');
+        const originalText = submitButton.textContent;
+        submitButton.textContent = 'Subscribing...';
+        submitButton.disabled = true;
+
+        const { data, error } = await supabaseClient
+            .from('newsletter_subscriptions')
+            .insert([{
+                email: email,
+                subscription_source: 'website',
+                interests: ['water_treatment', 'case_studies', 'technology_updates']
+            }])
+            .select('id');
+
+        if (error) {
+            console.error('Newsletter subscription error:', error);
+            
+            if (error.message.includes('duplicate')) {
+                toastManager.show('You are already subscribed to our newsletter!', 'info');
+            } else {
+                toastManager.show('There was an error subscribing. Please try again.', 'error');
+            }
+            return;
+        }
+
+        // Success!
+        toastManager.show('Thank you for subscribing! You\'ll receive our latest updates soon.', 'success');
+        form.reset();
+
+    } catch (error) {
+        console.error('Unexpected newsletter error:', error);
+        toastManager.show('An unexpected error occurred. Please try again.', 'error');
+        
+    } finally {
+        // Restore button state
+        const submitButton = form.querySelector('button[type="submit"]');
+        if (submitButton) {
+            submitButton.textContent = 'Subscribe';
+            submitButton.disabled = false;
+        }
+    }
+}
+*/
+
+/* 
+function viewCaseStudy(slug) {
+    // In a full implementation, this would navigate to a dedicated case study page
+    toastManager.show(`Case study "${slug}" - Full page coming soon!`, 'info');
+}
+
+function viewAllCaseStudies() {
+    // In a full implementation, this would navigate to a case studies index page
+    toastManager.show('Case studies index page coming soon!', 'info');
+}
+
+// Create bubbles for testimonials section
+function createTestimonialsBubbles() {
+    const container = document.getElementById('bubble-container-testimonials');
+    if (!container) return;
+
+    for (let i = 0; i < 25; i++) {
+        setTimeout(() => {
+            createBubble(container);
+        }, i * 150);
+    }
+}
+*/
+
+// Initialize form enhancements on page load
+document.addEventListener('DOMContentLoaded', () => {
+    setupCharacterCounters();
+    setupRealtimeValidation();
+    
+    // Set initial counter values
+    document.querySelectorAll('.char-counter').forEach(counter => {
+        const fieldId = counter.id.replace('-counter', '');
+        const field = document.getElementById(fieldId);
+        if (field) {
+            const max = field.getAttribute('maxlength');
+            counter.textContent = `0 / ${max}`;
+        }
+    });
+
+    // Load business content - DISABLED FOR PHASE III UI/UX POLISH
+    // loadTestimonials();
+    // loadCaseStudiesPreview();
+    // createTestimonialsBubbles();
+});
+</script>
+
+</body>
+</html>
