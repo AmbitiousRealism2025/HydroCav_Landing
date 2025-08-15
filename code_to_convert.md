@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The HydroLoop by HydroCav | Advanced Water Purification</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Custom styles to apply the Inter font */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* Tailwind gray-50 */
+        }
+        /* Custom shadow for a softer, more modern look */
+        .custom-shadow {
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.07);
+        }
+        .custom-shadow-hover {
+            box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -2px rgb(0 0 0 / 0.1);
+        }
+        /* Style for the title underline */
+        .title-underline {
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+        .title-underline::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 4px;
+            background-color: #0ea5e9; /* Tailwind sky-500 */
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body class="text-gray-700 antialiased">
+
+    <!-- Header Section -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold text-gray-800">
+                Hydro<span class="text-sky-500">Loop</span>
+            </div>
+            <div class="text-sm font-semibold text-gray-600">by HydroCav</div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-6 py-8 md:py-12">
+
+        <!-- Hero Section -->
+        <section class="text-center mb-16">
+            <h1 class="text-4xl md:text-5xl font-extrabold text-gray-800 mb-4">Advanced Water Purification & Enhancement</h1>
+            <p class="max-w-4xl mx-auto text-lg text-gray-600">
+                The HydroLoop is a multi-stage water treatment system centered around the patented HydroCav device. It utilizes HydroDynamic Cavitation to purify and enhance water, offering a state-of-the-art solution for the Recreational Chlorine spectrum.
+            </p>
+        </section>
+
+        <!-- Key Benefits Section -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold text-gray-800 mb-8 title-underline">Key Benefits & Advantages</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Benefit Card: Cost Savings -->
+                <div class="bg-white p-6 rounded-lg custom-shadow hover:custom-shadow-hover transform hover:-translate-y-2 transition-all duration-300 ease-in-out">
+                    <div class="flex items-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-sky-500 mr-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v.01" /></svg>
+                        <h3 class="text-xl font-bold text-gray-800">Significant Cost Savings</h3>
+                    </div>
+                    <p class="text-gray-600">Experience drastically reduced toxic chemical usage and lower labor time and requirements.</p>
+                </div>
+                <!-- Benefit Card: Efficiency -->
+                <div class="bg-white p-6 rounded-lg custom-shadow hover:custom-shadow-hover transform hover:-translate-y-2 transition-all duration-300 ease-in-out">
+                    <div class="flex items-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-sky-500 mr-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
+                        <h3 class="text-xl font-bold text-gray-800">Enhanced Efficiency</h3>
+                    </div>
+                    <p class="text-gray-600">Provides numerous operational benefits and ensures smooth, uninterrupted water treatment.</p>
+                </div>
+                <!-- Benefit Card: Failsafe -->
+                <div class="bg-white p-6 rounded-lg custom-shadow hover:custom-shadow-hover transform hover:-translate-y-2 transition-all duration-300 ease-in-out">
+                    <div class="flex items-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-sky-500 mr-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+                        <h3 class="text-xl font-bold text-gray-800">Failsafe Protection</h3>
+                    </div>
+                    <p class="text-gray-600">Protects against unforeseen failures and human error, reducing liability and preserving your brand.</p>
+                </div>
+                <!-- Benefit Card: Durability -->
+                <div class="bg-white p-6 rounded-lg custom-shadow hover:custom-shadow-hover transform hover:-translate-y-2 transition-all duration-300 ease-in-out">
+                    <div class="flex items-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-sky-500 mr-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg>
+                        <h3 class="text-xl font-bold text-gray-800">Unmatched Durability</h3>
+                    </div>
+                    <p class="text-gray-600">Constructed from marine-grade materials like copper/nickel, brass, and stainless steel for extreme quality.</p>
+                </div>
+                <!-- Benefit Card: Maintenance -->
+                <div class="bg-white p-6 rounded-lg custom-shadow hover:custom-shadow-hover transform hover:-translate-y-2 transition-all duration-300 ease-in-out">
+                    <div class="flex items-center mb-4">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-sky-500 mr-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
+                        <h3 class="text-xl font-bold text-gray-800">Simplified Maintenance</h3>
+                    </div>
+                    <p class="text-gray-600">Features a lightweight two-part design with simplistic procedures, adaptable to any setup.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Versatile Design Section -->
+        <section class="mb-16 bg-white p-8 rounded-lg custom-shadow">
+            <h2 class="text-3xl font-bold text-gray-800 mb-6 title-underline">Versatile Design & Sizing</h2>
+            <p class="mb-6 text-gray-600">The HydroLoop is engineered for ultimate flexibility, ensuring a perfect fit for any new or existing plumbing configuration.</p>
+            <div class="grid md:grid-cols-3 gap-6 text-center">
+                <div class="border border-gray-200 p-6 rounded-lg bg-gray-50">
+                    <h4 class="font-bold text-lg text-sky-600">1.5-inch Model</h4>
+                    <p class="text-sm">Ideal for smaller residential inground and above-ground pools.</p>
+                </div>
+                <div class="border border-gray-200 p-6 rounded-lg bg-gray-50">
+                    <h4 class="font-bold text-lg text-sky-600">2-inch Model</h4>
+                    <p class="text-sm">Perfect for larger residential pools and smaller commercial pools.</p>
+                </div>
+                <div class="border border-gray-200 p-6 rounded-lg bg-gray-50">
+                    <h4 class="font-bold text-lg text-sky-600">2.5-inch Industrial</h4>
+                    <p class="text-sm">Designed to accommodate much larger pools running up to 3-inch pipe.</p>
+                </div>
+            </div>
+            <p class="mt-6 text-gray-600">Its design allows for configuration in different directions (left/right) and a vertical option is available for setups where pipe runs along the ceiling.</p>
+        </section>
+
+        <!-- Advanced Features Grid -->
+        <section class="mb-16">
+            <h2 class="text-3xl font-bold text-gray-800 mb-8 title-underline">Advanced System Features</h2>
+            <div class="grid md:grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Monitoring & Safety -->
+                <article class="bg-white p-6 rounded-lg custom-shadow">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Advanced Monitoring & Safety</h3>
+                    <ul class="space-y-4 text-gray-600">
+                        <li class="flex"><span class="text-sky-500 font-bold mr-2">▶</span><div><strong class="text-gray-700">Clear View for Instant Feedback:</strong> A custom clear PVC elbow provides a view into the unit, allowing for instant feedback on debris without depressurizing the system.</div></li>
+                        <li class="flex"><span class="text-sky-500 font-bold mr-2">▶</span><div><strong class="text-gray-700">Unique Dual Pressure Gauge:</strong> Constantly monitors optimal PSI on both high-pressure and low-pressure sides, ensuring an efficient 3-to-1 pressure differential.</div></li>
+                        <li class="flex"><span class="text-sky-500 font-bold mr-2">▶</span><div><strong class="text-gray-700">GPM Flow Meter:</strong> Assists commercial facilities in complying with government regulations requiring a minimum water turnover flow rate.</div></li>
+                    </ul>
+                </article>
+                <!-- Maintenance & Backflushing -->
+                <article class="bg-white p-6 rounded-lg custom-shadow">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Streamlined Maintenance & Backflushing</h3>
+                    <ul class="space-y-4 text-gray-600">
+                        <li class="flex"><span class="text-sky-500 font-bold mr-2">▶</span><div><strong class="text-gray-700">Quick Flush Method:</strong> A simple turn of a valve removes small debris, ensuring smooth and uninterrupted operation.</div></li>
+                        <li class="flex"><span class="text-sky-500 font-bold mr-2">▶</span><div><strong class="text-gray-700">Power Flush Method:</strong> A more aggressive method that completely flushes all debris without prolonged downtime.</div></li>
+                        <li class="flex"><span class="text-sky-500 font-bold mr-2">▶</span><div><strong class="text-gray-700">Pro Tip:</strong> The shipping bucket doubles as a collection bucket for the Power Flush.</div></li>
+                    </ul>
+                </article>
+                 <!-- Installation & Bypass -->
+                 <article class="bg-white p-6 rounded-lg custom-shadow">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Effortless Installation & Bypass</h3>
+                    <ul class="space-y-4 text-gray-600">
+                        <li class="flex"><span class="text-sky-500 font-bold mr-2">▶</span><div><strong class="text-gray-700">"One Cut Connection":</strong> A perfected, simple two-part process for fast installation, attaching directly to the pump's discharge side.</div></li>
+                        <li class="flex"><span class="text-sky-500 font-bold mr-2">▶</span><div><strong class="text-gray-700">Clear Bypass Line:</strong> Divert water away from the cavitation zone when vacuuming, preventing clogs by sending bulky debris directly to the filter.</div></li>
+                        <li class="flex"><span class="text-sky-500 font-bold mr-2">▶</span><div><strong class="text-gray-700">Uninterrupted Maintenance:</strong> Engage the bypass to allow full circulation and filtration while the top half of the unit is removed for service.</div></li>
+                    </ul>
+                </article>
+                 <!-- Commercial Integration -->
+                 <article class="bg-white p-6 rounded-lg custom-shadow">
+                    <h3 class="text-xl font-bold text-gray-800 mb-4">Unique Commercial Integration</h3>
+                     <ul class="space-y-4 text-gray-600">
+                        <li class="flex"><span class="text-sky-500 font-bold mr-2">▶</span><div><strong class="text-gray-700">Dedicated Accessory Port:</strong> A unique female threaded port allows for the quick connection of a commercial water quality monitoring and chemical distribution system.</div></li>
+                        <li class="flex"><span class="text-sky-500 font-bold mr-2">▶</span><div><strong class="text-gray-700">No Modification Needed:</strong> This feature provides a secure location to connect existing systems without drilling, tapping, or modifying your current PVC setup.</div></li>
+                    </ul>
+                </article>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white mt-12">
+        <div class="container mx-auto px-6 py-8 text-center">
+            <p>&copy; 2024 HydroCav. All rights reserved.</p>
+            <p class="text-sm text-gray-400 mt-2">The HydroLoop & HydroCav are patented technologies.</p>
+        </div>
+    </footer>
+
+</body>
+</html>
