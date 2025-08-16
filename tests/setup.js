@@ -1,6 +1,6 @@
 /**
  * Jest Test Setup File
- * 
+ *
  * Global setup for all Jest tests in the HydroCav website project.
  * This file runs before each test suite and sets up the testing environment.
  */
@@ -136,7 +136,7 @@ global.testHelpers = {
   },
 
   // Simulate form submission
-  simulateSubmit: (form) => {
+  simulateSubmit: form => {
     form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
   },
 
@@ -164,7 +164,7 @@ global.testHelpers = {
       };
       check();
     });
-  }
+  },
 };
 
 // Reset mocks before each test
@@ -178,10 +178,10 @@ beforeEach(() => {
   if (sessionStorageMock.setItem.mockClear) sessionStorageMock.setItem.mockClear();
   if (sessionStorageMock.removeItem.mockClear) sessionStorageMock.removeItem.mockClear();
   if (sessionStorageMock.clear.mockClear) sessionStorageMock.clear.mockClear();
-  
+
   // Clear document body
   document.body.innerHTML = '';
-  
+
   // Reset window object
   delete window.SecurityManager;
   delete window.XSSProtection;

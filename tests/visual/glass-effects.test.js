@@ -1,7 +1,7 @@
 /**
  * Glass Effects Performance Testing
  * Phase 5A-1: Visual Testing Infrastructure
- * 
+ *
  * Tests ensure glassmorphism effects maintain performance and visual consistency
  */
 
@@ -19,7 +19,7 @@ describe('Glass Effects Performance & Consistency', () => {
         <div class="glass-effect-test">Test Element</div>
       </div>
     `;
-    
+
     // Load CSS for testing
     const link = document.createElement('link');
     link.rel = 'stylesheet';
@@ -34,16 +34,18 @@ describe('Glass Effects Performance & Consistency', () => {
 
   describe('Glass Effect Properties Validation', () => {
     test('should apply consistent backdrop-filter values', () => {
-      const glassElements = document.querySelectorAll('.liquid-glass-card, .frosted-nav, .liquid-glass-button');
-      
+      const glassElements = document.querySelectorAll(
+        '.liquid-glass-card, .frosted-nav, .liquid-glass-button'
+      );
+
       glassElements.forEach(element => {
         const computedStyle = getComputedStyle(element);
         const backdropFilter = computedStyle.backdropFilter || computedStyle.webkitBackdropFilter;
-        
+
         // Should have backdrop-filter applied
         expect(backdropFilter).toBeTruthy();
         expect(backdropFilter).not.toBe('none');
-        
+
         // Should contain blur function
         if (backdropFilter && backdropFilter !== 'none') {
           expect(backdropFilter).toMatch(/blur\(/);
@@ -53,19 +55,19 @@ describe('Glass Effects Performance & Consistency', () => {
 
     test('should maintain consistent glass background opacity', () => {
       const glassElements = document.querySelectorAll('.liquid-glass-card, .liquid-glass-button');
-      
+
       glassElements.forEach(element => {
         const computedStyle = getComputedStyle(element);
         const backgroundColor = computedStyle.backgroundColor;
-        
+
         // Should have semi-transparent background
         expect(backgroundColor).toMatch(/rgba\(/);
-        
+
         // Extract opacity value from rgba
         const opacityMatch = backgroundColor.match(/rgba\([^,]+,[^,]+,[^,]+,\s*([^)]+)\)/);
         if (opacityMatch) {
           const opacity = parseFloat(opacityMatch[1]);
-          
+
           // Glass effects should be semi-transparent (0.1 to 0.9)
           expect(opacity).toBeGreaterThan(0.05);
           expect(opacity).toBeLessThan(0.95);
@@ -75,16 +77,16 @@ describe('Glass Effects Performance & Consistency', () => {
 
     test('should apply consistent border styling for glass definition', () => {
       const glassElements = document.querySelectorAll('.liquid-glass-card, .liquid-glass-button');
-      
+
       glassElements.forEach(element => {
         const computedStyle = getComputedStyle(element);
         const border = computedStyle.border;
         const borderRadius = computedStyle.borderRadius;
-        
+
         // Should have rounded corners for glass effect
         const radiusValue = parseFloat(borderRadius);
         expect(radiusValue).toBeGreaterThan(0);
-        
+
         // Border should be subtle or none for clean glass look
         if (border && border !== 'none') {
           expect(border).toMatch(/rgba|transparent/);
@@ -97,7 +99,7 @@ describe('Glass Effects Performance & Consistency', () => {
     test('should render glass effects within 16ms budget (60fps)', () => {
       const performanceTest = () => {
         const startTime = performance.now();
-        
+
         // Create multiple glass elements rapidly
         for (let i = 0; i < 10; i++) {
           const glassElement = document.createElement('div');
@@ -106,16 +108,16 @@ describe('Glass Effects Performance & Consistency', () => {
           glassElement.style.background = 'rgba(255, 255, 255, 0.1)';
           document.body.appendChild(glassElement);
         }
-        
+
         const endTime = performance.now();
         return endTime - startTime;
       };
-      
+
       const renderTime = performanceTest();
-      
+
       // Should render within 16ms frame budget
       expect(renderTime).toBeLessThan(16);
-      
+
       // Cleanup test elements
       document.querySelectorAll('.liquid-glass-card').forEach((el, index) => {
         if (index > 0) el.remove(); // Keep the original test element
@@ -125,32 +127,33 @@ describe('Glass Effects Performance & Consistency', () => {
     test('should maintain performance during glass effect animations', async () => {
       const glassCard = document.querySelector('.liquid-glass-card');
       expect(glassCard).toBeTruthy();
-      
+
       const frameRates = [];
       let animationRunning = true;
       let lastTime = performance.now();
-      
+
       // Simulate glass effect animation
       const animateGlass = () => {
         if (!animationRunning) return;
-        
+
         const currentTime = performance.now();
         const frameDuration = currentTime - lastTime;
         const frameRate = 1000 / frameDuration;
         frameRates.push(frameRate);
         lastTime = currentTime;
-        
+
         // Animate glass properties
         const opacity = 0.1 + Math.sin(currentTime * 0.01) * 0.1;
         glassCard.style.background = `rgba(255, 255, 255, ${opacity})`;
-        
-        if (frameRates.length < 30) { // Test 30 frames
+
+        if (frameRates.length < 30) {
+          // Test 30 frames
           requestAnimationFrame(animateGlass);
         }
       };
-      
+
       requestAnimationFrame(animateGlass);
-      
+
       // Wait for animation to complete
       await new Promise(resolve => {
         const checkComplete = () => {
@@ -163,10 +166,10 @@ describe('Glass Effects Performance & Consistency', () => {
         };
         checkComplete();
       });
-      
+
       // Calculate average frame rate
       const avgFrameRate = frameRates.reduce((a, b) => a + b, 0) / frameRates.length;
-      
+
       // Should maintain at least 55fps (allow 5fps tolerance)
       expect(avgFrameRate).toBeGreaterThan(55);
     });
@@ -176,24 +179,24 @@ describe('Glass Effects Performance & Consistency', () => {
       Object.defineProperty(window, 'innerWidth', {
         writable: true,
         configurable: true,
-        value: 375
+        value: 375,
       });
-      
+
       // Trigger responsive recalculation
       window.dispatchEvent(new Event('resize'));
-      
+
       const glassElements = document.querySelectorAll('.liquid-glass-card');
-      
+
       glassElements.forEach(element => {
         const computedStyle = getComputedStyle(element);
         const backdropFilter = computedStyle.backdropFilter || computedStyle.webkitBackdropFilter;
-        
+
         if (backdropFilter && backdropFilter !== 'none') {
           // Mobile glass effects should use lighter blur for performance
           const blurMatch = backdropFilter.match(/blur\(([^)]+)\)/);
           if (blurMatch) {
             const blurValue = parseFloat(blurMatch[1]);
-            
+
             // Mobile blur should be lighter (≤10px for better performance)
             expect(blurValue).toBeLessThanOrEqual(12);
           }
@@ -205,16 +208,17 @@ describe('Glass Effects Performance & Consistency', () => {
   describe('Cross-Browser Glass Effect Compatibility', () => {
     test('should provide webkit fallbacks for backdrop-filter', () => {
       const glassElements = document.querySelectorAll('.liquid-glass-card, .liquid-glass-button');
-      
+
       glassElements.forEach(element => {
         const computedStyle = getComputedStyle(element);
         const backdropFilter = computedStyle.backdropFilter;
         const webkitBackdropFilter = computedStyle.webkitBackdropFilter;
-        
+
         // Should have either standard or webkit backdrop-filter
-        const hasBackdropFilter = (backdropFilter && backdropFilter !== 'none') ||
-                                 (webkitBackdropFilter && webkitBackdropFilter !== 'none');
-        
+        const hasBackdropFilter =
+          (backdropFilter && backdropFilter !== 'none') ||
+          (webkitBackdropFilter && webkitBackdropFilter !== 'none');
+
         expect(hasBackdropFilter).toBe(true);
       });
     });
@@ -226,15 +230,15 @@ describe('Glass Effects Performance & Consistency', () => {
       testElement.style.backdropFilter = 'none';
       testElement.style.webkitBackdropFilter = 'none';
       document.body.appendChild(testElement);
-      
+
       const computedStyle = getComputedStyle(testElement);
       const backgroundColor = computedStyle.backgroundColor;
-      
+
       // Should still have background color for visual effect
       expect(backgroundColor).toBeTruthy();
       expect(backgroundColor).not.toBe('rgba(0, 0, 0, 0)');
       expect(backgroundColor).not.toBe('transparent');
-      
+
       testElement.remove();
     });
   });
@@ -242,18 +246,18 @@ describe('Glass Effects Performance & Consistency', () => {
   describe('Glass Effect Accessibility', () => {
     test('should maintain sufficient contrast for text on glass backgrounds', () => {
       const glassCards = document.querySelectorAll('.liquid-glass-card');
-      
+
       glassCards.forEach(card => {
         const textElements = card.querySelectorAll('h1, h2, h3, p, button, a');
-        
+
         textElements.forEach(textElement => {
           const computedStyle = getComputedStyle(textElement);
           const color = computedStyle.color;
-          
+
           // Text should not be transparent
           expect(color).not.toBe('rgba(0, 0, 0, 0)');
           expect(color).not.toBe('transparent');
-          
+
           // Should have sufficient opacity for readability
           if (color.includes('rgba')) {
             const opacityMatch = color.match(/rgba\([^,]+,[^,]+,[^,]+,\s*([^)]+)\)/);
@@ -281,14 +285,14 @@ describe('Glass Effects Performance & Consistency', () => {
           dispatchEvent: jest.fn(),
         })),
       });
-      
+
       const glassCard = document.querySelector('.liquid-glass-card');
       expect(glassCard).toBeTruthy();
-      
+
       // Glass effects should still work but without aggressive animations
       const computedStyle = getComputedStyle(glassCard);
       const transition = computedStyle.transition;
-      
+
       // Should either have no transition or very quick transitions for reduced motion
       if (transition && transition !== 'none') {
         // Transition duration should be minimal for reduced motion
@@ -300,14 +304,14 @@ describe('Glass Effects Performance & Consistency', () => {
   describe('Glass Effect Custom Properties', () => {
     test('should implement CSS custom properties for glass effect consistency', () => {
       const rootStyles = getComputedStyle(document.documentElement);
-      
+
       const glassProps = [
         '--glass-blur-light',
-        '--glass-blur-medium', 
+        '--glass-blur-medium',
         '--glass-blur-heavy',
         '--glass-opacity-light',
         '--glass-opacity-medium',
-        '--glass-opacity-heavy'
+        '--glass-opacity-heavy',
       ];
 
       // Check if glass custom properties exist
@@ -316,14 +320,14 @@ describe('Glass Effects Performance & Consistency', () => {
         const value = rootStyles.getPropertyValue(prop);
         if (value) {
           hasGlassTokens = true;
-          
+
           if (prop.includes('blur')) {
             // Blur values should be reasonable (2px to 20px)
             const blurValue = parseFloat(value);
             expect(blurValue).toBeGreaterThan(1);
             expect(blurValue).toBeLessThan(25);
           }
-          
+
           if (prop.includes('opacity')) {
             // Opacity values should be between 0 and 1
             const opacityValue = parseFloat(value);
@@ -332,19 +336,19 @@ describe('Glass Effects Performance & Consistency', () => {
           }
         }
       });
-      
+
       // If tokens don't exist yet, that's okay - this test will pass when they're implemented
       expect(true).toBe(true); // Always pass for now, actual validation when tokens exist
     });
 
     test('should validate glass effect token usage in components', () => {
       const glassElements = document.querySelectorAll('.liquid-glass-card, .liquid-glass-button');
-      
+
       // This test validates that when tokens exist, they are used consistently
       glassElements.forEach(element => {
         const computedStyle = getComputedStyle(element);
         const backdropFilter = computedStyle.backdropFilter || computedStyle.webkitBackdropFilter;
-        
+
         // For now, just ensure glass effects exist
         // Future: validate that components use design tokens
         expect(backdropFilter).toBeTruthy();

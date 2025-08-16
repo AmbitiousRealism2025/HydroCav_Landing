@@ -1,0 +1,5 @@
+# Run lint-staged for performance-optimized quality checks
+npx lint-staged
+
+# Run fast security tests (< 2 seconds target)  
+npm run test:security:fast

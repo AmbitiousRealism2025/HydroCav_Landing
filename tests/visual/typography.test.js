@@ -1,7 +1,7 @@
 /**
  * Typography Hierarchy Testing
  * Phase 5A-1: Visual Testing Infrastructure
- * 
+ *
  * Tests ensure consistent typography scale and hierarchy across components
  */
 
@@ -20,7 +20,7 @@ describe('Typography Hierarchy Implementation', () => {
         <div class="section-subtitle">Section Subtitle</div>
       </div>
     `;
-    
+
     // Load CSS for testing
     const link = document.createElement('link');
     link.rel = 'stylesheet';
@@ -37,13 +37,13 @@ describe('Typography Hierarchy Implementation', () => {
     test('should follow consistent font size progression', () => {
       const expectedScale = {
         // Base scale ratios (1.25 - Major Third, aligned with 8pt grid)
-        small: 12,     // 0.75rem - Small text
-        base: 16,      // 1rem - Base text (8pt grid aligned)
-        medium: 18,    // 1.125rem - Medium text
-        large: 20,     // 1.25rem - Large text  
-        xl: 24,        // 1.5rem - XL text (8pt grid aligned)
-        xxl: 32,       // 2rem - XXL text (8pt grid aligned)
-        hero: 40       // 2.5rem - Hero text (8pt grid aligned)
+        small: 12, // 0.75rem - Small text
+        base: 16, // 1rem - Base text (8pt grid aligned)
+        medium: 18, // 1.125rem - Medium text
+        large: 20, // 1.25rem - Large text
+        xl: 24, // 1.5rem - XL text (8pt grid aligned)
+        xxl: 32, // 2rem - XXL text (8pt grid aligned)
+        hero: 40, // 2.5rem - Hero text (8pt grid aligned)
       };
 
       const elements = {
@@ -52,14 +52,14 @@ describe('Typography Hierarchy Implementation', () => {
         h3: document.querySelector('h3'),
         h2: document.querySelector('h2'),
         h1: document.querySelector('h1'),
-        hero: document.querySelector('.hero-title')
+        hero: document.querySelector('.hero-title'),
       };
 
       Object.entries(elements).forEach(([key, element]) => {
         if (element) {
           const computedStyle = getComputedStyle(element);
           const fontSize = Math.round(parseFloat(computedStyle.fontSize));
-          
+
           // Allow for some browser rounding tolerance (±1px)
           const expectedSize = expectedScale[key] || expectedScale.base;
           expect(Math.abs(fontSize - expectedSize)).toBeLessThanOrEqual(2);
@@ -69,15 +69,15 @@ describe('Typography Hierarchy Implementation', () => {
 
     test('should maintain consistent line height ratios', () => {
       const elements = document.querySelectorAll('h1, h2, h3, p, .hero-title');
-      
+
       elements.forEach(element => {
         const computedStyle = getComputedStyle(element);
         const fontSize = parseFloat(computedStyle.fontSize);
         const lineHeight = parseFloat(computedStyle.lineHeight);
-        
+
         if (fontSize > 0 && lineHeight > 0) {
           const lineHeightRatio = lineHeight / fontSize;
-          
+
           // Line height should be between 1.2 and 1.6 for readability
           expect(lineHeightRatio).toBeGreaterThanOrEqual(1.1);
           expect(lineHeightRatio).toBeLessThanOrEqual(1.7);
@@ -112,20 +112,21 @@ describe('Typography Hierarchy Implementation', () => {
         h1: [700, 800], // Bold to ExtraBold
         h2: [600, 700], // SemiBold to Bold
         h3: [500, 600], // Medium to SemiBold
-        p: [400, 500],  // Normal to Medium
-        small: [400],   // Normal
-        button: [500, 600] // Medium to SemiBold
+        p: [400, 500], // Normal to Medium
+        small: [400], // Normal
+        button: [500, 600], // Medium to SemiBold
       };
 
       Object.entries(expectedWeights).forEach(([tag, validWeights]) => {
-        const element = document.querySelector(tag) || 
-                       document.querySelector(`.${tag}`) ||
-                       document.querySelector(`[class*="${tag}"]`);
-        
+        const element =
+          document.querySelector(tag) ||
+          document.querySelector(`.${tag}`) ||
+          document.querySelector(`[class*="${tag}"]`);
+
         if (element) {
           const computedStyle = getComputedStyle(element);
           const fontWeight = parseInt(computedStyle.fontWeight);
-          
+
           expect(validWeights).toContain(fontWeight);
         }
       });
@@ -133,11 +134,11 @@ describe('Typography Hierarchy Implementation', () => {
 
     test('should maintain font family consistency', () => {
       const elements = document.querySelectorAll('h1, h2, h3, p, button, small');
-      
+
       elements.forEach(element => {
         const computedStyle = getComputedStyle(element);
         const fontFamily = computedStyle.fontFamily.toLowerCase();
-        
+
         // Should use Inter font family
         expect(fontFamily).toMatch(/inter|system-ui|sans-serif/);
       });
@@ -148,19 +149,19 @@ describe('Typography Hierarchy Implementation', () => {
     test('should scale typography appropriately across breakpoints', () => {
       const breakpoints = [
         { width: 320, name: 'mobile' },
-        { width: 768, name: 'tablet' },  
-        { width: 1024, name: 'desktop' }
+        { width: 768, name: 'tablet' },
+        { width: 1024, name: 'desktop' },
       ];
 
       const heroTitle = document.querySelector('h1') || document.querySelector('.hero-title');
-      
+
       if (heroTitle) {
         breakpoints.forEach(({ width, name }) => {
           // Mock viewport width
           Object.defineProperty(window, 'innerWidth', {
             writable: true,
             configurable: true,
-            value: width
+            value: width,
           });
 
           // Trigger responsive recalculation
@@ -181,22 +182,22 @@ describe('Typography Hierarchy Implementation', () => {
 
     test('should maintain readability at all breakpoints', () => {
       const breakpoints = [320, 768, 1024, 1440];
-      
+
       breakpoints.forEach(width => {
         Object.defineProperty(window, 'innerWidth', {
           writable: true,
           configurable: true,
-          value: width
+          value: width,
         });
 
         const bodyText = document.querySelector('p');
         if (bodyText) {
           const computedStyle = getComputedStyle(bodyText);
           const fontSize = parseFloat(computedStyle.fontSize);
-          
+
           // Body text should never be smaller than 14px for readability
           expect(fontSize).toBeGreaterThanOrEqual(14);
-          
+
           // Body text should never be larger than 20px for scanning
           expect(fontSize).toBeLessThanOrEqual(20);
         }
@@ -207,7 +208,7 @@ describe('Typography Hierarchy Implementation', () => {
   describe('Typography Custom Properties', () => {
     test('should implement CSS custom properties for typography scale', () => {
       const rootStyles = getComputedStyle(document.documentElement);
-      
+
       const typographyProps = [
         '--text-xs',
         '--text-sm',
@@ -215,7 +216,7 @@ describe('Typography Hierarchy Implementation', () => {
         '--text-lg',
         '--text-xl',
         '--text-2xl',
-        '--text-3xl'
+        '--text-3xl',
       ];
 
       // Check if typography custom properties exist and follow 8pt grid
@@ -223,12 +224,11 @@ describe('Typography Hierarchy Implementation', () => {
         const value = rootStyles.getPropertyValue(prop);
         if (value) {
           const pxValue = parseFloat(value) * 16; // Convert rem to px (assuming 16px base)
-          
+
           // Typography should align with 8pt grid when possible
           // Allow some flexibility for optimal reading sizes
-          const isValid8ptOrOptimal = (pxValue % 8 === 0) || 
-                                     [14, 18].includes(pxValue); // Common optimal reading sizes
-          
+          const isValid8ptOrOptimal = pxValue % 8 === 0 || [14, 18].includes(pxValue); // Common optimal reading sizes
+
           expect(isValid8ptOrOptimal).toBe(true);
         }
       });
@@ -251,7 +251,7 @@ describe('Typography Hierarchy Implementation', () => {
     test('should not cause layout thrashing during font loading', () => {
       // Simulate font loading scenario
       const startTime = performance.now();
-      
+
       // Add multiple text elements rapidly
       for (let i = 0; i < 100; i++) {
         const textElement = document.createElement('p');
@@ -259,13 +259,13 @@ describe('Typography Hierarchy Implementation', () => {
         textElement.className = 'performance-test';
         document.body.appendChild(textElement);
       }
-      
+
       const endTime = performance.now();
       const renderTime = endTime - startTime;
-      
+
       // Should complete text rendering quickly
       expect(renderTime).toBeLessThan(50); // 50ms threshold
-      
+
       // Cleanup
       document.querySelectorAll('.performance-test').forEach(el => el.remove());
     });
@@ -278,11 +278,11 @@ describe('Typography Hierarchy Implementation', () => {
         <p>Paragraph with <strong>bold</strong> and <em>italic</em> text.</p>
         <small>Small text with <code>code</code> elements.</small>
       `;
-      
+
       const startTime = performance.now();
       document.body.appendChild(complexElement);
       const endTime = performance.now();
-      
+
       const renderTime = endTime - startTime;
       expect(renderTime).toBeLessThan(20); // Fast rendering threshold
     });
