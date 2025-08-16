@@ -41,6 +41,10 @@
                 
                 // Get secure Supabase client
                 window.supabaseClient = security.getSupabaseClient();
+                
+                // Initialize UX enhancements after security
+                const uxModule = await import('./assets/js/ux-enhancements.js');
+                console.log('UX enhancements loaded');
             } catch (error) {
                 console.error('Failed to initialize security:', error);
             }
