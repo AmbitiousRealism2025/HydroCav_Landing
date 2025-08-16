@@ -332,6 +332,7 @@
             text-decoration: none;
             padding: 12px 28px; /* Slightly smaller padding for nav */
             font-size: 0.95rem;
+            text-align: center; /* Ensure text is centered */
         }
 
         .liquid-glass-button-large {
@@ -365,6 +366,20 @@
             transform: translateY(1px) scale(0.98);
             box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.2);
             background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Red variant for Request Quote button */
+        .liquid-glass-button-red {
+            background-color: rgba(220, 38, 38, 0.7); /* #dc2626 with opacity */
+        }
+
+        .liquid-glass-button-red:hover {
+            background-color: rgba(220, 38, 38, 0.85);
+            box-shadow: 0 12px 40px 0 rgba(220, 38, 38, 0.3);
+        }
+
+        .liquid-glass-button-red:active {
+            background-color: rgba(220, 38, 38, 0.6);
         }
 
         /* --- Liquid Glass Card Style --- */
@@ -403,6 +418,131 @@
             line-height: 1.6;
         }
 
+        /* Center section titles */
+        .title-underline {
+            text-align: center;
+        }
+
+        /* Center text in Versatile Design & Sizing section */
+        .custom-shadow p {
+            text-align: center;
+        }
+
+        /* Blue card style for sizing options */
+        .sizing-card {
+            background-color: rgba(107, 175, 220, 0.2);
+            backdrop-filter: blur(12px) saturate(150%);
+            -webkit-backdrop-filter: blur(12px) saturate(150%);
+            border: 1px solid rgba(107, 175, 220, 0.3);
+            border-radius: 24px;
+            color: white;
+        }
+
+        .sizing-card h4 {
+            color: white;
+        }
+
+        /* Center sizing cards on mobile devices */
+        @media (max-width: 768px) {
+            .sizing-card {
+                margin-left: auto;
+                margin-right: auto;
+                max-width: 300px;
+            }
+        }
+
+        /* --- Advanced Features Grid --- */
+        .advanced-features-grid {
+            display: grid;
+            /* Modern CSS Grid with responsive auto-fit columns */
+            grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));
+            /* Content-first layout with auto-sizing rows */
+            grid-auto-rows: minmax(300px, auto);
+            /* Responsive gap using clamp for fluid spacing */
+            gap: clamp(1rem, 2.5vw, 2rem);
+            /* Constrained max-width with responsive padding */
+            max-width: min(1400px, 95vw);
+            margin: 0 auto;
+            padding: 0 clamp(1rem, 2.5vw, 2rem);
+            /* Center cards on mobile screens */
+            justify-items: center;
+        }
+
+        /* Enhanced feature cards with flexible height */
+        .liquid-glass-card.feature-card {
+            /* Set minimum height for better content visibility */
+            min-height: 300px;
+            /* Allow cards to expand based on content */
+            height: auto;
+        }
+/* Tablet and up - left-align cards */
+@media (min-width: 768px) {
+    .advanced-features-grid {
+        justify-items: start; /* Left-align cards on tablets and up */
+    }
+}
+
+/* Desktop-specific optimizations */
+@media (min-width: 1200px) {
+    .advanced-features-grid {
+        grid-template-columns: repeat(auto-fit, minmax(350px, 400px));
+        justify-content: center;
+        justify-items: start; /* Left-align cards on desktop */
+        gap: clamp(1.5rem, 3vw, 3rem);
+        max-width: 1500px;
+    }
+}
+
+/* Ultra-wide display handling */
+@media (min-width: 1600px) {
+    .advanced-features-grid {
+        grid-template-columns: repeat(4, minmax(350px, 400px));
+        gap: 2.5rem;
+    }
+}
+
+/* 4K and larger displays */
+@media (min-width: 2000px) {
+    .advanced-features-grid {
+        grid-template-columns: repeat(5, 380px);
+        gap: 3rem;
+    }
+}
+
+/* Performance optimizations */
+.feature-card {
+    contain: layout style;
+    content-visibility: auto;
+    contain-intrinsic-size: 0 300px;
+    will-change: transform;
+    backface-visibility: hidden;
+}
+
+        /* Fallback for browsers that don't support aspect-ratio */
+        @supports not (aspect-ratio: 1.2 / 1) {
+            .liquid-glass-card.feature-card {
+                /* Fallback to flexible height for older browsers */
+                min-height: 300px;
+                height: auto;
+            }
+            
+            .liquid-glass-card.feature-card .card-content {
+                /* Normal positioning for content */
+                position: static;
+                width: auto;
+                height: auto;
+            }
+        }
+
+        /* Fallback for browsers that don't support clamp() */
+        @supports not (width: clamp(1rem, 2.5vw, 2rem)) {
+            .advanced-features-grid {
+                /* Use fixed values for gap and padding in older browsers */
+                gap: 1.5rem;
+                padding: 0 1.5rem;
+            }
+        }
+
         /* --- Enhanced Navigation Menu Styles - Minimalist with Red Accent --- */
         .menu-link {
             position: relative;
@@ -417,6 +557,8 @@
             color: #ffffff;
             text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
             text-decoration: none;
+            text-align: center; /* Ensure text centering */
+            white-space: nowrap; /* Prevent text wrapping */
             cursor: pointer;
             outline: none;
             overflow: visible; /* Changed to show underline */
@@ -596,6 +738,87 @@
             }
         }
 
+        /* --- Navigation Layout for HydroLoop page --- */
+        .nav-logo-center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+        }
+
+
+        .nav-return-button {
+            position: absolute;
+            left: 2rem; /* Default left padding */
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
+        }
+
+        .nav-quote-button {
+            position: absolute;
+            right: 2rem; /* Default right padding */
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
+        }
+
+        /* Medium screens and up */
+        @media (min-width: 768px) and (max-width: 1023px) {
+            .nav-return-button {
+                left: max(2rem, calc((50% - 200px) / 2)); /* Center between edge and logo */
+            }
+            
+            .nav-quote-button {
+                right: max(2rem, calc((50% - 200px) / 2)); /* Mirror position on right */
+            }
+        }
+
+        /* Large screens */
+        @media (min-width: 1024px) {
+            .nav-return-button {
+                left: max(3rem, calc((50% - 200px) / 2)); /* Center with more padding */
+            }
+            
+            .nav-quote-button {
+                right: max(3rem, calc((50% - 200px) / 2)); /* Mirror position on right */
+            }
+        }
+
+        /* Mobile adjustments for navigation */
+        @media (max-width: 767px) {
+            .nav-return-button {
+                left: 1rem; /* Keep button close to edge on mobile */
+            }
+            
+            .nav-quote-button {
+                right: 1rem; /* Mirror position on right */
+            }
+
+            .nav-return-button .liquid-glass-button,
+            .nav-quote-button .liquid-glass-button {
+                padding: 10px 16px;
+                font-size: 0.875rem;
+            }
+        }
+
+        /* Extra small mobile - stack buttons */
+        @media (max-width: 480px) {
+            .nav-return-button {
+                left: 0.5rem;
+            }
+            
+            .nav-quote-button {
+                right: 0.5rem;
+            }
+
+            .nav-return-button .liquid-glass-button,
+            .nav-quote-button .liquid-glass-button {
+                padding: 8px 12px;
+                font-size: 0.75rem;
+            }
+        }
+
         /* --- Frosted Glass Navigation --- */
         nav.frosted-nav {
             /* Multi-layer frosted glass background with HydroCav blue tinting */
@@ -731,11 +954,14 @@
           background: linear-gradient(135deg,
             rgba(255, 255, 255, 0.3) 0%,
             rgba(255, 255, 255, 0.1) 100%);
+          mask:
+             linear-gradient(#fff 0 0) content-box,
+             linear-gradient(#fff 0 0);
           -webkit-mask:
              linear-gradient(#fff 0 0) content-box,
              linear-gradient(#fff 0 0);
           -webkit-mask-composite: xor;
-                  mask-composite: exclude;
+          mask-composite: exclude;
         }
 
         /* === PHASE 2A ENHANCEMENTS === */
