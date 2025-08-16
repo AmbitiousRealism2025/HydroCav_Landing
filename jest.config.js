@@ -8,7 +8,7 @@
  * - Supabase integration functions
  */
 
-module.exports = {
+export default {
   // Test environment - use jsdom for DOM testing
   testEnvironment: 'jsdom',
   
