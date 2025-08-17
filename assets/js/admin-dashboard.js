@@ -676,6 +676,32 @@ function setupAdditionalEventListeners() {
       document.querySelector(`[data-tab-content="${targetTab}"]`).style.display = 'block';
     });
   });
+
+  // Header button event listeners - PHASE 5: CSP compliance
+  const emailSettingsBtn = document.getElementById('email-settings-btn');
+  if (emailSettingsBtn) {
+    emailSettingsBtn.addEventListener('click', showEmailSettings);
+  }
+
+  const exportDataBtn = document.getElementById('export-data-btn');
+  if (exportDataBtn) {
+    exportDataBtn.addEventListener('click', exportData);
+  }
+
+  const refreshDataBtn = document.getElementById('refresh-data-btn');
+  if (refreshDataBtn) {
+    refreshDataBtn.addEventListener('click', refreshData);
+  }
+
+  const logoutBtnHeader = document.getElementById('logout-btn-header');
+  if (logoutBtnHeader) {
+    logoutBtnHeader.addEventListener('click', handleLogout);
+  }
+
+  const applyFiltersBtn = document.getElementById('apply-filters-btn');
+  if (applyFiltersBtn) {
+    applyFiltersBtn.addEventListener('click', applyFilters);
+  }
 }
 
 // Export global functions for HTML onclick handlers

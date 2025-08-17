@@ -13,6 +13,20 @@
     <!-- Supabase JavaScript Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
+    <!-- Content Security Policy - PHASE 5: CSP hardening with no unsafe-inline -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' https://cdn.tailwindcss.com https://cdn.jsdelivr.net;
+        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com;
+        font-src 'self' https://fonts.gstatic.com;
+        img-src 'self' data: https:;
+        connect-src 'self' https://*.supabase.co;
+        form-action 'self';
+        frame-ancestors 'none';
+        base-uri 'self';
+        object-src 'none';
+    ">
+    
     <!-- Security Configuration -->
     <!-- These meta tags are injected during build/deployment -->
     <meta name="config:supabase_url" content="__SUPABASE_URL_PLACEHOLDER__">
@@ -318,7 +332,7 @@
                     If you would like to speak to someone about a quote, please include basic information about your current pool size and setup.
                 </p>
             </div>
-            <form id="contact-form" onsubmit="handleContactSubmission(event)" novalidate aria-labelledby="contact-heading">
+            <form id="contact-form" novalidate aria-labelledby="contact-heading">
                 <div class="form-group">
                     <label for="name" class="form-label">Full Name <span class="required" aria-label="required">*</span></label>
                     <input 
@@ -431,7 +445,7 @@
 <script src="assets/js/error-tracking.js"></script>
 <script src="assets/js/performance-monitoring.js"></script>
 <script src="assets/js/health-monitoring.js"></script>
-<script src="monitoring-alerts.js"></script>
+<script src="assets/js/monitoring-alerts.js"></script>
 
 <!-- Initialize Monitoring Systems -->
 <script src="assets/js/monitoring-init.js"></script>

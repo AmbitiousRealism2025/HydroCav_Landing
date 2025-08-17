@@ -323,3 +323,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Export for global access
 window.handleContactSubmission = handleContactSubmission;
+
+// CSP Compliance: Add event listener for form submission instead of inline handler
+document.addEventListener('DOMContentLoaded', () => {
+    const contactForm = document.getElementById('contact-form');
+    if (contactForm) {
+        contactForm.addEventListener('submit', handleContactSubmission);
+    }
+});

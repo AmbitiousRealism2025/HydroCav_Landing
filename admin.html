@@ -7,6 +7,19 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+    <!-- Content Security Policy - PHASE 5: CSP hardening with no unsafe-inline -->
+    <meta http-equiv="Content-Security-Policy" content="
+        default-src 'self';
+        script-src 'self' https://cdn.tailwindcss.com https://cdn.jsdelivr.net;
+        style-src 'self' 'unsafe-inline';
+        img-src 'self' data: https:;
+        connect-src 'self' https://*.supabase.co;
+        form-action 'self';
+        frame-ancestors 'none';
+        base-uri 'self';
+        object-src 'none';
+    " />
+    
     <!-- Security Configuration -->
     <!-- These meta tags are injected during build/deployment -->
     <meta name="config:supabase_url" content="__SUPABASE_URL_PLACEHOLDER__" />
@@ -154,17 +167,17 @@
               <p class="text-white/80">Manage contact submissions and business data</p>
             </div>
             <div class="flex space-x-4">
-              <button onclick="showEmailSettings()" class="liquid-glass-button px-4 py-2 text-white hover:text-white">
+              <button id="email-settings-btn" class="liquid-glass-button px-4 py-2 text-white hover:text-white">
                 Email Settings
               </button>
-              <button onclick="exportData()" class="liquid-glass-button px-4 py-2 text-white hover:text-white">
+              <button id="export-data-btn" class="liquid-glass-button px-4 py-2 text-white hover:text-white">
                 Export CSV
               </button>
-              <button onclick="refreshData()" class="liquid-glass-button px-4 py-2 text-white hover:text-white">
+              <button id="refresh-data-btn" class="liquid-glass-button px-4 py-2 text-white hover:text-white">
                 Refresh
               </button>
               <button
-                onclick="handleLogout()"
+                id="logout-btn-header"
                 class="liquid-glass-button px-4 py-2 text-white hover:text-white bg-red-500/20"
               >
                 Logout
@@ -240,7 +253,7 @@
               />
             </div>
             <div class="flex items-end">
-              <button onclick="applyFilters()" class="liquid-glass-button w-full p-2 text-white">Apply Filters</button>
+              <button id="apply-filters-btn" class="liquid-glass-button w-full p-2 text-white">Apply Filters</button>
             </div>
           </div>
         </div>

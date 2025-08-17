@@ -134,6 +134,13 @@ HTMLFormElement.prototype.checkValidity = HTMLFormElement.prototype.checkValidit
   return Array.from(inputs).every(input => input.checkValidity());
 };
 
+// Add TextEncoder/TextDecoder for Node.js environments
+if (typeof global.TextEncoder === 'undefined') {
+  const { TextEncoder, TextDecoder } = require('util');
+  global.TextEncoder = TextEncoder;
+  global.TextDecoder = TextDecoder;
+}
+
 // Global test helpers
 global.testHelpers = {
   // Create a mock HTML element
