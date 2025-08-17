@@ -1,6 +1,6 @@
 /**
  * Basic Jest Setup Test
- * 
+ *
  * Verifies that Jest testing framework is properly configured
  * and basic test functionality works.
  */

@@ -1,2 +1,83 @@
 {
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "explicit"
+  },
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "editor.detectIndentation": false,
+  
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact", 
+    "typescript",
+    "typescriptreact"
+  ],
+  "eslint.format.enable": true,
+  "eslint.lintTask.enable": true,
+  
+  "files.associations": {
+    "*.js": "javascript",
+    "*.mjs": "javascript"
+  },
+  
+  "files.exclude": {
+    "**/node_modules": true,
+    "**/coverage": true,
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/Thumbs.db": true
+  },
+  
+  "search.exclude": {
+    "**/node_modules": true,
+    "**/coverage": true,
+    "**/.git": true
+  },
+  
+  "emmet.includeLanguages": {
+    "javascript": "javascriptreact"
+  },
+  
+  "javascript.preferences.includePackageJsonAutoImports": "on",
+  "javascript.suggest.autoImports": true,
+  "javascript.updateImportsOnFileMove.enabled": "always",
+  
+  "css.validate": true,
+  "less.validate": true,
+  "scss.validate": true,
+  
+  "html.format.enable": true,
+  "html.format.wrapLineLength": 120,
+  "html.format.indentInnerHtml": true,
+  
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true
+  },
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.wordWrap": "on"
+  },
+  
+  "git.enableSmartCommit": true,
+  "git.confirmSync": false,
+  "git.autofetch": true,
+  
+  "terminal.integrated.defaultProfile.osx": "zsh",
+  "terminal.integrated.fontSize": 14,
+  
+  "workbench.colorTheme": "Default Dark+",
+  "workbench.iconTheme": "vs-seti"
 }

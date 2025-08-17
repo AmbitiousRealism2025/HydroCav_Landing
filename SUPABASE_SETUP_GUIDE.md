@@ -256,6 +256,13 @@ Once you've completed all steps above:
 - **Supabase Dashboard:** https://app.supabase.com
 - **Support:** https://supabase.com/support
 
+## 🔗 Related Documentation
+
+- **USER_GUIDE.md:** Complete website usage and troubleshooting
+- **ADMIN_GUIDE.md:** Admin dashboard operations and contact form management
+- **DEPLOYMENT_CHECKLIST.md:** Production deployment with Supabase configuration
+- **README.md:** Project overview and quick start guide
+
 ---
 
 ## ✨ Success Checklist

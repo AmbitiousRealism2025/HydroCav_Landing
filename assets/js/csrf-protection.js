@@ -4,254 +4,260 @@
  */
 
 class CSRFProtection {
-    constructor() {
-        this.tokenName = 'csrf_token';
-        this.headerName = 'X-CSRF-Token';
-        this.cookieName = 'csrf_cookie';
-        this.initialized = false;
+  constructor() {
+    this.tokenName = 'csrf_token';
+    this.headerName = 'X-CSRF-Token';
+    this.cookieName = 'csrf_cookie';
+    this.initialized = false;
+  }
+
+  /**
+   * Initialize CSRF protection
+   */
+  initialize() {
+    if (this.initialized) return;
+
+    // Generate and store token
+    this.generateToken();
+
+    // Add token to all forms automatically
+    this.attachToForms();
+
+    // Add token to all AJAX requests
+    this.attachToAjax();
+
+    this.initialized = true;
+  }
+
+  /**
+   * Generate a cryptographically secure token
+   */
+  generateToken() {
+    const array = new Uint8Array(32);
+    crypto.getRandomValues(array);
+    const token = Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
+
+    // Store in sessionStorage (survives page refreshes but not new tabs)
+    sessionStorage.setItem(this.tokenName, token);
+
+    // Also set as a secure cookie for double-submit pattern
+    this.setTokenCookie(token);
+
+    return token;
+  }
+
+  /**
+   * Get the current CSRF token
+   */
+  getToken() {
+    let token = sessionStorage.getItem(this.tokenName);
+
+    if (!token) {
+      token = this.generateToken();
     }
 
-    /**
-     * Initialize CSRF protection
-     */
-    initialize() {
-        if (this.initialized) return;
+    return token;
+  }
 
-        // Generate and store token
-        this.generateToken();
-        
-        // Add token to all forms automatically
-        this.attachToForms();
-        
-        // Add token to all AJAX requests
-        this.attachToAjax();
+  /**
+   * Set CSRF token as a secure cookie
+   */
+  setTokenCookie(token) {
+    const secure = location.protocol === 'https:';
+    const sameSite = 'Strict';
 
-        this.initialized = true;
-        console.log('CSRF Protection initialized');
+    // Set cookie with security flags
+    document.cookie =
+      `${this.cookieName}=${token}; ` +
+      `SameSite=${sameSite}; ` +
+      (secure ? 'Secure; ' : '') +
+      'Path=/';
+  }
+
+  /**
+   * Get token from cookie
+   */
+  getTokenFromCookie() {
+    const cookies = document.cookie.split(';');
+
+    for (const cookie of cookies) {
+      const [name, value] = cookie.trim().split('=');
+      if (name === this.cookieName) {
+        return value;
+      }
     }
 
-    /**
-     * Generate a cryptographically secure token
-     */
-    generateToken() {
-        const array = new Uint8Array(32);
-        crypto.getRandomValues(array);
-        const token = Array.from(array, byte => byte.toString(16).padStart(2, '0')).join('');
-        
-        // Store in sessionStorage (survives page refreshes but not new tabs)
-        sessionStorage.setItem(this.tokenName, token);
-        
-        // Also set as a secure cookie for double-submit pattern
-        this.setTokenCookie(token);
-        
-        return token;
+    return null;
+  }
+
+  /**
+   * Validate CSRF token (double-submit pattern)
+   */
+  validateToken(providedToken = null) {
+    const sessionToken = this.getToken();
+    const cookieToken = this.getTokenFromCookie();
+
+    // If no token provided, validate current session token against cookie
+    if (!providedToken) {
+      return sessionToken === cookieToken && sessionToken !== null;
     }
 
-    /**
-     * Get the current CSRF token
-     */
-    getToken() {
-        let token = sessionStorage.getItem(this.tokenName);
-        
-        if (!token) {
-            token = this.generateToken();
-        }
-        
-        return token;
-    }
+    // Both session and cookie tokens must match the provided token
+    return providedToken === sessionToken && providedToken === cookieToken;
+  }
 
-    /**
-     * Set CSRF token as a secure cookie
-     */
-    setTokenCookie(token) {
-        const secure = location.protocol === 'https:';
-        const sameSite = 'Strict';
-        
-        // Set cookie with security flags
-        document.cookie = `${this.cookieName}=${token}; ` +
-            `SameSite=${sameSite}; ` +
-            (secure ? 'Secure; ' : '') +
-            'Path=/';
-    }
+  /**
+   * Attach CSRF token to all forms
+   */
+  attachToForms() {
+    // Add to existing forms
+    document.querySelectorAll('form').forEach(form => {
+      this.addTokenToForm(form);
+    });
 
-    /**
-     * Get token from cookie
-     */
-    getTokenFromCookie() {
-        const cookies = document.cookie.split(';');
-        
-        for (let cookie of cookies) {
-            const [name, value] = cookie.trim().split('=');
-            if (name === this.cookieName) {
-                return value;
+    // Watch for dynamically added forms
+    const observer = new MutationObserver(mutations => {
+      mutations.forEach(mutation => {
+        mutation.addedNodes.forEach(node => {
+          if (node.nodeType === 1) {
+            // Element node
+            if (node.tagName === 'FORM') {
+              this.addTokenToForm(node);
             }
-        }
-        
-        return null;
-    }
-
-    /**
-     * Validate CSRF token (double-submit pattern)
-     */
-    validateToken(providedToken) {
-        const sessionToken = this.getToken();
-        const cookieToken = this.getTokenFromCookie();
-        
-        // Both session and cookie tokens must match the provided token
-        return providedToken === sessionToken && providedToken === cookieToken;
-    }
-
-    /**
-     * Attach CSRF token to all forms
-     */
-    attachToForms() {
-        // Add to existing forms
-        document.querySelectorAll('form').forEach(form => {
-            this.addTokenToForm(form);
+            // Check for forms within added elements
+            const forms = node.querySelectorAll?.('form');
+            forms?.forEach(form => this.addTokenToForm(form));
+          }
         });
+      });
+    });
 
-        // Watch for dynamically added forms
-        const observer = new MutationObserver(mutations => {
-            mutations.forEach(mutation => {
-                mutation.addedNodes.forEach(node => {
-                    if (node.nodeType === 1) { // Element node
-                        if (node.tagName === 'FORM') {
-                            this.addTokenToForm(node);
-                        }
-                        // Check for forms within added elements
-                        const forms = node.querySelectorAll?.('form');
-                        forms?.forEach(form => this.addTokenToForm(form));
-                    }
-                });
-            });
-        });
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+  }
 
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true
-        });
+  /**
+   * Add CSRF token to a specific form
+   */
+  addTokenToForm(form) {
+    // Skip if token already exists
+    if (form.querySelector(`input[name="${this.tokenName}"]`)) {
+      return;
     }
 
-    /**
-     * Add CSRF token to a specific form
-     */
-    addTokenToForm(form) {
-        // Skip if token already exists
-        if (form.querySelector(`input[name="${this.tokenName}"]`)) {
-            return;
-        }
-
-        // Skip for external forms
-        const action = form.action;
-        if (action && !this.isSameOrigin(action)) {
-            return;
-        }
-
-        const token = this.getToken();
-        const input = document.createElement('input');
-        input.type = 'hidden';
-        input.name = this.tokenName;
-        input.value = token;
-        form.appendChild(input);
+    // Skip for external forms
+    const action = form.action;
+    if (action && !this.isSameOrigin(action)) {
+      return;
     }
 
-    /**
-     * Attach CSRF token to AJAX requests
-     */
-    attachToAjax() {
-        // Override fetch
-        const originalFetch = window.fetch;
-        window.fetch = async (url, options = {}) => {
-            // Only add token for same-origin requests
-            if (this.isSameOrigin(url)) {
-                options.headers = {
-                    ...options.headers,
-                    [this.headerName]: this.getToken()
-                };
-            }
-            
-            return originalFetch(url, options);
+    const token = this.getToken();
+    const input = document.createElement('input');
+    input.type = 'hidden';
+    input.name = this.tokenName;
+    input.value = token;
+    form.appendChild(input);
+  }
+
+  /**
+   * Attach CSRF token to AJAX requests
+   */
+  attachToAjax() {
+    // Override fetch
+    const originalFetch = window.fetch;
+    window.fetch = async (url, options = {}) => {
+      // Only add token for same-origin requests
+      if (this.isSameOrigin(url)) {
+        options.headers = {
+          ...options.headers,
+          [this.headerName]: this.getToken(),
         };
+      }
 
-        // Override XMLHttpRequest
-        const originalOpen = XMLHttpRequest.prototype.open;
-        XMLHttpRequest.prototype.open = function(method, url, ...args) {
-            this._csrfUrl = url;
-            return originalOpen.call(this, method, url, ...args);
-        };
+      return originalFetch(url, options);
+    };
 
-        const originalSend = XMLHttpRequest.prototype.send;
-        XMLHttpRequest.prototype.send = function(...args) {
-            if (this._csrfUrl && csrfProtection.isSameOrigin(this._csrfUrl)) {
-                this.setRequestHeader(csrfProtection.headerName, csrfProtection.getToken());
-            }
-            return originalSend.call(this, ...args);
-        };
+    // Override XMLHttpRequest
+    const originalOpen = XMLHttpRequest.prototype.open;
+    XMLHttpRequest.prototype.open = function (method, url, ...args) {
+      this._csrfUrl = url;
+      return originalOpen.call(this, method, url, ...args);
+    };
+
+    const originalSend = XMLHttpRequest.prototype.send;
+    XMLHttpRequest.prototype.send = function (...args) {
+      if (this._csrfUrl && csrfProtection.isSameOrigin(this._csrfUrl)) {
+        this.setRequestHeader(csrfProtection.headerName, csrfProtection.getToken());
+      }
+      return originalSend.call(this, ...args);
+    };
+  }
+
+  /**
+   * Check if URL is same origin
+   */
+  isSameOrigin(url) {
+    try {
+      const urlObj = new URL(url, window.location.origin);
+      return urlObj.origin === window.location.origin;
+    } catch {
+      // Relative URL, treat as same origin
+      return true;
+    }
+  }
+
+  /**
+   * Validate a request (server-side simulation for demonstration)
+   */
+  validateRequest(request) {
+    // Get token from request (header or body)
+    const headerToken = request.headers?.[this.headerName];
+    const bodyToken = request.body?.[this.tokenName];
+    const token = headerToken || bodyToken;
+
+    if (!token) {
+      throw new Error('CSRF token missing');
     }
 
-    /**
-     * Check if URL is same origin
-     */
-    isSameOrigin(url) {
-        try {
-            const urlObj = new URL(url, window.location.origin);
-            return urlObj.origin === window.location.origin;
-        } catch {
-            // Relative URL, treat as same origin
-            return true;
-        }
+    if (!this.validateToken(token)) {
+      throw new Error('CSRF token invalid');
     }
 
-    /**
-     * Validate a request (server-side simulation for demonstration)
-     */
-    validateRequest(request) {
-        // Get token from request (header or body)
-        const headerToken = request.headers?.[this.headerName];
-        const bodyToken = request.body?.[this.tokenName];
-        const token = headerToken || bodyToken;
+    return true;
+  }
 
-        if (!token) {
-            throw new Error('CSRF token missing');
-        }
+  /**
+   * Refresh token (call periodically for long sessions)
+   */
+  refreshToken() {
+    this.generateToken();
 
-        if (!this.validateToken(token)) {
-            throw new Error('CSRF token invalid');
-        }
+    // Update all forms with new token
+    document.querySelectorAll(`input[name="${this.tokenName}"]`).forEach(input => {
+      input.value = this.getToken();
+    });
+  }
 
-        return true;
-    }
+  /**
+   * Create middleware for form submission
+   */
+  createFormMiddleware() {
+    return formData => {
+      // Ensure token is present
+      if (!formData[this.tokenName]) {
+        formData[this.tokenName] = this.getToken();
+      }
 
-    /**
-     * Refresh token (call periodically for long sessions)
-     */
-    refreshToken() {
-        this.generateToken();
-        
-        // Update all forms with new token
-        document.querySelectorAll(`input[name="${this.tokenName}"]`).forEach(input => {
-            input.value = this.getToken();
-        });
-    }
+      // Validate token before submission
+      if (!this.validateToken(formData[this.tokenName])) {
+        throw new Error('CSRF validation failed');
+      }
 
-    /**
-     * Create middleware for form submission
-     */
-    createFormMiddleware() {
-        return (formData) => {
-            // Ensure token is present
-            if (!formData[this.tokenName]) {
-                formData[this.tokenName] = this.getToken();
-            }
-
-            // Validate token before submission
-            if (!this.validateToken(formData[this.tokenName])) {
-                throw new Error('CSRF validation failed');
-            }
-
-            return formData;
-        };
-    }
+      return formData;
+    };
+  }
 }
 
 // Export singleton instance

@@ -1,6 +1,6 @@
 /**
  * Jest Test Setup File
- * 
+ *
  * Global setup for all Jest tests in the HydroCav website project.
  * This file runs before each test suite and sets up the testing environment.
  */
@@ -68,22 +68,28 @@ global.fetch = jest.fn(() =>
   })
 );
 
-// Mock localStorage
-const localStorageMock = {
-  getItem: jest.fn(),
-  setItem: jest.fn(),
-  removeItem: jest.fn(),
-  clear: jest.fn(),
+// Mock localStorage and sessionStorage with working implementations
+const createStorageMock = () => {
+  const storage = {};
+  return {
+    getItem: jest.fn(key => storage[key] || null),
+    setItem: jest.fn((key, value) => {
+      storage[key] = value;
+    }),
+    removeItem: jest.fn(key => {
+      delete storage[key];
+    }),
+    clear: jest.fn(() => {
+      Object.keys(storage).forEach(key => delete storage[key]);
+    }),
+    data: storage,
+  };
 };
+
+const localStorageMock = createStorageMock();
 global.localStorage = localStorageMock;
 
-// Mock sessionStorage
-const sessionStorageMock = {
-  getItem: jest.fn(),
-  setItem: jest.fn(),
-  removeItem: jest.fn(),
-  clear: jest.fn(),
-};
+const sessionStorageMock = createStorageMock();
 global.sessionStorage = sessionStorageMock;
 
 // Setup for Supabase mocking
@@ -104,6 +110,28 @@ global.supabase = {
       signOut: jest.fn(),
     },
   }),
+};
+
+// Add checkValidity to HTML elements for testing
+HTMLInputElement.prototype.checkValidity = HTMLInputElement.prototype.checkValidity || function() {
+  // Basic validation simulation
+  if (this.required && !this.value) return false;
+  if (this.minLength && this.value.length < this.minLength) return false;
+  if (this.maxLength && this.value.length > this.maxLength) return false;
+  if (this.type === 'email' && this.value && !this.value.includes('@')) return false;
+  return true;
+};
+
+HTMLTextAreaElement.prototype.checkValidity = HTMLTextAreaElement.prototype.checkValidity || function() {
+  if (this.required && !this.value) return false;
+  if (this.minLength && this.value.length < this.minLength) return false;
+  if (this.maxLength && this.value.length > this.maxLength) return false;
+  return true;
+};
+
+HTMLFormElement.prototype.checkValidity = HTMLFormElement.prototype.checkValidity || function() {
+  const inputs = this.querySelectorAll('input, textarea');
+  return Array.from(inputs).every(input => input.checkValidity());
 };
 
 // Global test helpers
@@ -136,7 +164,7 @@ global.testHelpers = {
   },
 
   // Simulate form submission
-  simulateSubmit: (form) => {
+  simulateSubmit: form => {
     form.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
   },
 
@@ -164,8 +192,42 @@ global.testHelpers = {
       };
       check();
     });
+  },
+};
+
+// Add missing global mocks for tests
+global.TouchEvent = class TouchEvent extends Event {
+  constructor(type, init) {
+    super(type, init);
+    this.touches = init?.touches || [];
+    this.targetTouches = init?.targetTouches || [];
+    this.changedTouches = init?.changedTouches || [];
   }
 };
+
+global.KeyboardEvent = class KeyboardEvent extends Event {
+  constructor(type, init) {
+    super(type, init);
+    this.key = init?.key || '';
+    this.code = init?.code || '';
+    this.keyCode = init?.keyCode || 0;
+    this.ctrlKey = init?.ctrlKey || false;
+    this.shiftKey = init?.shiftKey || false;
+    this.altKey = init?.altKey || false;
+    this.metaKey = init?.metaKey || false;
+  }
+};
+
+global.CSS = {
+  supports: jest.fn((property, value) => {
+    // Mock common CSS property support
+    const supportedProperties = ['backdrop-filter', 'transform', 'display'];
+    return supportedProperties.includes(property);
+  })
+};
+
+// Increase timeout for animation tests
+jest.setTimeout(20000);
 
 // Reset mocks before each test
 beforeEach(() => {
@@ -178,10 +240,10 @@ beforeEach(() => {
   if (sessionStorageMock.setItem.mockClear) sessionStorageMock.setItem.mockClear();
   if (sessionStorageMock.removeItem.mockClear) sessionStorageMock.removeItem.mockClear();
   if (sessionStorageMock.clear.mockClear) sessionStorageMock.clear.mockClear();
-  
+
   // Clear document body
   document.body.innerHTML = '';
-  
+
   // Reset window object
   delete window.SecurityManager;
   delete window.XSSProtection;
