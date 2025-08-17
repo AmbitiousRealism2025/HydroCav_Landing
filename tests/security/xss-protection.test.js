@@ -45,28 +45,32 @@ describe('XSS Protection Module', () => {
         const maxLength = options.maxLength || 2000;
         const minLength = options.minLength || 0;
         const type = options.type || 'text';
-        
+
         if (typeof input !== 'string') {
           return { isValid: false, errors: ['Input must be a string'] };
         }
-        
+
         const errors = [];
-        
+
         if (input.length < minLength) errors.push(`Input too short (min: ${minLength})`);
         if (input.length > maxLength) errors.push(`Input too long (max: ${maxLength})`);
-        
+
         if (type === 'email' && input && !input.includes('@')) {
           errors.push('Invalid email format');
         }
-        
+
         // Check for XSS patterns
-        if (input.includes('<script>') || input.includes('javascript:') || input.includes('onerror=')) {
+        if (
+          input.includes('<script>') ||
+          input.includes('javascript:') ||
+          input.includes('onerror=')
+        ) {
           errors.push('Potential XSS detected');
         }
-        
+
         return {
           isValid: errors.length === 0,
-          errors: errors
+          errors: errors,
         };
       }),
       sanitizeFormData: jest.fn(formData => {

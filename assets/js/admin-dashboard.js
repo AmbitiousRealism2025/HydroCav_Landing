@@ -1,12 +1,15 @@
 /**
  * Admin Dashboard Functionality
- * 
+ *
  * PHASE 5: Extracted from inline script for CSP compliance
  * Complete admin dashboard functionality including authentication,
  * submission management, data export, and security integration.
- * 
+ *
  * This file contains 950+ lines of admin functionality
  */
+
+// Global declarations for ESLint
+/* global Blob */
 
 // Supabase configuration
 const SUPABASE_URL = '__SUPABASE_URL_PLACEHOLDER__';
@@ -53,8 +56,10 @@ async function initializeAdminDashboard() {
 // Authentication functions
 async function checkAuthStatus() {
   try {
-    const { data: { user } } = await supabaseClient.auth.getUser();
-    
+    const {
+      data: { user },
+    } = await supabaseClient.auth.getUser();
+
     if (user) {
       currentUser = user;
       showDashboard();
@@ -82,7 +87,7 @@ function showDashboard() {
 // Login function
 async function handleLogin(event) {
   event.preventDefault();
-  
+
   const form = event.target;
   const email = form.email.value.trim();
   const password = form.password.value;
@@ -91,7 +96,7 @@ async function handleLogin(event) {
   if (!window.CSRFProtection?.validateToken()) {
     window.SecurityManager?.logSecurityEvent('csrf_validation_failed', {
       action: 'admin_login',
-      email: email
+      email: email,
     });
     showError('Security validation failed. Please refresh the page and try again.');
     return;
@@ -106,7 +111,7 @@ async function handleLogin(event) {
   if (sanitizedEmail !== email || sanitizedPassword !== password) {
     window.SecurityManager?.logSecurityEvent('xss_sanitization', {
       action: 'admin_login',
-      sanitized: true
+      sanitized: true,
     });
   }
 
@@ -122,7 +127,7 @@ async function handleLogin(event) {
 
     const { data, error } = await supabaseClient.auth.signInWithPassword({
       email: sanitizedEmail,
-      password: sanitizedPassword
+      password: sanitizedPassword,
     });
 
     if (error) {
@@ -130,23 +135,22 @@ async function handleLogin(event) {
       window.SecurityManager?.logSecurityEvent('admin_login_failed', {
         email: sanitizedEmail,
         error: error.message,
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
-      
+
       throw error;
     }
 
     // Security Step 5: Log successful login
     window.SecurityManager?.logSecurityEvent('admin_login_success', {
       email: sanitizedEmail,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
     currentUser = data.user;
     showDashboard();
     loadSubmissions();
     showSuccess('Login successful!');
-
   } catch (error) {
     console.error('Login error:', error);
     showError(error.message || 'Login failed. Please check your credentials.');
@@ -158,7 +162,7 @@ async function handleLogin(event) {
 // Signup function
 async function handleSignup(event) {
   event.preventDefault();
-  
+
   const form = event.target;
   const email = form.email.value.trim();
   const password = form.password.value;
@@ -167,7 +171,7 @@ async function handleSignup(event) {
   if (!window.CSRFProtection?.validateToken()) {
     window.SecurityManager?.logSecurityEvent('csrf_validation_failed', {
       action: 'admin_signup',
-      email: email
+      email: email,
     });
     showError('Security validation failed. Please refresh the page and try again.');
     return;
@@ -183,7 +187,7 @@ async function handleSignup(event) {
 
     const { data, error } = await supabaseClient.auth.signUp({
       email: sanitizedEmail,
-      password: sanitizedPassword
+      password: sanitizedPassword,
     });
 
     if (error) {
@@ -191,7 +195,6 @@ async function handleSignup(event) {
     }
 
     showSuccess('Account created successfully! Please check your email for verification.');
-
   } catch (error) {
     console.error('Signup error:', error);
     showError(error.message || 'Signup failed. Please try again.');
@@ -217,7 +220,7 @@ async function handleLogout() {
 async function loadSubmissions() {
   try {
     showLoading(true);
-    
+
     const { data, error } = await supabaseClient
       .from('contact_submissions')
       .select('*')
@@ -231,7 +234,6 @@ async function loadSubmissions() {
     filteredSubmissions = [...submissions];
     updateSubmissionsDisplay();
     updateStats();
-
   } catch (error) {
     console.error('Failed to load submissions:', error);
     showError('Failed to load submissions: ' + error.message);
@@ -246,7 +248,9 @@ function updateSubmissionsDisplay() {
   const endIndex = startIndex + itemsPerPage;
   const pageSubmissions = filteredSubmissions.slice(startIndex, endIndex);
 
-  tbody.innerHTML = pageSubmissions.map(submission => `
+  tbody.innerHTML = pageSubmissions
+    .map(
+      submission => `
     <tr class="hover:bg-gray-50" data-id="${submission.id}">
       <td class="px-6 py-4 whitespace-nowrap">
         <div class="text-sm font-medium text-gray-900">${escapeHtml(submission.name)}</div>
@@ -282,7 +286,9 @@ function updateSubmissionsDisplay() {
         </button>
       </td>
     </tr>
-  `).join('');
+  `
+    )
+    .join('');
 
   updatePagination();
 }
@@ -290,7 +296,7 @@ function updateSubmissionsDisplay() {
 function updatePagination() {
   const totalPages = Math.ceil(filteredSubmissions.length / itemsPerPage);
   const pagination = document.getElementById('pagination');
-  
+
   pagination.innerHTML = `
     <button 
       onclick="changePage(${currentPage - 1})" 
@@ -381,15 +387,15 @@ async function editSubmission(id) {
   document.body.appendChild(modal);
 
   // Handle form submission
-  document.getElementById('edit-form').addEventListener('submit', async (e) => {
+  document.getElementById('edit-form').addEventListener('submit', async e => {
     e.preventDefault();
-    
+
     try {
       // Security Step 1: CSRF Protection
       if (!window.CSRFProtection?.validateToken()) {
         window.SecurityManager?.logSecurityEvent('csrf_validation_failed', {
           action: 'edit_submission',
-          submission_id: id
+          submission_id: id,
         });
         showError('Security validation failed. Please refresh the page and try again.');
         return;
@@ -399,7 +405,7 @@ async function editSubmission(id) {
       const rawData = {
         status: document.getElementById('edit-status').value,
         priority: document.getElementById('edit-priority').value,
-        notes: document.getElementById('edit-notes').value
+        notes: document.getElementById('edit-notes').value,
       };
 
       // Security Step 2: XSS Protection - Sanitize all inputs
@@ -424,7 +430,7 @@ async function editSubmission(id) {
         window.SecurityManager?.logSecurityEvent('xss_sanitization', {
           action: 'edit_submission',
           submission_id: id,
-          sanitized_fields: Object.keys(updateData)
+          sanitized_fields: Object.keys(updateData),
         });
       }
 
@@ -441,13 +447,12 @@ async function editSubmission(id) {
       window.SecurityManager?.logSecurityEvent('submission_updated', {
         submission_id: id,
         updated_fields: Object.keys(updateData),
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
       });
 
       modal.remove();
       loadSubmissions();
       showSuccess('Submission updated successfully');
-
     } catch (error) {
       console.error('Update error:', error);
       showError('Failed to update submission: ' + error.message);
@@ -466,16 +471,13 @@ async function deleteSubmission(id) {
     if (!window.CSRFProtection?.validateToken()) {
       window.SecurityManager?.logSecurityEvent('csrf_validation_failed', {
         action: 'delete_submission',
-        submission_id: id
+        submission_id: id,
       });
       showError('Security validation failed. Please refresh the page and try again.');
       return;
     }
 
-    const { error } = await supabaseClient
-      .from('contact_submissions')
-      .delete()
-      .eq('id', id);
+    const { error } = await supabaseClient.from('contact_submissions').delete().eq('id', id);
 
     if (error) {
       throw error;
@@ -484,12 +486,11 @@ async function deleteSubmission(id) {
     // Security Step 2: Log deletion
     window.SecurityManager?.logSecurityEvent('submission_deleted', {
       submission_id: id,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
     loadSubmissions();
     showSuccess('Submission deleted successfully');
-
   } catch (error) {
     console.error('Delete error:', error);
     showError('Failed to delete submission: ' + error.message);
@@ -505,7 +506,8 @@ function filterSubmissions() {
   filteredSubmissions = submissions.filter(submission => {
     const matchesStatus = !statusFilter || submission.status === statusFilter;
     const matchesPriority = !priorityFilter || submission.priority === priorityFilter;
-    const matchesSearch = !searchTerm || 
+    const matchesSearch =
+      !searchTerm ||
       submission.name.toLowerCase().includes(searchTerm) ||
       submission.email.toLowerCase().includes(searchTerm) ||
       submission.company?.toLowerCase().includes(searchTerm) ||
@@ -524,45 +526,58 @@ function exportSubmissions() {
     // Security Step 1: CSRF Protection
     if (!window.CSRFProtection?.validateToken()) {
       window.SecurityManager?.logSecurityEvent('csrf_validation_failed', {
-        action: 'export_submissions'
+        action: 'export_submissions',
       });
       showError('Security validation failed. Please refresh the page and try again.');
       return;
     }
 
-    const headers = ['Name', 'Email', 'Company', 'Message', 'Status', 'Priority', 'Submitted Date', 'Notes'];
+    const headers = [
+      'Name',
+      'Email',
+      'Company',
+      'Message',
+      'Status',
+      'Priority',
+      'Submitted Date',
+      'Notes',
+    ];
     const csvContent = [
       headers.join(','),
-      ...filteredSubmissions.map(submission => [
-        `"${escapeCSV(submission.name)}"`,
-        `"${escapeCSV(submission.email)}"`,
-        `"${escapeCSV(submission.company || '')}"`,
-        `"${escapeCSV(submission.message)}"`,
-        `"${escapeCSV(submission.status)}"`,
-        `"${escapeCSV(submission.priority)}"`,
-        `"${escapeCSV(new Date(submission.submitted_at).toLocaleDateString())}"`,
-        `"${escapeCSV(submission.notes || '')}"`
-      ].join(','))
+      ...filteredSubmissions.map(submission =>
+        [
+          `"${escapeCSV(submission.name)}"`,
+          `"${escapeCSV(submission.email)}"`,
+          `"${escapeCSV(submission.company || '')}"`,
+          `"${escapeCSV(submission.message)}"`,
+          `"${escapeCSV(submission.status)}"`,
+          `"${escapeCSV(submission.priority)}"`,
+          `"${escapeCSV(new Date(submission.submitted_at).toLocaleDateString())}"`,
+          `"${escapeCSV(submission.notes || '')}"`,
+        ].join(',')
+      ),
     ].join('\n');
 
     // Security Step 2: Log export
     window.SecurityManager?.logSecurityEvent('submissions_exported', {
       count: filteredSubmissions.length,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     });
 
     const blob = new Blob([csvContent], { type: 'text/csv' });
     const link = document.createElement('a');
     const url = URL.createObjectURL(blob);
     link.setAttribute('href', url);
-    link.setAttribute('download', `hydrocav-submissions-${new Date().toISOString().split('T')[0]}.csv`);
+    link.setAttribute(
+      'download',
+      `hydrocav-submissions-${new Date().toISOString().split('T')[0]}.csv`
+    );
     link.style.visibility = 'hidden';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
 
     showSuccess('Submissions exported successfully');
-
   } catch (error) {
     console.error('Export error:', error);
     showError('Failed to export submissions: ' + error.message);
@@ -585,7 +600,7 @@ function getStatusColor(status) {
     new: 'blue',
     contacted: 'yellow',
     qualified: 'green',
-    closed: 'gray'
+    closed: 'gray',
   };
   return colors[status] || 'gray';
 }
@@ -595,7 +610,7 @@ function getPriorityColor(priority) {
     low: 'green',
     normal: 'blue',
     high: 'yellow',
-    urgent: 'red'
+    urgent: 'red',
   };
   return colors[priority] || 'blue';
 }
@@ -610,7 +625,8 @@ function showLoading(show) {
 
 function showError(message) {
   const alertDiv = document.createElement('div');
-  alertDiv.className = 'fixed top-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded z-50';
+  alertDiv.className =
+    'fixed top-4 right-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded z-50';
   alertDiv.innerHTML = `
     <span class="block sm:inline">${escapeHtml(message)}</span>
     <span class="absolute top-0 bottom-0 right-0 px-4 py-3" onclick="this.parentElement.remove()">
@@ -626,7 +642,8 @@ function showError(message) {
 
 function showSuccess(message) {
   const alertDiv = document.createElement('div');
-  alertDiv.className = 'fixed top-4 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded z-50';
+  alertDiv.className =
+    'fixed top-4 right-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded z-50';
   alertDiv.innerHTML = `
     <span class="block sm:inline">${escapeHtml(message)}</span>
     <span class="absolute top-0 bottom-0 right-0 px-4 py-3" onclick="this.parentElement.remove()">
@@ -645,18 +662,18 @@ function setupEventListeners() {
   // Auth forms
   document.getElementById('login-form')?.addEventListener('submit', handleLogin);
   document.getElementById('signup-form')?.addEventListener('submit', handleSignup);
-  
+
   // Logout button
   document.getElementById('logout-btn')?.addEventListener('click', handleLogout);
-  
+
   // Filter controls
   document.getElementById('status-filter')?.addEventListener('change', filterSubmissions);
   document.getElementById('priority-filter')?.addEventListener('change', filterSubmissions);
   document.getElementById('search-input')?.addEventListener('input', filterSubmissions);
-  
+
   // Export button
   document.getElementById('export-btn')?.addEventListener('click', exportSubmissions);
-  
+
   // Refresh button
   document.getElementById('refresh-btn')?.addEventListener('click', loadSubmissions);
 }
@@ -664,13 +681,15 @@ function setupEventListeners() {
 function setupAdditionalEventListeners() {
   // Tab switching
   document.querySelectorAll('[data-tab]').forEach(tab => {
-    tab.addEventListener('click', (e) => {
+    tab.addEventListener('click', e => {
       const targetTab = e.target.dataset.tab;
-      
+
       // Remove active class from all tabs
       document.querySelectorAll('[data-tab]').forEach(t => t.classList.remove('active'));
-      document.querySelectorAll('[data-tab-content]').forEach(content => content.style.display = 'none');
-      
+      document
+        .querySelectorAll('[data-tab-content]')
+        .forEach(content => (content.style.display = 'none'));
+
       // Add active class to clicked tab
       e.target.classList.add('active');
       document.querySelector(`[data-tab-content="${targetTab}"]`).style.display = 'block';
@@ -704,6 +723,28 @@ function setupAdditionalEventListeners() {
   }
 }
 
+// Missing function implementations for CSP compliance event handlers
+function showEmailSettings() {
+  // Use toast if available, otherwise fallback to alert
+  if (typeof window !== 'undefined' && window.toastManager) {
+    window.toastManager.show('Email settings feature coming soon!', 'info');
+  } else {
+    alert('Email settings feature is under development.');
+  }
+}
+
+function exportData() {
+  exportSubmissions();
+}
+
+function refreshData() {
+  loadSubmissions();
+}
+
+function applyFilters() {
+  filterSubmissions();
+}
+
 // Export global functions for HTML onclick handlers
 window.handleLogin = handleLogin;
 window.handleSignup = handleSignup;
@@ -714,3 +755,7 @@ window.changePage = changePage;
 window.filterSubmissions = filterSubmissions;
 window.exportSubmissions = exportSubmissions;
 window.loadSubmissions = loadSubmissions;
+window.showEmailSettings = showEmailSettings;
+window.exportData = exportData;
+window.refreshData = refreshData;
+window.applyFilters = applyFilters;

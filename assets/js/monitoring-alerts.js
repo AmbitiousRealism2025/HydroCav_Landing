@@ -11,7 +11,7 @@ class MonitoringAlerts {
         warning: 0.02, // 2% error rate
         critical: 0.05, // 5% error rate
       },
-      
+
       // Performance monitoring thresholds
       performance: {
         lcp: {
@@ -27,7 +27,7 @@ class MonitoringAlerts {
           needsImprovement: 0.25,
         },
       },
-      
+
       // Health monitoring thresholds
       health: {
         uptime: {
@@ -60,28 +60,37 @@ class MonitoringAlerts {
   setupErrorAlerts() {
     if (window.ErrorTracker) {
       // Monitor error rate every 5 minutes
-      setInterval(() => {
-        const errorRate = this.calculateErrorRate();
-        this.checkErrorThresholds(errorRate);
-      }, 5 * 60 * 1000);
+      setInterval(
+        () => {
+          const errorRate = this.calculateErrorRate();
+          this.checkErrorThresholds(errorRate);
+        },
+        5 * 60 * 1000
+      );
     }
   }
 
   setupPerformanceAlerts() {
     if (window.PerformanceMonitor) {
       // Monitor Core Web Vitals every 10 minutes
-      setInterval(() => {
-        this.checkPerformanceThresholds();
-      }, 10 * 60 * 1000);
+      setInterval(
+        () => {
+          this.checkPerformanceThresholds();
+        },
+        10 * 60 * 1000
+      );
     }
   }
 
   setupHealthAlerts() {
     if (window.HealthMonitor) {
       // Monitor health status every 2 minutes
-      setInterval(() => {
-        this.checkHealthThresholds();
-      }, 2 * 60 * 1000);
+      setInterval(
+        () => {
+          this.checkHealthThresholds();
+        },
+        2 * 60 * 1000
+      );
     }
   }
 
@@ -89,7 +98,7 @@ class MonitoringAlerts {
     const errors = window.ErrorTracker?.getErrorSummary() || {};
     const totalErrors = Object.values(errors).reduce((sum, count) => sum + count, 0);
     const totalPageViews = this.getPageViewCount();
-    
+
     return totalPageViews > 0 ? totalErrors / totalPageViews : 0;
   }
 
@@ -100,9 +109,13 @@ class MonitoringAlerts {
 
   checkErrorThresholds(errorRate) {
     const thresholds = this.alertThresholds.errorRate;
-    
+
     if (errorRate >= thresholds.critical) {
-      this.sendAlert('CRITICAL', 'Error Rate', `Critical error rate: ${(errorRate * 100).toFixed(2)}%`);
+      this.sendAlert(
+        'CRITICAL',
+        'Error Rate',
+        `Critical error rate: ${(errorRate * 100).toFixed(2)}%`
+      );
     } else if (errorRate >= thresholds.warning) {
       this.sendAlert('WARNING', 'Error Rate', `High error rate: ${(errorRate * 100).toFixed(2)}%`);
     }
@@ -142,7 +155,10 @@ class MonitoringAlerts {
     // Check response time
     if (health.responseTime && health.responseTime > thresholds.health.responseTime.critical) {
       this.sendAlert('CRITICAL', 'Health', `Slow response: ${health.responseTime}ms`);
-    } else if (health.responseTime && health.responseTime > thresholds.health.responseTime.warning) {
+    } else if (
+      health.responseTime &&
+      health.responseTime > thresholds.health.responseTime.warning
+    ) {
       this.sendAlert('WARNING', 'Health', `Response time concern: ${health.responseTime}ms`);
     }
   }
@@ -179,12 +195,12 @@ class MonitoringAlerts {
   storeAlert(alert) {
     const alerts = JSON.parse(localStorage.getItem('monitoring_alerts') || '[]');
     alerts.unshift(alert);
-    
+
     // Keep only last 100 alerts
     if (alerts.length > 100) {
       alerts.splice(100);
     }
-    
+
     localStorage.setItem('monitoring_alerts', JSON.stringify(alerts));
   }
 
@@ -228,7 +244,7 @@ class MonitoringAlerts {
 // Initialize monitoring alerts if all monitoring systems are available
 if (typeof window !== 'undefined') {
   window.MonitoringAlerts = MonitoringAlerts;
-  
+
   // Auto-initialize in production
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {

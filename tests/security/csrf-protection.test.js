@@ -105,12 +105,12 @@ describe('CSRF Protection Module', () => {
     // Make available globally for tests
     global.window = global.window || {};
     global.window.CSRFProtection = CSRFProtection;
-    
+
     // Override global sessionStorage with our mock for this test suite
     Object.defineProperty(global, 'sessionStorage', {
       value: mockSessionStorage,
       writable: true,
-      configurable: true
+      configurable: true,
     });
   });
 
@@ -221,7 +221,7 @@ describe('CSRF Protection Module', () => {
 
       expect(CSRFProtection.validateToken('')).toBe(false);
       expect(CSRFProtection.validateToken(null)).toBe(false);
-      
+
       // Clear token first, then test undefined behavior
       sessionStorage.getItem.mockReturnValue(null);
       expect(CSRFProtection.validateToken(undefined)).toBe(false);

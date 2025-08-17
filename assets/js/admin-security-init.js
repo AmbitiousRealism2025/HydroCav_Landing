@@ -1,6 +1,6 @@
 /**
  * Admin Dashboard Security Initialization
- * 
+ *
  * PHASE 5: Extracted from inline script for CSP compliance
  * Handles loading and initialization of security modules for admin dashboard
  */
@@ -32,22 +32,21 @@ async function initializeAdminSecurity() {
 
     // Initialize all security modules
     console.log('🔧 Initializing security modules...');
-    
+
     await window.XSSProtection.initialize();
     console.log('✅ XSS Protection initialized');
-    
+
     await window.CSRFProtection.initialize();
     console.log('✅ CSRF Protection initialized');
-    
+
     await window.SecurityManager.initialize();
     console.log('✅ Security Manager initialized');
 
     securityInitialized = true;
     console.log('🎉 All security modules loaded and initialized successfully!');
-    
+
     // Trigger custom event to notify that security is ready
     window.dispatchEvent(new CustomEvent('securityReady'));
-    
   } catch (error) {
     console.error('❌ Failed to load security modules:', error);
     // Show user-friendly error

@@ -214,13 +214,13 @@ describe('Design System UX - Interactive States', () => {
       // Simulate animation frames
       const frameTime = 16.67; // 60fps target
       const frameCount = 5;
-      
+
       // Act: Simulate animation performance
       for (let i = 0; i < frameCount; i++) {
         // Simulate frame processing
         performance.now();
       }
-      
+
       const endTime = performance.now();
       const totalTime = endTime - startTime;
       const averageFrameTime = totalTime / frameCount;
