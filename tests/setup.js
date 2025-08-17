@@ -68,22 +68,22 @@ global.fetch = jest.fn(() =>
   })
 );
 
-// Mock localStorage
-const localStorageMock = {
-  getItem: jest.fn(),
-  setItem: jest.fn(),
-  removeItem: jest.fn(),
-  clear: jest.fn(),
+// Mock localStorage and sessionStorage with working implementations
+const createStorageMock = () => {
+  const storage = {};
+  return {
+    getItem: jest.fn((key) => storage[key] || null),
+    setItem: jest.fn((key, value) => { storage[key] = value; }),
+    removeItem: jest.fn((key) => { delete storage[key]; }),
+    clear: jest.fn(() => { Object.keys(storage).forEach(key => delete storage[key]); }),
+    data: storage
+  };
 };
+
+const localStorageMock = createStorageMock();
 global.localStorage = localStorageMock;
 
-// Mock sessionStorage
-const sessionStorageMock = {
-  getItem: jest.fn(),
-  setItem: jest.fn(),
-  removeItem: jest.fn(),
-  clear: jest.fn(),
-};
+const sessionStorageMock = createStorageMock();
 global.sessionStorage = sessionStorageMock;
 
 // Setup for Supabase mocking
