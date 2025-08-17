@@ -1,696 +1,882 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>HydroCav Admin Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
-    <!-- Security Modules - Load in correct order -->
-    <script src="assets/js/secure-config.js"></script>
-    <script src="assets/js/xss-protection.js"></script>
-    <script src="assets/js/csrf-protection.js"></script>
-    <script src="assets/js/security.js"></script>
-    
-    <style>
-        /* Liquid Glass Design System */
-        .liquid-glass-card {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-        }
-        
-        .liquid-glass-button {
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 12px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
-        }
-        
-        .liquid-glass-button:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-        }
-        
-        .status-badge {
-            border-radius: 20px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            padding: 0.25rem 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.025em;
-        }
-        
-        .status-new { background: rgba(59, 130, 246, 0.2); color: #1e40af; border: 1px solid rgba(59, 130, 246, 0.3); }
-        .status-contacted { background: rgba(251, 191, 36, 0.2); color: #92400e; border: 1px solid rgba(251, 191, 36, 0.3); }
-        .status-qualified { background: rgba(16, 185, 129, 0.2); color: #065f46; border: 1px solid rgba(16, 185, 129, 0.3); }
-        .status-closed { background: rgba(107, 114, 128, 0.2); color: #374151; border: 1px solid rgba(107, 114, 128, 0.3); }
-        
-        .priority-urgent { background: rgba(239, 68, 68, 0.2); color: #991b1b; border: 1px solid rgba(239, 68, 68, 0.3); }
-        .priority-high { background: rgba(251, 146, 60, 0.2); color: #9a3412; border: 1px solid rgba(251, 146, 60, 0.3); }
-        .priority-normal { background: rgba(107, 114, 128, 0.2); color: #374151; border: 1px solid rgba(107, 114, 128, 0.3); }
-        .priority-low { background: rgba(156, 163, 175, 0.2); color: #6b7280; border: 1px solid rgba(156, 163, 175, 0.3); }
-        
-        .bubble {
-            position: absolute;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 70%, transparent 100%);
-            border-radius: 50%;
-            pointer-events: none;
-            animation: float 20s infinite ease-in-out;
-        }
-        
-        @keyframes float {
-            0%, 100% { transform: translateY(0px) rotate(0deg); opacity: 0.7; }
-            25% { transform: translateY(-20px) rotate(90deg); opacity: 1; }
-            50% { transform: translateY(-40px) rotate(180deg); opacity: 0.8; }
-            75% { transform: translateY(-20px) rotate(270deg); opacity: 1; }
-        }
-        
-        body {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            position: relative;
-            overflow-x: hidden;
-        }
-    </style>
-</head>
 
-<body class="text-gray-800 relative">
+    <!-- Security Configuration -->
+    <!-- These meta tags are injected during build/deployment -->
+    <meta name="config:supabase_url" content="__SUPABASE_URL_PLACEHOLDER__" />
+    <meta name="config:supabase_anon_key" content="__SUPABASE_ANON_KEY_PLACEHOLDER__" />
+    <meta name="config:enable_csrf" content="true" />
+    <meta name="config:enable_xss_protection" content="true" />
+    <meta name="config:enable_rate_limiting" content="true" />
+
+    <!-- Load Security Modules as ES6 Modules -->
+    <script type="module">
+      try {
+        console.log('🔄 Starting security module loading...');
+
+        console.log('📦 Loading secure-config...');
+        const secureConfig = await import('./assets/js/secure-config.js');
+        console.log('✅ secure-config loaded:', secureConfig);
+
+        console.log('📦 Loading xss-protection...');
+        const xssProtection = await import('./assets/js/xss-protection.js');
+        console.log('✅ xss-protection loaded:', xssProtection);
+
+        console.log('📦 Loading csrf-protection...');
+        const csrfProtection = await import('./assets/js/csrf-protection.js');
+        console.log('✅ csrf-protection loaded:', csrfProtection);
+
+        console.log('📦 Loading security...');
+        const security = await import('./assets/js/security.js');
+        console.log('✅ security loaded:', security);
+
+        console.log('🔧 Setting up global references...');
+
+        // Initialize security and make modules globally available
+        window.secureConfig = secureConfig.default;
+        window.XSSProtection = xssProtection.default;
+        window.CSRFProtection = csrfProtection.default;
+        window.SecurityManager = security.default;
+        window.security = security.default;
+
+        console.log('🔧 Global references set:', {
+          secureConfig: window.secureConfig,
+          XSSProtection: window.XSSProtection,
+          CSRFProtection: window.CSRFProtection,
+          SecurityManager: window.SecurityManager,
+          security: window.security,
+        });
+
+        // Initialize security system
+        console.log('🚀 Initializing security system...');
+        await security.default.initialize();
+
+        // Mark security as initialized
+        securityInitialized = true;
+        console.log('✅ Security modules initialized successfully');
+
+        // Now safe to initialize dashboard
+        await initializeAdminDashboard();
+      } catch (error) {
+        console.error('❌ Failed to load security modules:', error);
+        console.error('❌ Error stack:', error.stack);
+        alert('Security features could not be loaded. Check console for details.');
+      }
+    </script>
+
+    <style>
+      /* Liquid Glass Design System */
+      .liquid-glass-card {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      }
+
+      .liquid-glass-button {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+      }
+
+      .liquid-glass-button:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+      }
+
+      .status-badge {
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 0.25rem 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.025em;
+      }
+
+      .status-new {
+        background: rgba(59, 130, 246, 0.2);
+        color: #1e40af;
+        border: 1px solid rgba(59, 130, 246, 0.3);
+      }
+      .status-contacted {
+        background: rgba(251, 191, 36, 0.2);
+        color: #92400e;
+        border: 1px solid rgba(251, 191, 36, 0.3);
+      }
+      .status-qualified {
+        background: rgba(16, 185, 129, 0.2);
+        color: #065f46;
+        border: 1px solid rgba(16, 185, 129, 0.3);
+      }
+      .status-closed {
+        background: rgba(107, 114, 128, 0.2);
+        color: #374151;
+        border: 1px solid rgba(107, 114, 128, 0.3);
+      }
+
+      .priority-urgent {
+        background: rgba(239, 68, 68, 0.2);
+        color: #991b1b;
+        border: 1px solid rgba(239, 68, 68, 0.3);
+      }
+      .priority-high {
+        background: rgba(251, 146, 60, 0.2);
+        color: #9a3412;
+        border: 1px solid rgba(251, 146, 60, 0.3);
+      }
+      .priority-normal {
+        background: rgba(107, 114, 128, 0.2);
+        color: #374151;
+        border: 1px solid rgba(107, 114, 128, 0.3);
+      }
+      .priority-low {
+        background: rgba(156, 163, 175, 0.2);
+        color: #6b7280;
+        border: 1px solid rgba(156, 163, 175, 0.3);
+      }
+
+      .bubble {
+        position: absolute;
+        background: radial-gradient(
+          circle,
+          rgba(255, 255, 255, 0.1) 0%,
+          rgba(255, 255, 255, 0.05) 70%,
+          transparent 100%
+        );
+        border-radius: 50%;
+        pointer-events: none;
+        animation: float 20s infinite ease-in-out;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0px) rotate(0deg);
+          opacity: 0.7;
+        }
+        25% {
+          transform: translateY(-20px) rotate(90deg);
+          opacity: 1;
+        }
+        50% {
+          transform: translateY(-40px) rotate(180deg);
+          opacity: 0.8;
+        }
+        75% {
+          transform: translateY(-20px) rotate(270deg);
+          opacity: 1;
+        }
+      }
+
+      body {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        min-height: 100vh;
+        position: relative;
+        overflow-x: hidden;
+      }
+    </style>
+  </head>
+
+  <body class="text-gray-800 relative">
     <!-- Animated Background Bubbles -->
     <div id="bubble-container" class="fixed inset-0 z-0 pointer-events-none"></div>
 
     <!-- Admin Dashboard -->
     <div class="relative z-10 min-h-screen p-4 sm:p-6 lg:p-8">
-        <!-- Header -->
-        <div class="max-w-7xl mx-auto mb-8">
-            <div class="liquid-glass-card p-6">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h1 class="text-3xl font-bold text-white mb-2">HydroCav Admin Dashboard</h1>
-                        <p class="text-white/80">Manage contact submissions and business data</p>
-                    </div>
-                    <div class="flex space-x-4">
-                        <button onclick="showEmailSettings()" class="liquid-glass-button px-4 py-2 text-white hover:text-white">
-                            Email Settings
-                        </button>
-                        <button onclick="exportData()" class="liquid-glass-button px-4 py-2 text-white hover:text-white">
-                            Export CSV
-                        </button>
-                        <button onclick="refreshData()" class="liquid-glass-button px-4 py-2 text-white hover:text-white">
-                            Refresh
-                        </button>
-                        <button onclick="handleLogout()" class="liquid-glass-button px-4 py-2 text-white hover:text-white bg-red-500/20">
-                            Logout
-                        </button>
-                        <a href="index.html" class="liquid-glass-button px-4 py-2 text-white hover:text-white inline-block">
-                            Back to Site
-                        </a>
-                    </div>
-                </div>
+      <!-- Header -->
+      <div class="max-w-7xl mx-auto mb-8">
+        <div class="liquid-glass-card p-6">
+          <div class="flex justify-between items-center">
+            <div>
+              <h1 class="text-3xl font-bold text-white mb-2">HydroCav Admin Dashboard</h1>
+              <p class="text-white/80">Manage contact submissions and business data</p>
             </div>
+            <div class="flex space-x-4">
+              <button onclick="showEmailSettings()" class="liquid-glass-button px-4 py-2 text-white hover:text-white">
+                Email Settings
+              </button>
+              <button onclick="exportData()" class="liquid-glass-button px-4 py-2 text-white hover:text-white">
+                Export CSV
+              </button>
+              <button onclick="refreshData()" class="liquid-glass-button px-4 py-2 text-white hover:text-white">
+                Refresh
+              </button>
+              <button
+                onclick="handleLogout()"
+                class="liquid-glass-button px-4 py-2 text-white hover:text-white bg-red-500/20"
+              >
+                Logout
+              </button>
+              <a href="index.html" class="liquid-glass-button px-4 py-2 text-white hover:text-white inline-block">
+                Back to Site
+              </a>
+            </div>
+          </div>
         </div>
+      </div>
 
-        <!-- Stats Cards -->
-        <div class="max-w-7xl mx-auto mb-8">
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="liquid-glass-card p-6 text-center">
-                    <div class="text-3xl font-bold text-white mb-2" id="total-submissions">-</div>
-                    <div class="text-white/80">Total Submissions</div>
-                </div>
-                <div class="liquid-glass-card p-6 text-center">
-                    <div class="text-3xl font-bold text-white mb-2" id="new-submissions">-</div>
-                    <div class="text-white/80">New</div>
-                </div>
-                <div class="liquid-glass-card p-6 text-center">
-                    <div class="text-3xl font-bold text-white mb-2" id="contacted-submissions">-</div>
-                    <div class="text-white/80">Contacted</div>
-                </div>
-                <div class="liquid-glass-card p-6 text-center">
-                    <div class="text-3xl font-bold text-white mb-2" id="qualified-submissions">-</div>
-                    <div class="text-white/80">Qualified</div>
-                </div>
-            </div>
+      <!-- Stats Cards -->
+      <div class="max-w-7xl mx-auto mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div class="liquid-glass-card p-6 text-center">
+            <div class="text-3xl font-bold text-white mb-2" id="total-submissions">-</div>
+            <div class="text-white/80">Total Submissions</div>
+          </div>
+          <div class="liquid-glass-card p-6 text-center">
+            <div class="text-3xl font-bold text-white mb-2" id="new-submissions">-</div>
+            <div class="text-white/80">New</div>
+          </div>
+          <div class="liquid-glass-card p-6 text-center">
+            <div class="text-3xl font-bold text-white mb-2" id="contacted-submissions">-</div>
+            <div class="text-white/80">Contacted</div>
+          </div>
+          <div class="liquid-glass-card p-6 text-center">
+            <div class="text-3xl font-bold text-white mb-2" id="qualified-submissions">-</div>
+            <div class="text-white/80">Qualified</div>
+          </div>
         </div>
+      </div>
 
-        <!-- Filters -->
-        <div class="max-w-7xl mx-auto mb-6">
-            <div class="liquid-glass-card p-6">
-                <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                    <div>
-                        <label class="block text-white/80 text-sm mb-2">Status</label>
-                        <select id="status-filter" class="w-full p-2 rounded-lg border border-white/20 bg-white/10 text-white">
-                            <option value="">All Status</option>
-                            <option value="new">New</option>
-                            <option value="contacted">Contacted</option>
-                            <option value="qualified">Qualified</option>
-                            <option value="closed">Closed</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-white/80 text-sm mb-2">Priority</label>
-                        <select id="priority-filter" class="w-full p-2 rounded-lg border border-white/20 bg-white/10 text-white">
-                            <option value="">All Priority</option>
-                            <option value="urgent">Urgent</option>
-                            <option value="high">High</option>
-                            <option value="normal">Normal</option>
-                            <option value="low">Low</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-white/80 text-sm mb-2">Date From</label>
-                        <input type="date" id="date-from" class="w-full p-2 rounded-lg border border-white/20 bg-white/10 text-white">
-                    </div>
-                    <div>
-                        <label class="block text-white/80 text-sm mb-2">Date To</label>
-                        <input type="date" id="date-to" class="w-full p-2 rounded-lg border border-white/20 bg-white/10 text-white">
-                    </div>
-                    <div class="flex items-end">
-                        <button onclick="applyFilters()" class="liquid-glass-button w-full p-2 text-white">
-                            Apply Filters
-                        </button>
-                    </div>
-                </div>
+      <!-- Filters -->
+      <div class="max-w-7xl mx-auto mb-6">
+        <div class="liquid-glass-card p-6">
+          <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            <div>
+              <label class="block text-white/80 text-sm mb-2">Status</label>
+              <select id="status-filter" class="w-full p-2 rounded-lg border border-white/20 bg-white/10 text-white">
+                <option value="">All Status</option>
+                <option value="new">New</option>
+                <option value="contacted">Contacted</option>
+                <option value="qualified">Qualified</option>
+                <option value="closed">Closed</option>
+              </select>
             </div>
+            <div>
+              <label class="block text-white/80 text-sm mb-2">Priority</label>
+              <select id="priority-filter" class="w-full p-2 rounded-lg border border-white/20 bg-white/10 text-white">
+                <option value="">All Priority</option>
+                <option value="urgent">Urgent</option>
+                <option value="high">High</option>
+                <option value="normal">Normal</option>
+                <option value="low">Low</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-white/80 text-sm mb-2">Date From</label>
+              <input
+                type="date"
+                id="date-from"
+                class="w-full p-2 rounded-lg border border-white/20 bg-white/10 text-white"
+              />
+            </div>
+            <div>
+              <label class="block text-white/80 text-sm mb-2">Date To</label>
+              <input
+                type="date"
+                id="date-to"
+                class="w-full p-2 rounded-lg border border-white/20 bg-white/10 text-white"
+              />
+            </div>
+            <div class="flex items-end">
+              <button onclick="applyFilters()" class="liquid-glass-button w-full p-2 text-white">Apply Filters</button>
+            </div>
+          </div>
         </div>
+      </div>
 
-        <!-- Submissions Table -->
-        <div class="max-w-7xl mx-auto">
-            <div class="liquid-glass-card p-6">
-                <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead>
-                            <tr class="border-b border-white/20">
-                                <th class="text-left py-3 px-4 text-white font-semibold">Date</th>
-                                <th class="text-left py-3 px-4 text-white font-semibold">Name</th>
-                                <th class="text-left py-3 px-4 text-white font-semibold">Email</th>
-                                <th class="text-left py-3 px-4 text-white font-semibold">Company</th>
-                                <th class="text-left py-3 px-4 text-white font-semibold">Status</th>
-                                <th class="text-left py-3 px-4 text-white font-semibold">Priority</th>
-                                <th class="text-left py-3 px-4 text-white font-semibold">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody id="submissions-table">
-                            <tr>
-                                <td colspan="7" class="text-center py-8 text-white/80">Loading submissions...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+      <!-- Submissions Table -->
+      <div class="max-w-7xl mx-auto">
+        <div class="liquid-glass-card p-6">
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead>
+                <tr class="border-b border-white/20">
+                  <th class="text-left py-3 px-4 text-white font-semibold">Date</th>
+                  <th class="text-left py-3 px-4 text-white font-semibold">Name</th>
+                  <th class="text-left py-3 px-4 text-white font-semibold">Email</th>
+                  <th class="text-left py-3 px-4 text-white font-semibold">Company</th>
+                  <th class="text-left py-3 px-4 text-white font-semibold">Status</th>
+                  <th class="text-left py-3 px-4 text-white font-semibold">Priority</th>
+                  <th class="text-left py-3 px-4 text-white font-semibold">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="submissions-table">
+                <tr>
+                  <td colspan="7" class="text-center py-8 text-white/80">Loading submissions...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
+      </div>
 
-        <!-- Pagination -->
-        <div class="max-w-7xl mx-auto mt-6">
-            <div class="liquid-glass-card p-4">
-                <div class="flex justify-between items-center text-white">
-                    <div id="pagination-info">Showing 0 of 0 entries</div>
-                    <div class="flex space-x-2" id="pagination-buttons">
-                        <!-- Pagination buttons will be inserted here -->
-                    </div>
-                </div>
+      <!-- Pagination -->
+      <div class="max-w-7xl mx-auto mt-6">
+        <div class="liquid-glass-card p-4">
+          <div class="flex justify-between items-center text-white">
+            <div id="pagination-info">Showing 0 of 0 entries</div>
+            <div class="flex space-x-2" id="pagination-buttons">
+              <!-- Pagination buttons will be inserted here -->
             </div>
+          </div>
         </div>
+      </div>
     </div>
 
     <!-- Login Modal -->
     <div id="login-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
-        <div class="liquid-glass-card max-w-md w-full mx-4">
-            <div class="p-6">
-                <h2 class="text-2xl font-bold text-white mb-6 text-center">Admin Login</h2>
-                
-                <form id="auth-form" class="space-y-4">
-                    <div>
-                        <label class="block text-white/80 text-sm mb-2">Email</label>
-                        <input type="email" id="auth-email" required class="w-full p-3 rounded-lg border border-white/20 bg-white/10 text-white placeholder-white/50" placeholder="Enter your email">
-                    </div>
-                    
-                    <div>
-                        <label class="block text-white/80 text-sm mb-2">Password</label>
-                        <input type="password" id="auth-password" required class="w-full p-3 rounded-lg border border-white/20 bg-white/10 text-white placeholder-white/50" placeholder="Enter your password">
-                    </div>
-                    
-                    <div class="flex space-x-4">
-                        <button type="submit" id="login-btn" class="flex-1 liquid-glass-button px-4 py-3 text-white bg-blue-500/20">
-                            Login
-                        </button>
-                        <button type="button" id="signup-btn" class="flex-1 liquid-glass-button px-4 py-3 text-white bg-green-500/20">
-                            Sign Up
-                        </button>
-                    </div>
-                </form>
-                
-                <div id="auth-error" class="mt-4 text-red-300 text-sm hidden"></div>
-                <div id="auth-success" class="mt-4 text-green-300 text-sm hidden"></div>
-                
-                <div class="mt-6 pt-4 border-t border-white/20">
-                    <button id="logout-btn" class="w-full liquid-glass-button px-4 py-2 text-white bg-red-500/20 hidden">
-                        Logout
-                    </button>
-                </div>
+      <div class="liquid-glass-card max-w-md w-full mx-4">
+        <div class="p-6">
+          <h2 class="text-2xl font-bold text-white mb-6 text-center">Admin Login</h2>
+
+          <form id="auth-form" class="space-y-4">
+            <div>
+              <label class="block text-white/80 text-sm mb-2">Email</label>
+              <input
+                type="email"
+                id="auth-email"
+                required
+                class="w-full p-3 rounded-lg border border-white/20 bg-white/10 text-white placeholder-white/50"
+                placeholder="Enter your email"
+              />
             </div>
+
+            <div>
+              <label class="block text-white/80 text-sm mb-2">Password</label>
+              <input
+                type="password"
+                id="auth-password"
+                required
+                class="w-full p-3 rounded-lg border border-white/20 bg-white/10 text-white placeholder-white/50"
+                placeholder="Enter your password"
+              />
+            </div>
+
+            <div class="flex space-x-4">
+              <button
+                type="submit"
+                id="login-btn"
+                class="flex-1 liquid-glass-button px-4 py-3 text-white bg-blue-500/20"
+              >
+                Login
+              </button>
+              <button
+                type="button"
+                id="signup-btn"
+                class="flex-1 liquid-glass-button px-4 py-3 text-white bg-green-500/20"
+              >
+                Sign Up
+              </button>
+            </div>
+          </form>
+
+          <div id="auth-error" class="mt-4 text-red-300 text-sm hidden"></div>
+          <div id="auth-success" class="mt-4 text-green-300 text-sm hidden"></div>
+
+          <div class="mt-6 pt-4 border-t border-white/20">
+            <button id="logout-btn" class="w-full liquid-glass-button px-4 py-2 text-white bg-red-500/20 hidden">
+              Logout
+            </button>
+          </div>
         </div>
+      </div>
     </div>
 
     <!-- Submission Detail Modal -->
     <div id="submission-modal" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm">
-        <div class="flex items-center justify-center min-h-screen p-4">
-            <div class="liquid-glass-card max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-                <div class="p-6" id="modal-content">
-                    <!-- Modal content will be inserted here -->
-                </div>
-            </div>
+      <div class="flex items-center justify-center min-h-screen p-4">
+        <div class="liquid-glass-card max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+          <div class="p-6" id="modal-content">
+            <!-- Modal content will be inserted here -->
+          </div>
         </div>
+      </div>
     </div>
 
     <script>
-        // Supabase configuration
-        const SUPABASE_URL = 'https://icfombdnbaeckgivfkdw.supabase.co';
-        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImljZm9tYmRuYmFlY2tnaXZma2R3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ4MzA1MjIsImV4cCI6MjA3MDQwNjUyMn0.6E7SSsyQpmkpyiHQLLMzKSXL9S8bHMY4THeW_iiSFlw';
-        
-        let supabaseClient;
-        let currentUser = null;
-        
-        if (typeof window.supabase !== 'undefined') {
-            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        } else {
-            console.error('Supabase client not loaded');
-        }
+      // Supabase configuration
+      const SUPABASE_URL = '__SUPABASE_URL_PLACEHOLDER__';
+      const SUPABASE_ANON_KEY = '__SUPABASE_ANON_KEY_PLACEHOLDER__';
 
-        // Check authentication on page load
-        window.addEventListener('DOMContentLoaded', async function() {
-            // Initialize security logging
-            window.SecurityManager?.logSecurityEvent('admin_dashboard_loaded', {
-                timestamp: new Date().toISOString(),
-                userAgent: navigator.userAgent,
-                url: window.location.href
+      let supabaseClient;
+      let currentUser = null;
+
+      if (typeof window.supabase !== 'undefined') {
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      } else {
+        console.error('Supabase client not loaded');
+      }
+
+      // Global initialization status
+      let securityInitialized = false;
+      let dashboardReady = false;
+
+      // Initialize the admin dashboard after security modules are loaded
+      async function initializeAdminDashboard() {
+        try {
+          // Wait for security modules to be ready
+          if (!securityInitialized) {
+            console.log('⏳ Waiting for security modules to initialize...');
+            return;
+          }
+
+          console.log('🚀 Starting admin dashboard initialization...');
+
+          // Now safe to use security logging
+          window.SecurityManager?.logSecurityEvent('admin_dashboard_loaded', {
+            timestamp: new Date().toISOString(),
+            userAgent: navigator.userAgent,
+            url: window.location.href,
+          });
+
+          const {
+            data: { user },
+          } = await supabaseClient.auth.getUser();
+          currentUser = user;
+
+          if (!currentUser) {
+            // Log unauthenticated access attempt
+            window.SecurityManager?.logSecurityEvent('unauthenticated_access', {
+              page: 'admin_dashboard',
+              timestamp: new Date().toISOString(),
+              userAgent: navigator.userAgent,
             });
+            showLoginModal();
+          } else {
+            // Log authenticated access
+            window.SecurityManager?.logSecurityEvent('authenticated_access', {
+              userId: user.id,
+              email: user.email,
+              page: 'admin_dashboard',
+              timestamp: new Date().toISOString(),
+            });
+            initializeDashboard();
+          }
 
-            const { data: { user } } = await supabaseClient.auth.getUser();
-            currentUser = user;
-            
-            if (!currentUser) {
-                // Log unauthenticated access attempt
-                window.SecurityManager?.logSecurityEvent('unauthenticated_access', {
-                    page: 'admin_dashboard',
-                    timestamp: new Date().toISOString(),
-                    userAgent: navigator.userAgent
-                });
-                showLoginModal();
-            } else {
-                // Log authenticated access
-                window.SecurityManager?.logSecurityEvent('authenticated_access', {
-                    userId: user.id,
-                    email: user.email,
-                    page: 'admin_dashboard',
-                    timestamp: new Date().toISOString()
-                });
-                initializeDashboard();
-            }
-            
-            setupAuthEventListeners();
+          // Set up event listeners AFTER security is ready
+          setupAuthEventListeners();
+          setupAdditionalEventListeners();
+
+          dashboardReady = true;
+          console.log('✅ Admin dashboard fully initialized');
+        } catch (error) {
+          console.error('❌ Admin dashboard initialization failed:', error);
+          showAuthError('Dashboard initialization failed. Please refresh the page.');
+        }
+      }
+
+      // Check authentication on page load - but wait for security first
+      window.addEventListener('DOMContentLoaded', async function () {
+        console.log('📱 DOM loaded, waiting for security initialization...');
+
+        // Try to initialize dashboard (will wait if security not ready)
+        await initializeAdminDashboard();
+      });
+
+      // Authentication functions
+      function showLoginModal() {
+        document.getElementById('login-modal').classList.remove('hidden');
+      }
+
+      function hideLoginModal() {
+        document.getElementById('login-modal').classList.add('hidden');
+      }
+
+      function showAuthError(message) {
+        const errorEl = document.getElementById('auth-error');
+        errorEl.textContent = message;
+        errorEl.classList.remove('hidden');
+        document.getElementById('auth-success').classList.add('hidden');
+      }
+
+      function showAuthSuccess(message) {
+        const successEl = document.getElementById('auth-success');
+        successEl.textContent = message;
+        successEl.classList.remove('hidden');
+        document.getElementById('auth-error').classList.add('hidden');
+      }
+
+      function clearAuthMessages() {
+        document.getElementById('auth-error').classList.add('hidden');
+        document.getElementById('auth-success').classList.add('hidden');
+      }
+
+      async function handleLogin(email, password) {
+        try {
+          // Security Step 1: CSRF Token Validation
+          const csrfToken = window.CSRFProtection?.getToken();
+          if (!window.CSRFProtection || !csrfToken || !window.CSRFProtection.validateToken(csrfToken)) {
+            console.warn('CSRF validation failed during admin login');
+            window.SecurityManager?.logSecurityEvent('csrf_validation_failed', {
+              action: 'admin_login',
+              timestamp: new Date().toISOString(),
+              userAgent: navigator.userAgent,
+            });
+            showAuthError('Security validation failed. Please refresh the page and try again.');
+            return false;
+          }
+
+          // Security Step 2: XSS Protection - Sanitize inputs
+          const sanitizedEmail = window.XSSProtection?.sanitizeFormInput(email) || email;
+          const sanitizedPassword = window.XSSProtection?.sanitizeFormInput(password) || password;
+
+          // Log sanitization if occurred
+          if (sanitizedEmail !== email || sanitizedPassword !== password) {
+            window.SecurityManager?.logSecurityEvent('xss_sanitization', {
+              action: 'admin_login',
+              sanitized: true,
+              timestamp: new Date().toISOString(),
+            });
+          }
+
+          const { data, error } = await supabaseClient.auth.signInWithPassword({
+            email: sanitizedEmail,
+            password: sanitizedPassword,
+          });
+
+          if (error) {
+            // Log failed login attempt
+            window.SecurityManager?.logSecurityEvent('login_failed', {
+              email: sanitizedEmail,
+              error: error.message,
+              timestamp: new Date().toISOString(),
+              userAgent: navigator.userAgent,
+            });
+            showAuthError(error.message);
+            return false;
+          }
+
+          // Log successful login
+          window.SecurityManager?.logSecurityEvent('login_success', {
+            userId: data.user?.id,
+            email: data.user?.email,
+            timestamp: new Date().toISOString(),
+          });
+
+          currentUser = data.user;
+          hideLoginModal();
+          initializeDashboard();
+          return true;
+        } catch (error) {
+          // Log unexpected error
+          window.SecurityManager?.logSecurityEvent('login_error', {
+            error: error.message,
+            timestamp: new Date().toISOString(),
+          });
+          showAuthError('Login failed: ' + error.message);
+          return false;
+        }
+      }
+
+      async function handleSignup(email, password) {
+        try {
+          // Security Step 1: CSRF Token Validation
+          const csrfToken = window.CSRFProtection?.getToken();
+          if (!window.CSRFProtection || !csrfToken || !window.CSRFProtection.validateToken(csrfToken)) {
+            console.warn('CSRF validation failed during admin signup');
+            window.SecurityManager?.logSecurityEvent('csrf_validation_failed', {
+              action: 'admin_signup',
+              timestamp: new Date().toISOString(),
+              userAgent: navigator.userAgent,
+            });
+            showAuthError('Security validation failed. Please refresh the page and try again.');
+            return false;
+          }
+
+          // Security Step 2: XSS Protection - Sanitize inputs
+          const sanitizedEmail = window.XSSProtection?.sanitizeFormInput(email) || email;
+          const sanitizedPassword = window.XSSProtection?.sanitizeFormInput(password) || password;
+
+          // Log sanitization if occurred
+          if (sanitizedEmail !== email || sanitizedPassword !== password) {
+            window.SecurityManager?.logSecurityEvent('xss_sanitization', {
+              action: 'admin_signup',
+              sanitized: true,
+              timestamp: new Date().toISOString(),
+            });
+          }
+
+          const { data, error } = await supabaseClient.auth.signUp({
+            email: sanitizedEmail,
+            password: sanitizedPassword,
+          });
+
+          if (error) {
+            // Log failed signup attempt
+            window.SecurityManager?.logSecurityEvent('signup_failed', {
+              email: sanitizedEmail,
+              error: error.message,
+              timestamp: new Date().toISOString(),
+              userAgent: navigator.userAgent,
+            });
+            showAuthError(error.message);
+            return false;
+          }
+
+          if (data.user && !data.session) {
+            // Log successful signup (pending confirmation)
+            window.SecurityManager?.logSecurityEvent('signup_success_pending', {
+              email: data.user.email,
+              timestamp: new Date().toISOString(),
+            });
+            showAuthSuccess('Please check your email to confirm your account');
+            return true;
+          }
+
+          // Log successful signup with immediate session
+          window.SecurityManager?.logSecurityEvent('signup_success', {
+            userId: data.user?.id,
+            email: data.user?.email,
+            timestamp: new Date().toISOString(),
+          });
+
+          currentUser = data.user;
+          hideLoginModal();
+          initializeDashboard();
+          return true;
+        } catch (error) {
+          // Log unexpected error
+          window.SecurityManager?.logSecurityEvent('signup_error', {
+            error: error.message,
+            timestamp: new Date().toISOString(),
+          });
+          showAuthError('Signup failed: ' + error.message);
+          return false;
+        }
+      }
+
+      async function handleLogout() {
+        try {
+          // Log logout attempt
+          window.SecurityManager?.logSecurityEvent('logout_initiated', {
+            userId: currentUser?.id,
+            email: currentUser?.email,
+            timestamp: new Date().toISOString(),
+          });
+
+          await supabaseClient.auth.signOut();
+
+          // Log successful logout
+          window.SecurityManager?.logSecurityEvent('logout_success', {
+            userId: currentUser?.id,
+            timestamp: new Date().toISOString(),
+          });
+
+          currentUser = null;
+          showLoginModal();
+        } catch (error) {
+          // Log logout error
+          window.SecurityManager?.logSecurityEvent('logout_error', {
+            error: error.message,
+            timestamp: new Date().toISOString(),
+          });
+          console.error('Logout error:', error);
+        }
+      }
+
+      function setupAuthEventListeners() {
+        const authForm = document.getElementById('auth-form');
+        const loginBtn = document.getElementById('login-btn');
+        const signupBtn = document.getElementById('signup-btn');
+        const logoutBtn = document.getElementById('logout-btn');
+
+        authForm.addEventListener('submit', async function (e) {
+          e.preventDefault();
+          clearAuthMessages();
+
+          const email = document.getElementById('auth-email').value;
+          const password = document.getElementById('auth-password').value;
+
+          await handleLogin(email, password);
         });
 
-        // Authentication functions
-        function showLoginModal() {
-            document.getElementById('login-modal').classList.remove('hidden');
-        }
+        signupBtn.addEventListener('click', async function (e) {
+          e.preventDefault();
+          clearAuthMessages();
 
-        function hideLoginModal() {
-            document.getElementById('login-modal').classList.add('hidden');
-        }
+          const email = document.getElementById('auth-email').value;
+          const password = document.getElementById('auth-password').value;
 
-        function showAuthError(message) {
-            const errorEl = document.getElementById('auth-error');
-            errorEl.textContent = message;
-            errorEl.classList.remove('hidden');
-            document.getElementById('auth-success').classList.add('hidden');
-        }
+          if (!email || !password) {
+            showAuthError('Please enter email and password');
+            return;
+          }
 
-        function showAuthSuccess(message) {
-            const successEl = document.getElementById('auth-success');
-            successEl.textContent = message;
-            successEl.classList.remove('hidden');
-            document.getElementById('auth-error').classList.add('hidden');
-        }
+          await handleSignup(email, password);
+        });
 
-        function clearAuthMessages() {
-            document.getElementById('auth-error').classList.add('hidden');
-            document.getElementById('auth-success').classList.add('hidden');
-        }
+        logoutBtn.addEventListener('click', handleLogout);
+      }
 
-        async function handleLogin(email, password) {
-            try {
-                // Security Step 1: CSRF Token Validation
-                if (!window.CSRFProtection || !window.CSRFProtection.validateToken()) {
-                    console.warn('CSRF validation failed during admin login');
-                    window.SecurityManager?.logSecurityEvent('csrf_validation_failed', {
-                        action: 'admin_login',
-                        timestamp: new Date().toISOString(),
-                        userAgent: navigator.userAgent
-                    });
-                    showAuthError('Security validation failed. Please refresh the page and try again.');
-                    return false;
-                }
+      function setupAdditionalEventListeners() {
+        // Modal click handling
+        document.getElementById('submission-modal').addEventListener('click', function (e) {
+          if (e.target.id === 'submission-modal') {
+            closeModal();
+          }
+        });
 
-                // Security Step 2: XSS Protection - Sanitize inputs
-                const sanitizedEmail = window.XSSProtection?.sanitizeInput(email) || email;
-                const sanitizedPassword = window.XSSProtection?.sanitizeInput(password) || password;
+        // Filter change handlers
+        document.getElementById('status-filter').addEventListener('change', applyFilters);
+        document.getElementById('priority-filter').addEventListener('change', applyFilters);
+      }
 
-                // Log sanitization if occurred
-                if (sanitizedEmail !== email || sanitizedPassword !== password) {
-                    window.SecurityManager?.logSecurityEvent('xss_sanitization', {
-                        action: 'admin_login',
-                        sanitized: true,
-                        timestamp: new Date().toISOString()
-                    });
-                }
-
-                const { data, error } = await supabaseClient.auth.signInWithPassword({
-                    email: sanitizedEmail,
-                    password: sanitizedPassword
-                });
-
-                if (error) {
-                    // Log failed login attempt
-                    window.SecurityManager?.logSecurityEvent('login_failed', {
-                        email: sanitizedEmail,
-                        error: error.message,
-                        timestamp: new Date().toISOString(),
-                        userAgent: navigator.userAgent
-                    });
-                    showAuthError(error.message);
-                    return false;
-                }
-
-                // Log successful login
-                window.SecurityManager?.logSecurityEvent('login_success', {
-                    userId: data.user?.id,
-                    email: data.user?.email,
-                    timestamp: new Date().toISOString()
-                });
-
-                currentUser = data.user;
-                hideLoginModal();
-                initializeDashboard();
-                return true;
-            } catch (error) {
-                // Log unexpected error
-                window.SecurityManager?.logSecurityEvent('login_error', {
-                    error: error.message,
-                    timestamp: new Date().toISOString()
-                });
-                showAuthError('Login failed: ' + error.message);
-                return false;
-            }
-        }
-
-        async function handleSignup(email, password) {
-            try {
-                // Security Step 1: CSRF Token Validation
-                if (!window.CSRFProtection || !window.CSRFProtection.validateToken()) {
-                    console.warn('CSRF validation failed during admin signup');
-                    window.SecurityManager?.logSecurityEvent('csrf_validation_failed', {
-                        action: 'admin_signup',
-                        timestamp: new Date().toISOString(),
-                        userAgent: navigator.userAgent
-                    });
-                    showAuthError('Security validation failed. Please refresh the page and try again.');
-                    return false;
-                }
-
-                // Security Step 2: XSS Protection - Sanitize inputs
-                const sanitizedEmail = window.XSSProtection?.sanitizeInput(email) || email;
-                const sanitizedPassword = window.XSSProtection?.sanitizeInput(password) || password;
-
-                // Log sanitization if occurred
-                if (sanitizedEmail !== email || sanitizedPassword !== password) {
-                    window.SecurityManager?.logSecurityEvent('xss_sanitization', {
-                        action: 'admin_signup',
-                        sanitized: true,
-                        timestamp: new Date().toISOString()
-                    });
-                }
-
-                const { data, error } = await supabaseClient.auth.signUp({
-                    email: sanitizedEmail,
-                    password: sanitizedPassword
-                });
-
-                if (error) {
-                    // Log failed signup attempt
-                    window.SecurityManager?.logSecurityEvent('signup_failed', {
-                        email: sanitizedEmail,
-                        error: error.message,
-                        timestamp: new Date().toISOString(),
-                        userAgent: navigator.userAgent
-                    });
-                    showAuthError(error.message);
-                    return false;
-                }
-
-                if (data.user && !data.session) {
-                    // Log successful signup (pending confirmation)
-                    window.SecurityManager?.logSecurityEvent('signup_success_pending', {
-                        email: data.user.email,
-                        timestamp: new Date().toISOString()
-                    });
-                    showAuthSuccess('Please check your email to confirm your account');
-                    return true;
-                }
-
-                // Log successful signup with immediate session
-                window.SecurityManager?.logSecurityEvent('signup_success', {
-                    userId: data.user?.id,
-                    email: data.user?.email,
-                    timestamp: new Date().toISOString()
-                });
-
-                currentUser = data.user;
-                hideLoginModal();
-                initializeDashboard();
-                return true;
-            } catch (error) {
-                // Log unexpected error
-                window.SecurityManager?.logSecurityEvent('signup_error', {
-                    error: error.message,
-                    timestamp: new Date().toISOString()
-                });
-                showAuthError('Signup failed: ' + error.message);
-                return false;
-            }
-        }
-
-        async function handleLogout() {
-            try {
-                // Log logout attempt
-                window.SecurityManager?.logSecurityEvent('logout_initiated', {
-                    userId: currentUser?.id,
-                    email: currentUser?.email,
-                    timestamp: new Date().toISOString()
-                });
-
-                await supabaseClient.auth.signOut();
-                
-                // Log successful logout
-                window.SecurityManager?.logSecurityEvent('logout_success', {
-                    userId: currentUser?.id,
-                    timestamp: new Date().toISOString()
-                });
-
-                currentUser = null;
-                showLoginModal();
-            } catch (error) {
-                // Log logout error
-                window.SecurityManager?.logSecurityEvent('logout_error', {
-                    error: error.message,
-                    timestamp: new Date().toISOString()
-                });
-                console.error('Logout error:', error);
-            }
-        }
-
-        function setupAuthEventListeners() {
-            const authForm = document.getElementById('auth-form');
-            const loginBtn = document.getElementById('login-btn');
-            const signupBtn = document.getElementById('signup-btn');
-            const logoutBtn = document.getElementById('logout-btn');
-            
-            authForm.addEventListener('submit', async function(e) {
-                e.preventDefault();
-                clearAuthMessages();
-                
-                const email = document.getElementById('auth-email').value;
-                const password = document.getElementById('auth-password').value;
-                
-                await handleLogin(email, password);
-            });
-            
-            signupBtn.addEventListener('click', async function(e) {
-                e.preventDefault();
-                clearAuthMessages();
-                
-                const email = document.getElementById('auth-email').value;
-                const password = document.getElementById('auth-password').value;
-                
-                if (!email || !password) {
-                    showAuthError('Please enter email and password');
-                    return;
-                }
-                
-                await handleSignup(email, password);
-            });
-            
-            logoutBtn.addEventListener('click', handleLogout);
-        }
-
-        function initializeDashboard() {
-            // Initialize dashboard functionality
-            const bubbleManager = new BubbleManager();
-            loadSubmissions();
-        }
-
-        // Bubble animation system
-        class BubbleManager {
-            constructor() {
-                this.container = document.getElementById('bubble-container');
-                this.bubbles = [];
-                this.maxBubbles = 20;
-                this.init();
-            }
-
-            init() {
-                // Create initial bubbles
-                for (let i = 0; i < this.maxBubbles; i++) {
-                    setTimeout(() => this.createBubble(), i * 100);
-                }
-
-                // Continuous bubble creation
-                setInterval(() => {
-                    if (this.bubbles.length < this.maxBubbles) {
-                        this.createBubble();
-                    }
-                }, 2000);
-            }
-
-            createBubble() {
-                const bubble = document.createElement('div');
-                bubble.className = 'bubble';
-                
-                // Random size
-                const size = Math.random() * 60 + 20;
-                bubble.style.width = `${size}px`;
-                bubble.style.height = `${size}px`;
-                
-                // Random position
-                bubble.style.left = `${Math.random() * 100}%`;
-                bubble.style.top = `${Math.random() * 100}%`;
-                
-                // Random animation delay and duration
-                const delay = Math.random() * 5;
-                const duration = 15 + Math.random() * 10;
-                bubble.style.animationDelay = `${delay}s`;
-                bubble.style.animationDuration = `${duration}s`;
-                
-                this.container.appendChild(bubble);
-                this.bubbles.push(bubble);
-
-                // Remove bubble after animation
-                setTimeout(() => {
-                    if (bubble.parentNode) {
-                        bubble.parentNode.removeChild(bubble);
-                    }
-                    this.bubbles = this.bubbles.filter(b => b !== bubble);
-                }, (duration + delay) * 1000);
-            }
-        }
-
-        // Initialize bubble manager
+      function initializeDashboard() {
+        // Initialize dashboard functionality
         const bubbleManager = new BubbleManager();
+        loadSubmissions();
+      }
 
-        // Admin Dashboard Functionality
-        let currentPage = 1;
-        let itemsPerPage = 20;
-        let totalItems = 0;
-        let allSubmissions = [];
-        let filteredSubmissions = [];
-
-        // Removed old page load logic - now handled by authentication system
-
-        async function loadSubmissions() {
-            if (!supabaseClient) {
-                console.error('Supabase client not available');
-                document.getElementById('submissions-table').innerHTML = 
-                    '<tr><td colspan="7" class="text-center py-8 text-red-400">Error: Database connection not available</td></tr>';
-                return;
-            }
-
-            try {
-                const { data, error } = await supabaseClient
-                    .from('contact_submissions')
-                    .select('*')
-                    .is('deleted_at', null)
-                    .order('submitted_at', { ascending: false });
-
-                if (error) {
-                    console.error('Error fetching submissions:', error);
-                    document.getElementById('submissions-table').innerHTML = 
-                        '<tr><td colspan="7" class="text-center py-8 text-red-400">Error loading submissions</td></tr>';
-                    return;
-                }
-
-                allSubmissions = data || [];
-                filteredSubmissions = [...allSubmissions];
-                updateStats();
-                renderTable();
-                
-            } catch (error) {
-                console.error('Unexpected error:', error);
-                document.getElementById('submissions-table').innerHTML = 
-                    '<tr><td colspan="7" class="text-center py-8 text-red-400">Unexpected error occurred</td></tr>';
-            }
+      // Bubble animation system
+      class BubbleManager {
+        constructor() {
+          this.container = document.getElementById('bubble-container');
+          this.bubbles = [];
+          this.maxBubbles = 20;
+          this.init();
         }
 
-        function updateStats() {
-            const total = filteredSubmissions.length;
-            const statusCounts = filteredSubmissions.reduce((acc, sub) => {
-                acc[sub.status] = (acc[sub.status] || 0) + 1;
-                return acc;
-            }, {});
+        init() {
+          // Create initial bubbles
+          for (let i = 0; i < this.maxBubbles; i++) {
+            setTimeout(() => this.createBubble(), i * 100);
+          }
 
-            document.getElementById('total-submissions').textContent = total;
-            document.getElementById('new-submissions').textContent = statusCounts.new || 0;
-            document.getElementById('contacted-submissions').textContent = statusCounts.contacted || 0;
-            document.getElementById('qualified-submissions').textContent = statusCounts.qualified || 0;
+          // Continuous bubble creation
+          setInterval(() => {
+            if (this.bubbles.length < this.maxBubbles) {
+              this.createBubble();
+            }
+          }, 2000);
         }
 
-        function renderTable() {
-            const tbody = document.getElementById('submissions-table');
-            
-            if (filteredSubmissions.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="text-center py-8 text-white/80">No submissions found</td></tr>';
-                return;
-            }
+        createBubble() {
+          const bubble = document.createElement('div');
+          bubble.className = 'bubble';
 
-            // Calculate pagination
-            totalItems = filteredSubmissions.length;
-            const startIndex = (currentPage - 1) * itemsPerPage;
-            const endIndex = startIndex + itemsPerPage;
-            const pageSubmissions = filteredSubmissions.slice(startIndex, endIndex);
+          // Random size
+          const size = Math.random() * 60 + 20;
+          bubble.style.width = `${size}px`;
+          bubble.style.height = `${size}px`;
 
-            // Render rows
-            tbody.innerHTML = pageSubmissions.map(submission => {
-                const date = new Date(submission.submitted_at).toLocaleDateString();
-                const time = new Date(submission.submitted_at).toLocaleTimeString();
-                
-                return `
+          // Random position
+          bubble.style.left = `${Math.random() * 100}%`;
+          bubble.style.top = `${Math.random() * 100}%`;
+
+          // Random animation delay and duration
+          const delay = Math.random() * 5;
+          const duration = 15 + Math.random() * 10;
+          bubble.style.animationDelay = `${delay}s`;
+          bubble.style.animationDuration = `${duration}s`;
+
+          this.container.appendChild(bubble);
+          this.bubbles.push(bubble);
+
+          // Remove bubble after animation
+          setTimeout(
+            () => {
+              if (bubble.parentNode) {
+                bubble.parentNode.removeChild(bubble);
+              }
+              this.bubbles = this.bubbles.filter(b => b !== bubble);
+            },
+            (duration + delay) * 1000
+          );
+        }
+      }
+
+      // Initialize bubble manager
+      const bubbleManager = new BubbleManager();
+
+      // Admin Dashboard Functionality
+      let currentPage = 1;
+      let itemsPerPage = 20;
+      let totalItems = 0;
+      let allSubmissions = [];
+      let filteredSubmissions = [];
+
+      // Removed old page load logic - now handled by authentication system
+
+      async function loadSubmissions() {
+        if (!supabaseClient) {
+          console.error('Supabase client not available');
+          document.getElementById('submissions-table').innerHTML =
+            '<tr><td colspan="7" class="text-center py-8 text-red-400">Error: Database connection not available</td></tr>';
+          return;
+        }
+
+        try {
+          const { data, error } = await supabaseClient
+            .from('contact_submissions')
+            .select('*')
+            .is('deleted_at', null)
+            .order('submitted_at', { ascending: false });
+
+          if (error) {
+            console.error('Error fetching submissions:', error);
+            document.getElementById('submissions-table').innerHTML =
+              '<tr><td colspan="7" class="text-center py-8 text-red-400">Error loading submissions</td></tr>';
+            return;
+          }
+
+          allSubmissions = data || [];
+          filteredSubmissions = [...allSubmissions];
+          updateStats();
+          renderTable();
+        } catch (error) {
+          console.error('Unexpected error:', error);
+          document.getElementById('submissions-table').innerHTML =
+            '<tr><td colspan="7" class="text-center py-8 text-red-400">Unexpected error occurred</td></tr>';
+        }
+      }
+
+      function updateStats() {
+        const total = filteredSubmissions.length;
+        const statusCounts = filteredSubmissions.reduce((acc, sub) => {
+          acc[sub.status] = (acc[sub.status] || 0) + 1;
+          return acc;
+        }, {});
+
+        document.getElementById('total-submissions').textContent = total;
+        document.getElementById('new-submissions').textContent = statusCounts.new || 0;
+        document.getElementById('contacted-submissions').textContent = statusCounts.contacted || 0;
+        document.getElementById('qualified-submissions').textContent = statusCounts.qualified || 0;
+      }
+
+      function renderTable() {
+        const tbody = document.getElementById('submissions-table');
+
+        if (filteredSubmissions.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" class="text-center py-8 text-white/80">No submissions found</td></tr>';
+          return;
+        }
+
+        // Calculate pagination
+        totalItems = filteredSubmissions.length;
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const endIndex = startIndex + itemsPerPage;
+        const pageSubmissions = filteredSubmissions.slice(startIndex, endIndex);
+
+        // Render rows
+        tbody.innerHTML = pageSubmissions
+          .map(submission => {
+            const date = new Date(submission.submitted_at).toLocaleDateString();
+            const time = new Date(submission.submitted_at).toLocaleTimeString();
+
+            return `
                     <tr class="border-b border-white/10 hover:bg-white/5">
                         <td class="py-3 px-4 text-white/90">
                             <div class="text-sm">${date}</div>
@@ -717,91 +903,92 @@
                         </td>
                     </tr>
                 `;
-            }).join('');
+          })
+          .join('');
 
-            updatePaginationInfo();
+        updatePaginationInfo();
+      }
+
+      function updatePaginationInfo() {
+        const startIndex = (currentPage - 1) * itemsPerPage + 1;
+        const endIndex = Math.min(currentPage * itemsPerPage, totalItems);
+        document.getElementById('pagination-info').textContent =
+          `Showing ${startIndex}-${endIndex} of ${totalItems} entries`;
+
+        renderPaginationButtons();
+      }
+
+      function renderPaginationButtons() {
+        const totalPages = Math.ceil(totalItems / itemsPerPage);
+        const buttonsContainer = document.getElementById('pagination-buttons');
+
+        if (totalPages <= 1) {
+          buttonsContainer.innerHTML = '';
+          return;
         }
 
-        function updatePaginationInfo() {
-            const startIndex = (currentPage - 1) * itemsPerPage + 1;
-            const endIndex = Math.min(currentPage * itemsPerPage, totalItems);
-            document.getElementById('pagination-info').textContent = 
-                `Showing ${startIndex}-${endIndex} of ${totalItems} entries`;
+        let buttons = '';
 
-            renderPaginationButtons();
+        // Previous button
+        if (currentPage > 1) {
+          buttons += `<button onclick="changePage(${currentPage - 1})" class="liquid-glass-button px-3 py-1 text-sm text-white">Previous</button>`;
         }
 
-        function renderPaginationButtons() {
-            const totalPages = Math.ceil(totalItems / itemsPerPage);
-            const buttonsContainer = document.getElementById('pagination-buttons');
-            
-            if (totalPages <= 1) {
-                buttonsContainer.innerHTML = '';
-                return;
-            }
-
-            let buttons = '';
-            
-            // Previous button
-            if (currentPage > 1) {
-                buttons += `<button onclick="changePage(${currentPage - 1})" class="liquid-glass-button px-3 py-1 text-sm text-white">Previous</button>`;
-            }
-            
-            // Page numbers
-            for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) {
-                const isActive = i === currentPage ? 'bg-white/20' : '';
-                buttons += `<button onclick="changePage(${i})" class="liquid-glass-button px-3 py-1 text-sm text-white ${isActive}">${i}</button>`;
-            }
-            
-            // Next button
-            if (currentPage < totalPages) {
-                buttons += `<button onclick="changePage(${currentPage + 1})" class="liquid-glass-button px-3 py-1 text-sm text-white">Next</button>`;
-            }
-            
-            buttonsContainer.innerHTML = buttons;
+        // Page numbers
+        for (let i = Math.max(1, currentPage - 2); i <= Math.min(totalPages, currentPage + 2); i++) {
+          const isActive = i === currentPage ? 'bg-white/20' : '';
+          buttons += `<button onclick="changePage(${i})" class="liquid-glass-button px-3 py-1 text-sm text-white ${isActive}">${i}</button>`;
         }
 
-        function changePage(page) {
-            currentPage = page;
-            renderTable();
+        // Next button
+        if (currentPage < totalPages) {
+          buttons += `<button onclick="changePage(${currentPage + 1})" class="liquid-glass-button px-3 py-1 text-sm text-white">Next</button>`;
         }
 
-        function applyFilters() {
-            const statusFilter = document.getElementById('status-filter').value;
-            const priorityFilter = document.getElementById('priority-filter').value;
-            const dateFrom = document.getElementById('date-from').value;
-            const dateTo = document.getElementById('date-to').value;
+        buttonsContainer.innerHTML = buttons;
+      }
 
-            filteredSubmissions = allSubmissions.filter(submission => {
-                // Status filter
-                if (statusFilter && submission.status !== statusFilter) return false;
-                
-                // Priority filter
-                if (priorityFilter && submission.priority !== priorityFilter) return false;
-                
-                // Date filters
-                const submissionDate = new Date(submission.submitted_at).toISOString().split('T')[0];
-                if (dateFrom && submissionDate < dateFrom) return false;
-                if (dateTo && submissionDate > dateTo) return false;
-                
-                return true;
-            });
+      function changePage(page) {
+        currentPage = page;
+        renderTable();
+      }
 
-            currentPage = 1;
-            updateStats();
-            renderTable();
-        }
+      function applyFilters() {
+        const statusFilter = document.getElementById('status-filter').value;
+        const priorityFilter = document.getElementById('priority-filter').value;
+        const dateFrom = document.getElementById('date-from').value;
+        const dateTo = document.getElementById('date-to').value;
 
-        function refreshData() {
-            loadSubmissions();
-        }
+        filteredSubmissions = allSubmissions.filter(submission => {
+          // Status filter
+          if (statusFilter && submission.status !== statusFilter) return false;
 
-        function viewSubmission(id) {
-            const submission = allSubmissions.find(s => s.id === id);
-            if (!submission) return;
+          // Priority filter
+          if (priorityFilter && submission.priority !== priorityFilter) return false;
 
-            const modalContent = document.getElementById('modal-content');
-            modalContent.innerHTML = `
+          // Date filters
+          const submissionDate = new Date(submission.submitted_at).toISOString().split('T')[0];
+          if (dateFrom && submissionDate < dateFrom) return false;
+          if (dateTo && submissionDate > dateTo) return false;
+
+          return true;
+        });
+
+        currentPage = 1;
+        updateStats();
+        renderTable();
+      }
+
+      function refreshData() {
+        loadSubmissions();
+      }
+
+      function viewSubmission(id) {
+        const submission = allSubmissions.find(s => s.id === id);
+        if (!submission) return;
+
+        const modalContent = document.getElementById('modal-content');
+        modalContent.innerHTML = `
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-2xl font-bold text-white">Submission Details</h2>
                     <button onclick="closeModal()" class="text-white/80 hover:text-white">
@@ -845,14 +1032,18 @@
                     </div>
                 </div>
                 
-                ${submission.notes ? `
+                ${
+                  submission.notes
+                    ? `
                 <div class="mt-6">
                     <label class="block text-white/80 text-sm mb-2">Notes</label>
                     <div class="bg-white/10 p-4 rounded-lg text-white">
                         ${submission.notes.replace(/\n/g, '<br>')}
                     </div>
                 </div>
-                ` : ''}
+                `
+                    : ''
+                }
                 
                 <div class="mt-6 flex justify-end space-x-4">
                     <button onclick="editSubmission('${submission.id}')" class="liquid-glass-button px-4 py-2 text-white">
@@ -864,15 +1055,15 @@
                 </div>
             `;
 
-            document.getElementById('submission-modal').classList.remove('hidden');
-        }
+        document.getElementById('submission-modal').classList.remove('hidden');
+      }
 
-        function editSubmission(id) {
-            const submission = allSubmissions.find(s => s.id === id);
-            if (!submission) return;
+      function editSubmission(id) {
+        const submission = allSubmissions.find(s => s.id === id);
+        if (!submission) return;
 
-            const modalContent = document.getElementById('modal-content');
-            modalContent.innerHTML = `
+        const modalContent = document.getElementById('modal-content');
+        modalContent.innerHTML = `
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-2xl font-bold text-white">Edit Submission</h2>
                     <button onclick="closeModal()" class="text-white/80 hover:text-white">
@@ -921,109 +1112,109 @@
                 </form>
             `;
 
-            document.getElementById('submission-modal').classList.remove('hidden');
-        }
+        document.getElementById('submission-modal').classList.remove('hidden');
+      }
 
-        async function updateSubmission(event, id) {
-            event.preventDefault();
-            
-            try {
-                // Security Step 1: CSRF Token Validation
-                if (!window.CSRFProtection || !window.CSRFProtection.validateToken()) {
-                    console.warn('CSRF validation failed during submission update');
-                    window.SecurityManager?.logSecurityEvent('csrf_validation_failed', {
-                        action: 'update_submission',
-                        submissionId: id,
-                        timestamp: new Date().toISOString(),
-                        userAgent: navigator.userAgent
-                    });
-                    alert('Security validation failed. Please refresh the page and try again.');
-                    return;
-                }
+      async function updateSubmission(event, id) {
+        event.preventDefault();
 
-                const formData = new FormData(event.target);
-                const rawData = {
-                    status: formData.get('status'),
-                    priority: formData.get('priority'),
-                    notes: formData.get('notes') || null
-                };
+        try {
+          // Security Step 1: CSRF Token Validation
+          const csrfToken = window.CSRFProtection?.getToken();
+          if (!window.CSRFProtection || !csrfToken || !window.CSRFProtection.validateToken(csrfToken)) {
+            console.warn('CSRF validation failed during submission update');
+            window.SecurityManager?.logSecurityEvent('csrf_validation_failed', {
+              action: 'update_submission',
+              submissionId: id,
+              timestamp: new Date().toISOString(),
+              userAgent: navigator.userAgent,
+            });
+            alert('Security validation failed. Please refresh the page and try again.');
+            return;
+          }
 
-                // Security Step 2: XSS Protection - Sanitize all inputs
-                const updateData = {};
-                let sanitizationOccurred = false;
+          const formData = new FormData(event.target);
+          const rawData = {
+            status: formData.get('status'),
+            priority: formData.get('priority'),
+            notes: formData.get('notes') || null,
+          };
 
-                for (const [key, value] of Object.entries(rawData)) {
-                    if (value !== null && typeof value === 'string') {
-                        const sanitized = window.XSSProtection?.sanitizeInput(value) || value;
-                        updateData[key] = sanitized;
-                        if (sanitized !== value) {
-                            sanitizationOccurred = true;
-                        }
-                    } else {
-                        updateData[key] = value;
-                    }
-                }
+          // Security Step 2: XSS Protection - Sanitize all inputs
+          const updateData = {};
+          let sanitizationOccurred = false;
 
-                // Log sanitization if occurred
-                if (sanitizationOccurred) {
-                    window.SecurityManager?.logSecurityEvent('xss_sanitization', {
-                        action: 'update_submission',
-                        submissionId: id,
-                        sanitized: true,
-                        timestamp: new Date().toISOString()
-                    });
-                }
-
-                const { data, error } = await supabaseClient
-                    .from('contact_submissions')
-                    .update(updateData)
-                    .eq('id', id)
-                    .select();
-
-                if (error) {
-                    // Log database error
-                    window.SecurityManager?.logSecurityEvent('update_submission_failed', {
-                        submissionId: id,
-                        error: error.message,
-                        timestamp: new Date().toISOString()
-                    });
-                    alert('Error updating submission: ' + error.message);
-                    return;
-                }
-
-                // Log successful update
-                window.SecurityManager?.logSecurityEvent('update_submission_success', {
-                    submissionId: id,
-                    updatedFields: Object.keys(updateData),
-                    userId: currentUser?.id,
-                    timestamp: new Date().toISOString()
-                });
-
-                // Update local data
-                const submissionIndex = allSubmissions.findIndex(s => s.id === id);
-                if (submissionIndex !== -1) {
-                    allSubmissions[submissionIndex] = { ...allSubmissions[submissionIndex], ...updateData };
-                    applyFilters(); // Refresh the display
-                }
-
-                closeModal();
-                alert('Submission updated successfully');
-                
-            } catch (error) {
-                // Log unexpected error
-                window.SecurityManager?.logSecurityEvent('update_submission_error', {
-                    submissionId: id,
-                    error: error.message,
-                    timestamp: new Date().toISOString()
-                });
-                console.error('Error updating submission:', error);
-                alert('An unexpected error occurred');
+          for (const [key, value] of Object.entries(rawData)) {
+            if (value !== null && typeof value === 'string') {
+              const sanitized = window.XSSProtection?.sanitizeFormInput(value) || value;
+              updateData[key] = sanitized;
+              if (sanitized !== value) {
+                sanitizationOccurred = true;
+              }
+            } else {
+              updateData[key] = value;
             }
-        }
+          }
 
-        function showEmailSettings() {
-            const modalContent = document.getElementById('modal-content');
-            modalContent.innerHTML = `
+          // Log sanitization if occurred
+          if (sanitizationOccurred) {
+            window.SecurityManager?.logSecurityEvent('xss_sanitization', {
+              action: 'update_submission',
+              submissionId: id,
+              sanitized: true,
+              timestamp: new Date().toISOString(),
+            });
+          }
+
+          const { data, error } = await supabaseClient
+            .from('contact_submissions')
+            .update(updateData)
+            .eq('id', id)
+            .select();
+
+          if (error) {
+            // Log database error
+            window.SecurityManager?.logSecurityEvent('update_submission_failed', {
+              submissionId: id,
+              error: error.message,
+              timestamp: new Date().toISOString(),
+            });
+            alert('Error updating submission: ' + error.message);
+            return;
+          }
+
+          // Log successful update
+          window.SecurityManager?.logSecurityEvent('update_submission_success', {
+            submissionId: id,
+            updatedFields: Object.keys(updateData),
+            userId: currentUser?.id,
+            timestamp: new Date().toISOString(),
+          });
+
+          // Update local data
+          const submissionIndex = allSubmissions.findIndex(s => s.id === id);
+          if (submissionIndex !== -1) {
+            allSubmissions[submissionIndex] = { ...allSubmissions[submissionIndex], ...updateData };
+            applyFilters(); // Refresh the display
+          }
+
+          closeModal();
+          alert('Submission updated successfully');
+        } catch (error) {
+          // Log unexpected error
+          window.SecurityManager?.logSecurityEvent('update_submission_error', {
+            submissionId: id,
+            error: error.message,
+            timestamp: new Date().toISOString(),
+          });
+          console.error('Error updating submission:', error);
+          alert('An unexpected error occurred');
+        }
+      }
+
+      function showEmailSettings() {
+        const modalContent = document.getElementById('modal-content');
+        modalContent.innerHTML = `
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-2xl font-bold text-white">Email Notification Settings</h2>
                     <button onclick="closeModal()" class="text-white/80 hover:text-white">
@@ -1115,62 +1306,55 @@
                 </div>
             `;
 
-            document.getElementById('submission-modal').classList.remove('hidden');
+        document.getElementById('submission-modal').classList.remove('hidden');
+      }
+
+      function saveEmailSettings() {
+        alert('Email settings saved successfully!');
+        closeModal();
+      }
+
+      function closeModal() {
+        document.getElementById('submission-modal').classList.add('hidden');
+      }
+
+      function exportData() {
+        if (filteredSubmissions.length === 0) {
+          alert('No data to export');
+          return;
         }
 
-        function saveEmailSettings() {
-            alert('Email settings saved successfully!');
-            closeModal();
-        }
+        // Create CSV content
+        const headers = ['Date', 'Name', 'Email', 'Company', 'Message', 'Status', 'Priority', 'Notes'];
+        const csvContent = [
+          headers.join(','),
+          ...filteredSubmissions.map(sub =>
+            [
+              `"${new Date(sub.submitted_at).toLocaleDateString()}"`,
+              `"${sub.name}"`,
+              `"${sub.email}"`,
+              `"${sub.company || ''}"`,
+              `"${sub.message.replace(/"/g, '""')}"`,
+              `"${sub.status}"`,
+              `"${sub.priority}"`,
+              `"${(sub.notes || '').replace(/"/g, '""')}"`,
+            ].join(',')
+          ),
+        ].join('\n');
 
-        function closeModal() {
-            document.getElementById('submission-modal').classList.add('hidden');
-        }
+        // Download CSV
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `hydrocav-submissions-${new Date().toISOString().split('T')[0]}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
 
-        function exportData() {
-            if (filteredSubmissions.length === 0) {
-                alert('No data to export');
-                return;
-            }
-
-            // Create CSV content
-            const headers = ['Date', 'Name', 'Email', 'Company', 'Message', 'Status', 'Priority', 'Notes'];
-            const csvContent = [
-                headers.join(','),
-                ...filteredSubmissions.map(sub => [
-                    `"${new Date(sub.submitted_at).toLocaleDateString()}"`,
-                    `"${sub.name}"`,
-                    `"${sub.email}"`,
-                    `"${sub.company || ''}"`,
-                    `"${sub.message.replace(/"/g, '""')}"`,
-                    `"${sub.status}"`,
-                    `"${sub.priority}"`,
-                    `"${(sub.notes || '').replace(/"/g, '""')}"`
-                ].join(','))
-            ].join('\n');
-
-            // Download CSV
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-            link.setAttribute('href', url);
-            link.setAttribute('download', `hydrocav-submissions-${new Date().toISOString().split('T')[0]}.csv`);
-            link.style.visibility = 'hidden';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-        }
-
-        // Close modal when clicking outside
-        document.getElementById('submission-modal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeModal();
-            }
-        });
-
-        // Event listeners for filters
-        document.getElementById('status-filter').addEventListener('change', applyFilters);
-        document.getElementById('priority-filter').addEventListener('change', applyFilters);
+      // Event listeners are now set up in setupAdditionalEventListeners()
     </script>
-</body>
+  </body>
 </html>

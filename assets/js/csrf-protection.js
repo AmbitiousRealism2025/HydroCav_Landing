@@ -27,7 +27,6 @@ class CSRFProtection {
     this.attachToAjax();
 
     this.initialized = true;
-    console.log('CSRF Protection initialized');
   }
 
   /**
@@ -94,9 +93,14 @@ class CSRFProtection {
   /**
    * Validate CSRF token (double-submit pattern)
    */
-  validateToken(providedToken) {
+  validateToken(providedToken = null) {
     const sessionToken = this.getToken();
     const cookieToken = this.getTokenFromCookie();
+
+    // If no token provided, validate current session token against cookie
+    if (!providedToken) {
+      return sessionToken === cookieToken && sessionToken !== null;
+    }
 
     // Both session and cookie tokens must match the provided token
     return providedToken === sessionToken && providedToken === cookieToken;
