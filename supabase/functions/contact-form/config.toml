@@ -1,0 +1,15 @@
+# Supabase Edge Function Configuration
+# Contact Form with CSRF Validation
+
+[function]
+# Enable JWT verification for authenticated requests
+verify_jwt = false
+
+# Allow CORS for web clients
+cors_origins = ["*"]
+
+# Environment variables available to the function
+[function.env]
+# These will be automatically injected by Supabase
+# SUPABASE_URL - Your Supabase project URL
+# SUPABASE_SERVICE_ROLE_KEY - Service role key for admin operations

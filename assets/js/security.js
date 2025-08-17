@@ -169,14 +169,21 @@ class SecurityManager {
   }
 
   /**
-   * Submit data to Supabase securely
+   * Submit data to Supabase securely via Edge Function
+   * CRITICAL FIX: Now uses Edge Function with server-side CSRF validation
    */
   async submitToSupabase(data, table = 'contact_submissions') {
     if (!this.supabaseClient) {
       throw new Error('Database connection not available');
     }
 
-    // Add metadata
+    // Get CSRF token for header
+    const csrfToken = window.CSRFProtection?.getToken();
+    if (!csrfToken) {
+      throw new Error('CSRF token not available. Please refresh the page.');
+    }
+
+    // Prepare submission data
     const submission = {
       ...data,
       submitted_at: new Date().toISOString(),
@@ -184,23 +191,48 @@ class SecurityManager {
       user_agent: this.getSafeUserAgent(),
     };
 
-    // Remove CSRF token before submission
+    // Remove CSRF token from body (it goes in header)
     delete submission.csrf_token;
 
     try {
-      const { data: result, error } = await this.supabaseClient
-        .from(table)
-        .insert([submission])
-        .select();
+      // CRITICAL: Call Edge Function instead of direct database insert
+      // This provides server-side CSRF validation that was missing
+      const response = await fetch(`${this.supabaseClient.supabaseUrl}/functions/v1/contact-form`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-Token': csrfToken, // CSRF token in header for server validation
+          'apikey': this.supabaseClient.supabaseKey, // Supabase API key
+        },
+        credentials: 'include', // Include cookies for CSRF validation
+        body: JSON.stringify(submission)
+      });
 
-      if (error) {
-        throw error;
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `Server error: ${response.status}`);
       }
+
+      const result = await response.json();
+      
+      // Log successful submission with CSRF validation
+      this.logSecurityEvent('form_submitted_with_csrf', {
+        table,
+        csrf_validated: true,
+        edge_function: true
+      });
 
       return result;
     } catch (error) {
-      console.error('Database submission error:', error);
-      throw new Error('Failed to submit data. Please try again.');
+      console.error('Edge Function submission error:', error);
+      
+      // Log the security failure
+      this.logSecurityEvent('form_submission_failed', {
+        error: error.message,
+        csrf_validation: error.message.includes('CSRF') ? 'failed' : 'unknown'
+      });
+      
+      throw new Error(error.message || 'Failed to submit data. Please try again.');
     }
   }
 
