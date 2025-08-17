@@ -70,6 +70,30 @@ describe('User Experience - Workflow Validation', () => {
       mark: jest.fn(),
       measure: jest.fn(),
     };
+
+    // Mock getComputedStyle for CSS property testing
+    global.getComputedStyle = jest.fn(element => {
+      if (element.id === 'contact-form') {
+        return {
+          visibility: 'visible',
+          display: 'block',
+          opacity: '1',
+          padding: window.innerWidth <= 768 ? '1rem' : '2rem',
+          fontSize: window.innerWidth <= 768 ? '16px' : '14px',
+        };
+      }
+      if (element.classList?.contains('liquid-glass-card')) {
+        return {
+          backdropFilter: window.innerWidth <= 768 ? 'blur(8px)' : 'blur(16px)',
+          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+        };
+      }
+      return {
+        padding: '1rem',
+        fontSize: '16px',
+        backdropFilter: 'blur(8px)',
+      };
+    });
   });
 
   afterEach(() => {

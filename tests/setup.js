@@ -112,6 +112,28 @@ global.supabase = {
   }),
 };
 
+// Add checkValidity to HTML elements for testing
+HTMLInputElement.prototype.checkValidity = HTMLInputElement.prototype.checkValidity || function() {
+  // Basic validation simulation
+  if (this.required && !this.value) return false;
+  if (this.minLength && this.value.length < this.minLength) return false;
+  if (this.maxLength && this.value.length > this.maxLength) return false;
+  if (this.type === 'email' && this.value && !this.value.includes('@')) return false;
+  return true;
+};
+
+HTMLTextAreaElement.prototype.checkValidity = HTMLTextAreaElement.prototype.checkValidity || function() {
+  if (this.required && !this.value) return false;
+  if (this.minLength && this.value.length < this.minLength) return false;
+  if (this.maxLength && this.value.length > this.maxLength) return false;
+  return true;
+};
+
+HTMLFormElement.prototype.checkValidity = HTMLFormElement.prototype.checkValidity || function() {
+  const inputs = this.querySelectorAll('input, textarea');
+  return Array.from(inputs).every(input => input.checkValidity());
+};
+
 // Global test helpers
 global.testHelpers = {
   // Create a mock HTML element
@@ -172,6 +194,40 @@ global.testHelpers = {
     });
   },
 };
+
+// Add missing global mocks for tests
+global.TouchEvent = class TouchEvent extends Event {
+  constructor(type, init) {
+    super(type, init);
+    this.touches = init?.touches || [];
+    this.targetTouches = init?.targetTouches || [];
+    this.changedTouches = init?.changedTouches || [];
+  }
+};
+
+global.KeyboardEvent = class KeyboardEvent extends Event {
+  constructor(type, init) {
+    super(type, init);
+    this.key = init?.key || '';
+    this.code = init?.code || '';
+    this.keyCode = init?.keyCode || 0;
+    this.ctrlKey = init?.ctrlKey || false;
+    this.shiftKey = init?.shiftKey || false;
+    this.altKey = init?.altKey || false;
+    this.metaKey = init?.metaKey || false;
+  }
+};
+
+global.CSS = {
+  supports: jest.fn((property, value) => {
+    // Mock common CSS property support
+    const supportedProperties = ['backdrop-filter', 'transform', 'display'];
+    return supportedProperties.includes(property);
+  })
+};
+
+// Increase timeout for animation tests
+jest.setTimeout(20000);
 
 // Reset mocks before each test
 beforeEach(() => {

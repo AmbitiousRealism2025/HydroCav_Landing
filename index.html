@@ -15,8 +15,8 @@
     
     <!-- Security Configuration -->
     <!-- These meta tags are injected during build/deployment -->
-    <meta name="config:supabase_url" content="https://icfombdnbaeckgivfkdw.supabase.co">
-    <meta name="config:supabase_anon_key" content="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImljZm9tYmRuYmFlY2tnaXZma2R3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ4MzA1MjIsImV4cCI6MjA3MDQwNjUyMn0.6E7SSsyQpmkpyiHQLLMzKSXL9S8bHMY4THeW_iiSFlw">
+    <meta name="config:supabase_url" content="__SUPABASE_URL_PLACEHOLDER__">
+    <meta name="config:supabase_anon_key" content="__SUPABASE_ANON_KEY_PLACEHOLDER__">
     <meta name="config:enable_csrf" content="true">
     <meta name="config:enable_xss_protection" content="true">
     <meta name="config:enable_rate_limiting" content="true">
@@ -82,7 +82,6 @@
             <a href="#top" class="menu-link" id="home-link">Home</a>
             <a href="#advantages" class="menu-link">Advantages</a>
             <a href="#how-it-works" class="menu-link">How It Works</a>
-            <!-- <a href="#testimonials" class="menu-link">Testimonials</a> --> <!-- Disabled for Phase III UI/UX Polish -->
             <a href="#contact" class="menu-link">Contact</a>
         </div>
         
@@ -332,14 +331,6 @@
 <!-- Section Divider -->
 <hr class="section-divider">
 
-<!-- ====================================================================== -->
-<!-- TESTIMONIALS SECTION - COMPLETELY REMOVED FOR PHASE III UI/UX POLISH -->
-<!-- Note: Section did not match liquid glass design aesthetic -->
-<!-- Backend database structure preserved for Phase III enhancement -->
-<!-- All testimonials, case studies, and newsletter content disabled -->
-<!-- ====================================================================== -->
-
-<!-- ====================================================================== -->
 <!-- CONTACT SECTION -->
 <!-- ====================================================================== -->
 <section id="contact" class="py-20 lg:py-24 relative overflow-hidden bg-white" data-nav="contact">
@@ -901,236 +892,6 @@ function showMessage(message, type) {
     }
 }
 
-// Testimonials and Business Features - DISABLED FOR PHASE III UI/UX POLISH
-/* 
-async function loadTestimonials() {
-    if (!supabaseClient) {
-        console.error('Supabase client not available for testimonials');
-        return;
-    }
-
-    try {
-        const { data, error } = await supabaseClient
-            .from('published_testimonials')
-            .select('*')
-            .eq('is_featured', true)
-            .limit(3);
-
-        if (error) {
-            console.error('Error loading testimonials:', error);
-            return;
-        }
-
-        const container = document.getElementById('testimonials-container');
-        if (!container) return;
-
-        if (!data || data.length === 0) {
-            container.innerHTML = `
-                <div class="col-span-full text-center text-white/80 py-12">
-                    <p>Testimonials will be displayed here once available.</p>
-                    <p class="text-sm mt-2">Run the business features SQL script to add sample testimonials.</p>
-                </div>
-            `;
-            return;
-        }
-
-        container.innerHTML = data.map(testimonial => {
-            const stars = '★'.repeat(testimonial.rating) + '☆'.repeat(5 - testimonial.rating);
-            return `
-                <div class="liquid-glass-card p-8 text-center">
-                    <div class="mb-6">
-                        <div class="text-yellow-400 text-xl mb-4">${stars}</div>
-                        <blockquote class="text-white/90 italic mb-6 text-lg">
-                            "${testimonial.testimonial_text}"
-                        </blockquote>
-                    </div>
-                    
-                    <div class="border-t border-white/20 pt-6">
-                        <div class="font-semibold text-white">${testimonial.client_name}</div>
-                        <div class="text-white/80 text-sm">${testimonial.client_title || ''}</div>
-                        <div class="text-white/70 font-medium mt-1">${testimonial.company_name}</div>
-                        ${testimonial.location ? `<div class="text-white/60 text-sm mt-1">${testimonial.location}</div>` : ''}
-                    </div>
-                    
-                    ${testimonial.results_achieved ? `
-                        <div class="mt-4 bg-white/10 rounded-lg p-4">
-                            <div class="text-white/80 text-sm font-semibold mb-2">Results Achieved:</div>
-                            <div class="text-white/70 text-sm">${testimonial.results_achieved}</div>
-                        </div>
-                    ` : ''}
-                </div>
-            `;
-        }).join('');
-
-    } catch (error) {
-        console.error('Unexpected error loading testimonials:', error);
-    }
-}
-*/
-
-/* 
-async function loadCaseStudiesPreview() {
-    if (!supabaseClient) return;
-
-    try {
-        const { data, error } = await supabaseClient
-            .from('published_case_studies')
-            .select('*')
-            .eq('is_featured', true)
-            .limit(2);
-
-        if (error) {
-            console.error('Error loading case studies:', error);
-            return;
-        }
-
-        const container = document.getElementById('case-studies-preview');
-        if (!container) return;
-
-        if (!data || data.length === 0) {
-            container.innerHTML = `
-                <div class="col-span-full text-center text-white/80 py-8">
-                    <p>Case studies will be displayed here once available.</p>
-                </div>
-            `;
-            return;
-        }
-
-        container.innerHTML = data.map(study => `
-            <div class="liquid-glass-card p-8">
-                <h4 class="text-xl font-bold text-white mb-4">${study.title}</h4>
-                <p class="text-white/80 mb-4">${study.subtitle || ''}</p>
-                
-                <div class="grid grid-cols-2 gap-4 mb-6">
-                    <div>
-                        <div class="text-white/60 text-sm">Industry</div>
-                        <div class="text-white font-medium">${study.industry}</div>
-                    </div>
-                    <div>
-                        <div class="text-white/60 text-sm">Location</div>
-                        <div class="text-white font-medium">${study.location || 'N/A'}</div>
-                    </div>
-                </div>
-                
-                <p class="text-white/80 text-sm mb-6">${study.challenge_preview}...</p>
-                
-                ${study.key_metrics ? `
-                    <div class="bg-white/10 rounded-lg p-4 mb-6">
-                        <div class="text-white/80 text-sm font-semibold mb-2">Key Results:</div>
-                        <div class="grid grid-cols-2 gap-2 text-sm">
-                            ${Object.entries(JSON.parse(study.key_metrics)).slice(0, 4).map(([key, value]) => 
-                                `<div class="text-white/70">${key.replace(/_/g, ' ')}: <span class="text-white font-medium">${value}</span></div>`
-                            ).join('')}
-                        </div>
-                    </div>
-                ` : ''}
-                
-                <button onclick="viewCaseStudy('${study.slug}')" class="liquid-glass-button w-full py-2 text-white">
-                    Read Full Case Study
-                </button>
-            </div>
-        `).join('');
-
-    } catch (error) {
-        console.error('Unexpected error loading case studies:', error);
-    }
-}
-*/
-
-/* 
-async function handleNewsletterSubmission(event) {
-    event.preventDefault();
-    
-    if (!supabaseClient) {
-        toastManager.show('Newsletter service unavailable', 'error');
-        return;
-    }
-
-    const form = event.target;
-    const formData = new FormData(form);
-    const email = formData.get('email')?.trim().toLowerCase();
-
-    if (!email) {
-        toastManager.show('Please enter your email address', 'error');
-        return;
-    }
-
-    // Email validation
-    const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
-    if (!emailRegex.test(email)) {
-        toastManager.show('Please enter a valid email address', 'error');
-        return;
-    }
-
-    try {
-        // Show loading state
-        const submitButton = form.querySelector('button[type="submit"]');
-        const originalText = submitButton.textContent;
-        submitButton.textContent = 'Subscribing...';
-        submitButton.disabled = true;
-
-        const { data, error } = await supabaseClient
-            .from('newsletter_subscriptions')
-            .insert([{
-                email: email,
-                subscription_source: 'website',
-                interests: ['water_treatment', 'case_studies', 'technology_updates']
-            }])
-            .select('id');
-
-        if (error) {
-            console.error('Newsletter subscription error:', error);
-            
-            if (error.message.includes('duplicate')) {
-                toastManager.show('You are already subscribed to our newsletter!', 'info');
-            } else {
-                toastManager.show('There was an error subscribing. Please try again.', 'error');
-            }
-            return;
-        }
-
-        // Success!
-        toastManager.show('Thank you for subscribing! You\'ll receive our latest updates soon.', 'success');
-        form.reset();
-
-    } catch (error) {
-        console.error('Unexpected newsletter error:', error);
-        toastManager.show('An unexpected error occurred. Please try again.', 'error');
-        
-    } finally {
-        // Restore button state
-        const submitButton = form.querySelector('button[type="submit"]');
-        if (submitButton) {
-            submitButton.textContent = 'Subscribe';
-            submitButton.disabled = false;
-        }
-    }
-}
-*/
-
-/* 
-function viewCaseStudy(slug) {
-    // In a full implementation, this would navigate to a dedicated case study page
-    toastManager.show(`Case study "${slug}" - Full page coming soon!`, 'info');
-}
-
-function viewAllCaseStudies() {
-    // In a full implementation, this would navigate to a case studies index page
-    toastManager.show('Case studies index page coming soon!', 'info');
-}
-
-// Create bubbles for testimonials section
-function createTestimonialsBubbles() {
-    const container = document.getElementById('bubble-container-testimonials');
-    if (!container) return;
-
-    for (let i = 0; i < 25; i++) {
-        setTimeout(() => {
-            createBubble(container);
-        }, i * 150);
-    }
-}
-*/
 
 // Initialize form enhancements on page load
 document.addEventListener('DOMContentLoaded', () => {
@@ -1147,10 +908,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Load business content - DISABLED FOR PHASE III UI/UX POLISH
-    // loadTestimonials();
-    // loadCaseStudiesPreview();
-    // createTestimonialsBubbles();
 });
 </script>
 

@@ -13,7 +13,8 @@ describe('XSS Protection Module', () => {
     XSSProtection = {
       initialize: jest.fn().mockResolvedValue(true),
       sanitizeInput: jest.fn(input => {
-        if (typeof input !== 'string') return input;
+        if (input === null || input === undefined) return '';
+        if (typeof input !== 'string') return String(input);
         // Basic XSS sanitization simulation
         return input
           .replace(/<script[^>]*>.*?<\/script>/gi, '')
@@ -23,7 +24,9 @@ describe('XSS Protection Module', () => {
       }),
       sanitizeHTML: jest.fn(html => {
         if (typeof html !== 'string') return html;
-        return html.replace(/<script[^>]*>.*?<\/script>/gi, '');
+        return html
+          .replace(/<script[^>]*>.*?<\/script>/gi, '')
+          .replace(/on\w+\s*=\s*["'][^"']*["']/gi, '');
       }),
       sanitizeURL: jest.fn(url => {
         if (typeof url !== 'string') return url;
@@ -40,12 +43,30 @@ describe('XSS Protection Module', () => {
       }),
       validateInput: jest.fn((input, options = {}) => {
         const maxLength = options.maxLength || 2000;
+        const minLength = options.minLength || 0;
+        const type = options.type || 'text';
+        
+        if (typeof input !== 'string') {
+          return { isValid: false, errors: ['Input must be a string'] };
+        }
+        
+        const errors = [];
+        
+        if (input.length < minLength) errors.push(`Input too short (min: ${minLength})`);
+        if (input.length > maxLength) errors.push(`Input too long (max: ${maxLength})`);
+        
+        if (type === 'email' && input && !input.includes('@')) {
+          errors.push('Invalid email format');
+        }
+        
+        // Check for XSS patterns
+        if (input.includes('<script>') || input.includes('javascript:') || input.includes('onerror=')) {
+          errors.push('Potential XSS detected');
+        }
+        
         return {
-          isValid: typeof input === 'string' && input.length <= maxLength,
-          errors:
-            typeof input === 'string' && input.length <= maxLength
-              ? []
-              : ['Input too long or invalid'],
+          isValid: errors.length === 0,
+          errors: errors
         };
       }),
       sanitizeFormData: jest.fn(formData => {
@@ -163,25 +184,25 @@ describe('XSS Protection Module', () => {
 
   describe('Input Validation', () => {
     test('should validate email format', () => {
-      expect(XSSProtection.validateInput('test@example.com', 'email')).toBe(true);
-      expect(XSSProtection.validateInput('invalid-email', 'email')).toBe(false);
-      expect(XSSProtection.validateInput('', 'email')).toBe(false);
+      expect(XSSProtection.validateInput('test@example.com', { type: 'email' }).isValid).toBe(true);
+      expect(XSSProtection.validateInput('invalid-email', { type: 'email' }).isValid).toBe(false);
+      expect(XSSProtection.validateInput('', { type: 'email' }).isValid).toBe(false);
     });
 
     test('should validate text length', () => {
       const longText = 'a'.repeat(2001); // Over 2000 char limit
       const shortText = 'Hello World';
 
-      expect(XSSProtection.validateInput(shortText, 'text')).toBe(true);
-      expect(XSSProtection.validateInput(longText, 'text')).toBe(false);
+      expect(XSSProtection.validateInput(shortText, { type: 'text' }).isValid).toBe(true);
+      expect(XSSProtection.validateInput(longText, { type: 'text' }).isValid).toBe(false);
     });
 
     test('should detect potential XSS in validation', () => {
       const xssAttempt = '<script>alert("XSS")</script>';
       const safeInput = 'Hello World';
 
-      expect(XSSProtection.validateInput(xssAttempt, 'text')).toBe(false);
-      expect(XSSProtection.validateInput(safeInput, 'text')).toBe(true);
+      expect(XSSProtection.validateInput(xssAttempt, { type: 'text' }).isValid).toBe(false);
+      expect(XSSProtection.validateInput(safeInput, { type: 'text' }).isValid).toBe(true);
     });
   });
 

@@ -7,6 +7,9 @@
   "scripts": {
     "start": "npx serve .",
     "dev": "npx serve .",
+    "build": "node build.cjs",
+    "build:prod": "NODE_ENV=production node build.cjs",
+    "serve:dist": "npx serve dist",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
@@ -22,6 +25,7 @@
     "quality:check": "npm run lint && npm run format:check && npm run test:security",
     "quality:fix": "npm run lint:fix && npm run format",
     "validate": "npm run quality:check && npm run test:coverage:check",
+    "deploy:prep": "npm run validate && npm run build:prod",
     "prepare": "husky"
   },
   "keywords": [
