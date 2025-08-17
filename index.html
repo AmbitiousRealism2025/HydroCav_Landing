@@ -45,6 +45,12 @@
                 // Initialize UX enhancements after security
                 const uxModule = await import('./assets/js/ux-enhancements.js');
                 console.log('UX enhancements loaded');
+                
+                // Initialize monitoring alerts
+                if (window.MonitoringAlerts) {
+                    window.monitoringAlerts = new window.MonitoringAlerts();
+                    console.log('Monitoring alerts initialized');
+                }
             } catch (error) {
                 console.error('Failed to initialize security:', error);
             }
@@ -1146,6 +1152,25 @@ document.addEventListener('DOMContentLoaded', () => {
     // loadCaseStudiesPreview();
     // createTestimonialsBubbles();
 });
+</script>
+
+<!-- Monitoring Infrastructure Scripts -->
+<script src="assets/js/error-tracking.js"></script>
+<script src="assets/js/performance-monitoring.js"></script>
+<script src="assets/js/health-monitoring.js"></script>
+<script src="monitoring-alerts.js"></script>
+
+<!-- Initialize Monitoring Systems -->
+<script>
+    // Auto-initialize monitoring systems in production
+    if (window.ErrorTracker && window.PerformanceMonitor && window.HealthMonitor) {
+        console.log('🚀 All monitoring systems loaded successfully');
+        
+        // Start health monitoring heartbeat
+        if (window.healthMonitor) {
+            window.healthMonitor.startHeartbeat();
+        }
+    }
 </script>
 
 </body>

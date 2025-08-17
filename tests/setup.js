@@ -72,11 +72,17 @@ global.fetch = jest.fn(() =>
 const createStorageMock = () => {
   const storage = {};
   return {
-    getItem: jest.fn((key) => storage[key] || null),
-    setItem: jest.fn((key, value) => { storage[key] = value; }),
-    removeItem: jest.fn((key) => { delete storage[key]; }),
-    clear: jest.fn(() => { Object.keys(storage).forEach(key => delete storage[key]); }),
-    data: storage
+    getItem: jest.fn(key => storage[key] || null),
+    setItem: jest.fn((key, value) => {
+      storage[key] = value;
+    }),
+    removeItem: jest.fn(key => {
+      delete storage[key];
+    }),
+    clear: jest.fn(() => {
+      Object.keys(storage).forEach(key => delete storage[key]);
+    }),
+    data: storage,
   };
 };
 

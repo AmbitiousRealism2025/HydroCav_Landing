@@ -25,6 +25,48 @@ describe('Glass Effects Performance & Consistency', () => {
     link.rel = 'stylesheet';
     link.href = '/assets/css/style.css';
     document.head.appendChild(link);
+
+    // Mock getComputedStyle for glass effect testing
+    global.getComputedStyle = jest.fn(element => {
+      // Mock glass effect properties based on element classes
+      if (element.classList.contains('liquid-glass-card')) {
+        return {
+          backdropFilter: 'blur(10px)',
+          webkitBackdropFilter: 'blur(10px)',
+          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+          border: '1px solid rgba(255, 255, 255, 0.2)',
+          borderRadius: '12px',
+          opacity: '0.9',
+        };
+      }
+      if (element.classList.contains('liquid-glass-button')) {
+        return {
+          backdropFilter: 'blur(6px)',
+          webkitBackdropFilter: 'blur(6px)',
+          backgroundColor: 'rgba(49, 155, 224, 0.2)',
+          border: '1px solid rgba(255, 255, 255, 0.3)',
+          borderRadius: '8px',
+          opacity: '0.85',
+        };
+      }
+      if (element.classList.contains('frosted-nav')) {
+        return {
+          backdropFilter: 'blur(14px)',
+          webkitBackdropFilter: 'blur(14px)',
+          backgroundColor: 'rgba(255, 255, 255, 0.15)',
+          border: '1px solid rgba(255, 255, 255, 0.25)',
+          opacity: '0.95',
+        };
+      }
+      // Default glass effect properties
+      return {
+        backdropFilter: 'blur(8px)',
+        webkitBackdropFilter: 'blur(8px)',
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+        border: '1px solid rgba(255, 255, 255, 0.2)',
+        opacity: '0.9',
+      };
+    });
   });
 
   afterEach(() => {

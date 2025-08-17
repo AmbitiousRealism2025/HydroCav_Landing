@@ -13,26 +13,34 @@ describe('CSRF Protection Module', () => {
     // Mock sessionStorage
     mockSessionStorage = {
       data: {},
-      getItem: jest.fn((key) => mockSessionStorage.data[key] || null),
-      setItem: jest.fn((key, value) => { mockSessionStorage.data[key] = value; }),
-      removeItem: jest.fn((key) => { delete mockSessionStorage.data[key]; }),
-      clear: jest.fn(() => { mockSessionStorage.data = {}; })
+      getItem: jest.fn(key => mockSessionStorage.data[key] || null),
+      setItem: jest.fn((key, value) => {
+        mockSessionStorage.data[key] = value;
+      }),
+      removeItem: jest.fn(key => {
+        delete mockSessionStorage.data[key];
+      }),
+      clear: jest.fn(() => {
+        mockSessionStorage.data = {};
+      }),
     };
 
     // Mock CSRFProtection module functionality
     CSRFProtection = {
       generateToken: jest.fn(() => {
         // Generate a 32+ character token for security
-        const token = 'csrf-' + Math.random().toString(36).substring(2, 15) + 
-                     Math.random().toString(36).substring(2, 15) + 
-                     Math.random().toString(36).substring(2, 8);
+        const token =
+          'csrf-' +
+          Math.random().toString(36).substring(2, 15) +
+          Math.random().toString(36).substring(2, 15) +
+          Math.random().toString(36).substring(2, 8);
         mockSessionStorage.setItem('csrf-token', token);
         return token;
       }),
       getToken: jest.fn(() => {
         return mockSessionStorage.getItem('csrf-token') || CSRFProtection.generateToken();
       }),
-      validateToken: jest.fn((token) => {
+      validateToken: jest.fn(token => {
         const storedToken = mockSessionStorage.getItem('csrf-token');
         return token && storedToken && token === storedToken;
       }),
@@ -40,7 +48,7 @@ describe('CSRF Protection Module', () => {
         mockSessionStorage.removeItem('csrf-token');
         return CSRFProtection.generateToken();
       }),
-      addTokenToForm: jest.fn((form) => {
+      addTokenToForm: jest.fn(form => {
         if (!form) return false;
         const token = CSRFProtection.getToken();
         let tokenInput = form.querySelector('input[name="csrf-token"]');
@@ -53,13 +61,13 @@ describe('CSRF Protection Module', () => {
         tokenInput.value = token;
         return true;
       }),
-      validateFormToken: jest.fn((formData) => {
+      validateFormToken: jest.fn(formData => {
         const token = formData.get ? formData.get('csrf-token') : formData['csrf-token'];
         return CSRFProtection.validateToken(token);
       }),
       clearToken: jest.fn(() => {
         mockSessionStorage.removeItem('csrf-token');
-      })
+      }),
     };
 
     // Make available globally for tests

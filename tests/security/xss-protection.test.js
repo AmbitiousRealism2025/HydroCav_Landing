@@ -12,7 +12,7 @@ describe('XSS Protection Module', () => {
     // Mock XSSProtection module functionality
     XSSProtection = {
       initialize: jest.fn().mockResolvedValue(true),
-      sanitizeInput: jest.fn((input) => {
+      sanitizeInput: jest.fn(input => {
         if (typeof input !== 'string') return input;
         // Basic XSS sanitization simulation
         return input
@@ -21,15 +21,15 @@ describe('XSS Protection Module', () => {
           .replace(/javascript:/gi, '')
           .replace(/on\w+\s*=/gi, '');
       }),
-      sanitizeHTML: jest.fn((html) => {
+      sanitizeHTML: jest.fn(html => {
         if (typeof html !== 'string') return html;
         return html.replace(/<script[^>]*>.*?<\/script>/gi, '');
       }),
-      sanitizeURL: jest.fn((url) => {
+      sanitizeURL: jest.fn(url => {
         if (typeof url !== 'string') return url;
         return url.replace(/javascript:/gi, 'about:blank');
       }),
-      encodeOutput: jest.fn((output) => {
+      encodeOutput: jest.fn(output => {
         if (typeof output !== 'string') return output;
         return output
           .replace(/&/g, '&amp;')
@@ -42,16 +42,19 @@ describe('XSS Protection Module', () => {
         const maxLength = options.maxLength || 2000;
         return {
           isValid: typeof input === 'string' && input.length <= maxLength,
-          errors: typeof input === 'string' && input.length <= maxLength ? [] : ['Input too long or invalid']
+          errors:
+            typeof input === 'string' && input.length <= maxLength
+              ? []
+              : ['Input too long or invalid'],
         };
       }),
-      sanitizeFormData: jest.fn((formData) => {
+      sanitizeFormData: jest.fn(formData => {
         const sanitized = {};
         Object.keys(formData).forEach(key => {
           sanitized[key] = XSSProtection.sanitizeInput(formData[key]);
         });
         return sanitized;
-      })
+      }),
     };
 
     // Make available globally for tests

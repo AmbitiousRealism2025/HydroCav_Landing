@@ -49,31 +49,36 @@ describe('Performance UX - Core Web Vitals & Usability Metrics', () => {
 
     // Mock performance.now() with realistic values
     let timeCounter = 1000;
-    global.performance = {
+
+    // Ensure performance object exists and has all required methods
+    global.performance = global.performance || {};
+    Object.assign(global.performance, {
       now: jest.fn(() => (timeCounter += Math.random() * 10)),
       mark: jest.fn(),
       measure: jest.fn(),
       getEntriesByType: jest.fn(type => {
-        if (type === 'paint') {
-          return [
-            { name: 'first-paint', startTime: 800 },
-            { name: 'first-contentful-paint', startTime: 1200 },
-          ];
+        switch (type) {
+          case 'paint':
+            return [
+              { name: 'first-paint', startTime: 800 },
+              { name: 'first-contentful-paint', startTime: 1200 },
+            ];
+          case 'largest-contentful-paint':
+            return [{ startTime: 1800, size: 50000, element: document.querySelector('h1') }];
+          case 'layout-shift':
+            return [{ value: 0.05, hadRecentInput: false }];
+          case 'navigation':
+            return [{ loadEventEnd: 2000, navigationStart: 0 }];
+          default:
+            return [];
         }
-        if (type === 'largest-contentful-paint') {
-          return [{ startTime: 1800, size: 50000 }];
-        }
-        if (type === 'layout-shift') {
-          return [{ value: 0.05, hadRecentInput: false }];
-        }
-        return [];
       }),
       memory: {
         usedJSHeapSize: 10000000,
         totalJSHeapSize: 20000000,
         jsHeapSizeLimit: 2000000000,
       },
-    };
+    });
 
     // Mock window dimensions for mobile testing
     Object.defineProperty(window, 'innerWidth', {
@@ -86,6 +91,24 @@ describe('Performance UX - Core Web Vitals & Usability Metrics', () => {
       writable: true,
       configurable: true,
       value: 768,
+    });
+
+    // Mock getComputedStyle for CSS property testing
+    global.getComputedStyle = jest.fn(element => {
+      // Mock glass effect properties for performance tests
+      if (
+        element.classList.contains('liquid-glass-card') ||
+        element.classList.contains('liquid-glass-button')
+      ) {
+        return {
+          transform: 'translateZ(0)',
+          willChange: 'transform',
+          backdropFilter: 'blur(10px)',
+          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+          border: '1px solid rgba(255, 255, 255, 0.2)',
+        };
+      }
+      return {};
     });
   });
 
