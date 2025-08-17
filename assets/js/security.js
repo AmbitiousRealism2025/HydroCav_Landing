@@ -124,10 +124,13 @@ class SecurityManager {
           sanitized[key] = xssProtection.sanitizeURL(value);
           break;
         case 'html':
+          // Use DOMPurify for fields intended to contain safe HTML
           sanitized[key] = xssProtection.sanitizeHTML(value);
           break;
         default:
-          sanitized[key] = xssProtection.sanitizeFormInput(value);
+          // CRITICAL FIX: Use proper HTML entity encoding for all text fields
+          // This prevents any HTML from being rendered (fixes XSS vulnerability)
+          sanitized[key] = xssProtection.sanitizeText(value);
       }
     }
 

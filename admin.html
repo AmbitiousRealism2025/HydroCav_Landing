@@ -530,8 +530,9 @@
           }
 
           // Security Step 2: XSS Protection - Sanitize inputs
-          const sanitizedEmail = window.XSSProtection?.sanitizeFormInput(email) || email;
-          const sanitizedPassword = window.XSSProtection?.sanitizeFormInput(password) || password;
+          // CRITICAL FIX: Use proper sanitization methods for specific field types
+          const sanitizedEmail = window.XSSProtection?.sanitizeEmail(email) || email;
+          const sanitizedPassword = window.XSSProtection?.sanitizeText(password) || password;
 
           // Log sanitization if occurred
           if (sanitizedEmail !== email || sanitizedPassword !== password) {
@@ -597,8 +598,9 @@
           }
 
           // Security Step 2: XSS Protection - Sanitize inputs
-          const sanitizedEmail = window.XSSProtection?.sanitizeFormInput(email) || email;
-          const sanitizedPassword = window.XSSProtection?.sanitizeFormInput(password) || password;
+          // CRITICAL FIX: Use proper sanitization methods for specific field types
+          const sanitizedEmail = window.XSSProtection?.sanitizeEmail(email) || email;
+          const sanitizedPassword = window.XSSProtection?.sanitizeText(password) || password;
 
           // Log sanitization if occurred
           if (sanitizedEmail !== email || sanitizedPassword !== password) {
@@ -1146,7 +1148,8 @@
 
           for (const [key, value] of Object.entries(rawData)) {
             if (value !== null && typeof value === 'string') {
-              const sanitized = window.XSSProtection?.sanitizeFormInput(value) || value;
+              // CRITICAL FIX: Use sanitizeText for proper HTML entity encoding
+              const sanitized = window.XSSProtection?.sanitizeText(value) || value;
               updateData[key] = sanitized;
               if (sanitized !== value) {
                 sanitizationOccurred = true;
