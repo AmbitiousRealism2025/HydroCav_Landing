@@ -145,6 +145,7 @@ function sanitizeEmail(input: unknown): string {
 
 /**
  * Sanitize and validate contact form data
+ * PRIVACY: No IP addresses or user agents stored per privacy requirements
  */
 function sanitizeFormData(data: any) {
   return {
@@ -153,8 +154,6 @@ function sanitizeFormData(data: any) {
     company: sanitizeString(data.company, 100),
     message: sanitizeString(data.message, 2000),
     created_at: new Date().toISOString(),
-    ip_address: null, // We don't store IP for privacy
-    user_agent: null, // We don't store user agent for privacy
     status: 'new',
     priority: 'medium'
   };

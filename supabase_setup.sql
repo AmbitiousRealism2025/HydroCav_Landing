@@ -14,10 +14,9 @@ CREATE TABLE contact_submissions (
     company TEXT CHECK (char_length(company) <= 100),
     message TEXT NOT NULL CHECK (char_length(message) >= 10 AND char_length(message) <= 2000),
     
-    -- Metadata for tracking and security
+    -- Metadata for tracking (privacy-compliant)
     submitted_at TIMESTAMPTZ DEFAULT NOW(),
-    ip_address INET,
-    user_agent TEXT,
+    -- IP addresses removed for privacy compliance
     
     -- Future-proofing fields
     status TEXT DEFAULT 'new' CHECK (status IN ('new', 'contacted', 'qualified', 'closed')),
@@ -35,20 +34,21 @@ CREATE INDEX idx_contact_submissions_status ON contact_submissions(status) WHERE
 -- Step 3: Enable Row Level Security
 ALTER TABLE contact_submissions ENABLE ROW LEVEL SECURITY;
 
--- Step 4: Create rate limiting function
+-- Step 4: Create rate limiting function (privacy-compliant)
 CREATE OR REPLACE FUNCTION check_submission_rate_limit()
 RETURNS BOOLEAN AS $$
 DECLARE
     recent_count INTEGER;
 BEGIN
-    -- Check submissions from same IP in last 5 minutes
+    -- Privacy-compliant rate limiting: time-based only (no IP storage)
+    -- Real per-IP rate limiting is handled by the Edge Function
     SELECT COUNT(*) INTO recent_count
     FROM contact_submissions
-    WHERE ip_address = inet_client_addr()
-    AND submitted_at > NOW() - INTERVAL '5 minutes';
+    WHERE submitted_at > NOW() - INTERVAL '1 minute';
     
-    -- Allow max 3 submissions per IP per 5 minutes
-    RETURN recent_count < 3;
+    -- Allow max 10 submissions per minute globally
+    -- Individual IP rate limiting handled by Edge Function
+    RETURN recent_count < 10;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 

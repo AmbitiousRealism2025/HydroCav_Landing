@@ -183,11 +183,10 @@ class SecurityManager {
       throw new Error('CSRF token not available. Please refresh the page.');
     }
 
-    // Prepare submission data
+    // Prepare submission data (IP addresses completely removed for privacy)
     const submission = {
       ...data,
       submitted_at: new Date().toISOString(),
-      ip_address: 'masked', // Don't store actual IP for privacy
       user_agent: this.getSafeUserAgent(),
     };
 
