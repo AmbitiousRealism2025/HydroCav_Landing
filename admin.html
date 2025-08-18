@@ -4,16 +4,20 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>HydroCav Admin Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.tailwindcss.com" 
+            integrity="sha384-OLBgp1GsljhM2TJ+sbHjaiH9txEUvgdDTAzHv2P24donTt6/529l+9Ua0vFImLlb" 
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" 
+            integrity="sha384-bax8xBadR5ktkRX9RGnfYxxWCMb6yb+f2HXtlClWXEA/eXpIKSOuDsCEW/bfMGni" 
+            crossorigin="anonymous"></script>
 
-    <!-- Content Security Policy - Temporarily relaxed for debugging -->
-    <!-- <meta http-equiv="Content-Security-Policy" content="..."> -->
+    <!-- Content Security Policy - Production Configuration -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.tailwindcss.com https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://icfombdnbaeckgivfkdw.supabase.co https://*.supabase.co; frame-ancestors 'none'; base-uri 'self'; form-action 'self'" />
     
     <!-- Security Configuration -->
     <!-- These meta tags are injected during build/deployment -->
-    <meta name="config:supabase_url" content="https://icfombdnbaeckgivfkdw.supabase.co" />
-    <meta name="config:supabase_anon_key" content="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImljZm9tYmRuYmFlY2tnaXZma2R3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ4MzA1MjIsImV4cCI6MjA3MDQwNjUyMn0.6E7SSsyQpmkpyiHQLLMzKSXL9S8bHMY4THeW_iiSFlw" />
+    <meta name="config:supabase_url" content="__SUPABASE_URL_PLACEHOLDER__" />
+    <meta name="config:supabase_anon_key" content="__SUPABASE_ANON_KEY_PLACEHOLDER__" />
     <meta name="config:enable_csrf" content="true" />
     <meta name="config:enable_xss_protection" content="true" />
     <meta name="config:enable_rate_limiting" content="true" />
