@@ -40,7 +40,7 @@ class XSSProtection {
     return new Promise((resolve, reject) => {
       const script = document.createElement('script');
       script.src = 'https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js';
-      script.integrity = 'sha384-6H3mH6EjEELhF1ERCv4zvh2H5xPO6PnqVZvSmLdHQ8pGQq8Z7TqJqsFoWcY6CZ2B';
+      script.integrity = 'sha384-cwS6YdhLI7XS60eoDiC+egV0qHp8zI+Cms46R0nbn8JrmoAzV9uFL60etMZhAnSu';
       script.crossOrigin = 'anonymous';
       script.onload = resolve;
       script.onerror = reject;
@@ -260,6 +260,51 @@ class XSSProtection {
     });
 
     return sanitized;
+  }
+
+  /**
+   * Validate input with type-specific rules
+   * @param {string} value - Input value to validate
+   * @param {Object} options - Validation options
+   * @returns {Object} Validation result with isValid and message
+   */
+  validateInput(value, options = {}) {
+    const { type = 'text', maxLength = 2000, required = false } = options;
+    
+    // Check if empty - email type is always required
+    if (!value || value.trim() === '') {
+      return {
+        isValid: type !== 'email' && !required,
+        message: (type === 'email' || required) ? 'This field is required' : ''
+      };
+    }
+    
+    // Type-specific validation
+    switch (type) {
+      case 'email':
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return {
+          isValid: emailRegex.test(value),
+          message: emailRegex.test(value) ? '' : 'Please enter a valid email address'
+        };
+      
+      case 'text':
+        return {
+          isValid: value.length <= maxLength,
+          message: value.length <= maxLength ? '' : `Text must be ${maxLength} characters or less`
+        };
+      
+      case 'url':
+        try {
+          new URL(value);
+          return { isValid: true, message: '' };
+        } catch {
+          return { isValid: false, message: 'Please enter a valid URL' };
+        }
+      
+      default:
+        return { isValid: true, message: '' };
+    }
   }
 }
 

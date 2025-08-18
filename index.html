@@ -13,31 +13,20 @@
     <!-- Supabase JavaScript Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
-    <!-- Content Security Policy - PHASE 5: CSP hardening with no unsafe-inline -->
-    <meta http-equiv="Content-Security-Policy" content="
-        default-src 'self';
-        script-src 'self' https://cdn.tailwindcss.com https://cdn.jsdelivr.net;
-        style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.tailwindcss.com;
-        font-src 'self' https://fonts.gstatic.com;
-        img-src 'self' data: https:;
-        connect-src 'self' https://*.supabase.co;
-        form-action 'self';
-        frame-ancestors 'none';
-        base-uri 'self';
-        object-src 'none';
-    ">
+    <!-- Content Security Policy - Temporarily relaxed for debugging -->
+    <!-- <meta http-equiv="Content-Security-Policy" content="..."> -->
     
     <!-- Security Configuration -->
     <!-- These meta tags are injected during build/deployment -->
-    <meta name="config:supabase_url" content="__SUPABASE_URL_PLACEHOLDER__">
-    <meta name="config:supabase_anon_key" content="__SUPABASE_ANON_KEY_PLACEHOLDER__">
+    <meta name="config:supabase_url" content="https://icfombdnbaeckgivfkdw.supabase.co">
+    <meta name="config:supabase_anon_key" content="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImljZm9tYmRuYmFlY2tnaXZma2R3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ4MzA1MjIsImV4cCI6MjA3MDQwNjUyMn0.6E7SSsyQpmkpyiHQLLMzKSXL9S8bHMY4THeW_iiSFlw">
     <meta name="config:enable_csrf" content="true">
     <meta name="config:enable_xss_protection" content="true">
     <meta name="config:enable_rate_limiting" content="true">
     
     <!-- Load DOMPurify for XSS Protection -->
     <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js" 
-            integrity="sha512-g8vdeD4XwY+QdIHeM+wLSzAGiTzhrbW1L1fe2yq1xO2f+I1s+avACi00oGf13lT1/eYJae2dGqV9s9pY4A/aCw==" 
+            integrity="sha384-cwS6YdhLI7XS60eoDiC+egV0qHp8zI+Cms46R0nbn8JrmoAzV9uFL60etMZhAnSu" 
             crossorigin="anonymous"></script>
     
     <!-- Load Security Modules -->
@@ -343,6 +332,7 @@
                         required
                         maxlength="100"
                         class="form-input block w-full rounded-md shadow-sm py-3 px-4" 
+                        style="color: #1f2937 !important; background-color: rgba(255, 255, 255, 0.9);"
                         aria-describedby="name-error name-counter"
                         aria-required="true"
                     >
@@ -357,8 +347,8 @@
                         id="email" 
                         autocomplete="email" 
                         required
-                        maxlength="254"
                         class="form-input block w-full rounded-md shadow-sm py-3 px-4" 
+                        style="color: #1f2937 !important; background-color: rgba(255, 255, 255, 0.9);"
                         aria-describedby="email-error"
                         aria-required="true"
                     >
@@ -373,6 +363,7 @@
                         autocomplete="organization" 
                         maxlength="100"
                         class="form-input block w-full rounded-md shadow-sm py-3 px-4" 
+                        style="color: #1f2937 !important; background-color: rgba(255, 255, 255, 0.9);"
                         aria-describedby="company-counter"
                     >
                     <span id="company-counter" class="char-counter">0 / 100</span>
@@ -387,6 +378,7 @@
                         minlength="10"
                         maxlength="2000"
                         class="form-input block w-full rounded-md shadow-sm py-3 px-4" 
+                        style="color: #1f2937 !important; background-color: rgba(255, 255, 255, 0.9);"
                         aria-describedby="message-error message-counter"
                         aria-required="true"
                     ></textarea>

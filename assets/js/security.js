@@ -200,8 +200,9 @@ class SecurityManager {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Authorization': `Bearer ${this.supabaseClient.supabaseKey}`, // Supabase Authorization header
           'X-CSRF-Token': csrfToken, // CSRF token in header for server validation
-          apikey: this.supabaseClient.supabaseKey, // Supabase API key
+          'apikey': this.supabaseClient.supabaseKey, // Supabase API key
         },
         credentials: 'include', // Include cookies for CSRF validation
         body: JSON.stringify(submission),

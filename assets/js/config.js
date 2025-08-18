@@ -9,7 +9,7 @@
  */
 export const SUPABASE_CONFIG = {
   url: 'https://icfombdnbaeckgivfkdw.supabase.co',
-  key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImljZm9tYmRuYmFlY2tnaXZma2R3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzU5NjEzNTYsImV4cCI6MjA1MTUzNzM1Nn0.bWbGtqPGZTjfOFo6SjtwGqJOiIlNqUPWnqUhNHoMkrQ',
+  key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImljZm9tYmRuYmFlY2tnaXZma2R3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTQ4MzA1MjIsImV4cCI6MjA3MDQwNjUyMn0.6E7SSsyQpmkpyiHQLLMzKSXL9S8bHMY4THeW_iiSFlw',
 };
 
 /**

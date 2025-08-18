@@ -11,6 +11,13 @@
  * - Accessibility compliance (WCAG 2.1 AA)
  */
 
+// Utility function to escape HTML
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
 class UXEnhancementManager {
   constructor() {
     this.toastContainer = null;
@@ -80,7 +87,7 @@ class UXEnhancementManager {
           ${icon}
         </div>
         <div class="ml-3">
-          <p class="text-sm font-medium text-gray-900">${message}</p>
+          <p class="text-sm font-medium text-gray-900">${escapeHtml(message)}</p>
         </div>
         <button 
           class="ml-auto pl-3 flex-shrink-0 hover:opacity-70 transition-opacity"

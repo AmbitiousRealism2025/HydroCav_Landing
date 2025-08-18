@@ -55,8 +55,12 @@ describe('XSS Protection Module', () => {
         if (input.length < minLength) errors.push(`Input too short (min: ${minLength})`);
         if (input.length > maxLength) errors.push(`Input too long (max: ${maxLength})`);
 
-        if (type === 'email' && input && !input.includes('@')) {
-          errors.push('Invalid email format');
+        if (type === 'email') {
+          if (!input || input.trim() === '') {
+            errors.push('Email is required');
+          } else if (!input.includes('@') || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(input)) {
+            errors.push('Invalid email format');
+          }
         }
 
         // Check for XSS patterns

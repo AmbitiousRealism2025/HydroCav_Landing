@@ -21,7 +21,7 @@ class ToastManager {
             <svg class="toast-icon" fill="currentColor" viewBox="0 0 20 20">
                 ${icon}
             </svg>
-            <span class="toast-message">${message}</span>
+            <span class="toast-message">${escapeHtml(message)}</span>
             <button class="toast-close" onclick="this.parentElement.remove()">
                 <svg fill="currentColor" viewBox="0 0 20 20">
                     <path d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"/>
@@ -50,6 +50,13 @@ class ToastManager {
     };
     return icons[type] || icons.info;
   }
+}
+
+// Utility function to escape HTML
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
 }
 
 const toastManager = new ToastManager();
@@ -206,20 +213,45 @@ const validateForm = () => {
 
 // Loading state management
 const showLoadingState = show => {
-  const button = document.querySelector('#contact-form button[type="submit"]');
+  const button = document.querySelector('#contact-form button[type="submit"]') || document.getElementById('submit-button');
+  
+  if (!button) {
+    console.error('Submit button not found');
+    return;
+  }
+
+  // Check if button has internal structure or just text
   const buttonText = button.querySelector('.button-text');
   const loadingSpinner = button.querySelector('.loading-spinner');
 
   if (show) {
     button.disabled = true;
     button.style.opacity = '0.7';
-    buttonText.textContent = 'Sending...';
-    loadingSpinner.style.display = 'inline-block';
+    
+    if (buttonText) {
+      buttonText.textContent = 'Sending...';
+    } else {
+      // Button has direct text content
+      button.textContent = 'Sending...';
+    }
+    
+    if (loadingSpinner) {
+      loadingSpinner.style.display = 'inline-block';
+    }
   } else {
     button.disabled = false;
     button.style.opacity = '1';
-    buttonText.textContent = 'Send Message';
-    loadingSpinner.style.display = 'none';
+    
+    if (buttonText) {
+      buttonText.textContent = 'Send Message';
+    } else {
+      // Button has direct text content
+      button.textContent = 'Send Message';
+    }
+    
+    if (loadingSpinner) {
+      loadingSpinner.style.display = 'none';
+    }
   }
 };
 
@@ -296,6 +328,39 @@ async function handleContactSubmission(event) {
         message: sanitizedData.message,
       };
 
+      // ACTUALLY SUBMIT TO SUPABASE - This was missing!
+      console.log('📤 Submitting to Supabase:', submission);
+      
+      // Get Supabase credentials from meta tags (same as admin dashboard)
+      const supabaseUrl = document.querySelector('meta[name="config:supabase_url"]')?.content;
+      const supabaseKey = document.querySelector('meta[name="config:supabase_anon_key"]')?.content;
+      
+      if (!supabaseUrl || !supabaseKey) {
+        throw new Error('Supabase configuration missing');
+      }
+
+      // Create Supabase client
+      const supabaseClient = window.supabase.createClient(supabaseUrl, supabaseKey);
+      
+      // Insert into contact_submissions table
+      const { data, error } = await supabaseClient
+        .from('contact_submissions')
+        .insert([{
+          name: submission.name,
+          email: submission.email,
+          company: submission.company,
+          message: submission.message,
+          status: 'new',
+          priority: 'normal'
+        }])
+        .select();
+
+      if (error) {
+        console.error('❌ Supabase insertion failed:', error);
+        throw new Error(`Database error: ${error.message}`);
+      }
+
+      console.log('✅ Successfully saved to Supabase:', data);
       return submission;
     });
 

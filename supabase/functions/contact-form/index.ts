@@ -1,27 +1,29 @@
-/**
- * Supabase Edge Function: Contact Form with CSRF Validation
- * 
- * CRITICAL SECURITY: This Edge Function provides server-side CSRF validation
- * that was missing in the original implementation. Without this, the entire
- * CSRF protection mechanism was useless.
- * 
- * Security Flow:
- * 1. Validate CSRF token from header against cookie
- * 2. Sanitize and validate input data
- * 3. Check rate limiting
- * 4. Insert into database with proper authorization
- */
+// Supabase Edge Function: Contact Form with CSRF Validation
+// CRITICAL SECURITY: This Edge Function provides server-side CSRF validation
+// that was missing in the original implementation. Without this, the entire
+// CSRF protection mechanism was useless.
+// 
+// Security Flow:
+// 1. Validate CSRF token from header against cookie
+// 2. Sanitize and validate input data
+// 3. Check rate limiting
+// 4. Insert into database with proper authorization
 
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
-import { corsHeaders } from '../_shared/cors.ts';
+
+// CORS Headers for cross-origin requests
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*', // In production, replace with your domain
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type, x-csrf-token',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Max-Age': '86400',
+};
 
 // Rate limiting storage (in-memory for Edge Function)
 const rateLimiter = new Map<string, number[]>();
 
-/**
- * Helper function to parse cookies from request
- */
+// Helper function to parse cookies from request
 function getCookie(req: Request, name: string): string | null {
   const cookieHeader = req.headers.get('Cookie');
   if (!cookieHeader) return null;
@@ -36,10 +38,8 @@ function getCookie(req: Request, name: string): string | null {
   return null;
 }
 
-/**
- * Validate CSRF token using double-submit cookie pattern
- * CRITICAL: This is the server-side validation that was missing
- */
+// Validate CSRF token using double-submit cookie pattern
+// CRITICAL: This is the server-side validation that was missing
 function validateCSRFToken(headerToken: string | null, cookieToken: string | null): boolean {
   // Both tokens must exist
   if (!headerToken || !cookieToken) {
@@ -62,9 +62,7 @@ function validateCSRFToken(headerToken: string | null, cookieToken: string | nul
   return true;
 }
 
-/**
- * Check rate limiting for contact form submissions
- */
+// Check rate limiting for contact form submissions
 function checkRateLimit(clientId: string): boolean {
   const now = Date.now();
   const windowSize = 60000; // 1 minute window
@@ -102,9 +100,7 @@ function checkRateLimit(clientId: string): boolean {
   return true;
 }
 
-/**
- * Sanitize string input to prevent XSS
- */
+// Sanitize string input to prevent XSS
 function sanitizeString(input: unknown, maxLength: number): string {
   if (typeof input !== 'string') {
     return '';
@@ -125,9 +121,7 @@ function sanitizeString(input: unknown, maxLength: number): string {
   return sanitized;
 }
 
-/**
- * Validate email format
- */
+// Validate email format
 function sanitizeEmail(input: unknown): string {
   if (typeof input !== 'string') {
     return '';
@@ -143,17 +137,15 @@ function sanitizeEmail(input: unknown): string {
   return email;
 }
 
-/**
- * Sanitize and validate contact form data
- * PRIVACY: No IP addresses or user agents stored per privacy requirements
- */
+// Sanitize and validate contact form data
+// PRIVACY: No IP addresses or user agents stored per privacy requirements
 function sanitizeFormData(data: any) {
   return {
     name: sanitizeString(data.name, 100),
     email: sanitizeEmail(data.email),
     company: sanitizeString(data.company, 100),
     message: sanitizeString(data.message, 2000),
-    created_at: new Date().toISOString(),
+    submitted_at: new Date().toISOString(),
     status: 'new',
     priority: 'medium'
   };
