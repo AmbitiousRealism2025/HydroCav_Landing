@@ -39,9 +39,11 @@ jobs:
           server: ${{ secrets.FTP_SERVER }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          server-dir: /public_html/
+          server-dir: ./
           local-dir: ./dist/
-          dangerous-clean-slate: false  # Set to true only if you want to delete existing files
+          dangerous-clean-slate: false
+          log-level: verbose
+          dry-run: false
           exclude: |
             **/.git*
             **/.git*/**
