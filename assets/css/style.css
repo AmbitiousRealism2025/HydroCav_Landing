@@ -1710,7 +1710,7 @@ html {
 /* Mobile Menu Header */
 .mobile-menu-header {
     display: flex;
-    justify-content: between;
+    justify-content: space-between;
     align-items: center;
     padding: 20px 24px 16px;
     border-bottom: 1px solid rgba(49, 155, 224, 0.1);
