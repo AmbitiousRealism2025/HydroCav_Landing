@@ -112,6 +112,174 @@
         position: relative;
         overflow-x: hidden;
       }
+
+      /* Enhanced glassmorphism cards for admin dashboard */
+      .liquid-glass-card {
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(16px) saturate(150%);
+        -webkit-backdrop-filter: blur(16px) saturate(150%);
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+      }
+
+      .liquid-glass-card:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-2px);
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.4);
+      }
+
+      /* Enhanced table styling */
+      .admin-table {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+
+      .admin-table th {
+        background: rgba(255, 255, 255, 0.2);
+        color: #1e293b;
+        font-weight: 700;
+        padding: 16px 20px;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .admin-table td {
+        color: #1e293b;
+        padding: 14px 20px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        font-size: 0.875rem;
+      }
+
+      .admin-table tr:hover {
+        background: rgba(255, 255, 255, 0.1);
+      }
+      
+      .admin-table tr.cursor-pointer:hover {
+        background: rgba(255, 255, 255, 0.15);
+        transform: translateY(-1px);
+        transition: all 0.2s ease;
+      }
+
+      /* Enhanced button styling */
+      .liquid-glass-button {
+        background: rgba(255, 255, 255, 0.2);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        color: #1e293b;
+        font-weight: 600;
+      }
+
+      .liquid-glass-button:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        color: #0f172a;
+      }
+
+      /* Action button variations */
+      .btn-edit {
+        background: rgba(59, 130, 246, 0.2);
+        border-color: rgba(59, 130, 246, 0.3);
+        color: #1e40af;
+      }
+
+      .btn-edit:hover {
+        background: rgba(59, 130, 246, 0.3);
+        color: #1e3a8a;
+      }
+
+      .btn-delete {
+        background: rgba(239, 68, 68, 0.2);
+        border-color: rgba(239, 68, 68, 0.3);
+        color: #dc2626;
+      }
+
+      .btn-delete:hover {
+        background: rgba(239, 68, 68, 0.3);
+        color: #b91c1c;
+      }
+
+      /* Form styling */
+      select, input[type="date"] {
+        background: rgba(255, 255, 255, 0.9);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        border-radius: 8px;
+        transition: all 0.2s ease;
+      }
+
+      select:focus, input[type="date"]:focus {
+        background: rgba(255, 255, 255, 0.95);
+        border-color: rgba(59, 130, 246, 0.5);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        outline: none;
+      }
+
+      /* Mobile responsiveness */
+      @media (max-width: 768px) {
+        .admin-table {
+          font-size: 0.75rem;
+        }
+        
+        .admin-table th,
+        .admin-table td {
+          padding: 10px 12px;
+        }
+        
+        .liquid-glass-button {
+          padding: 8px 16px;
+          font-size: 0.875rem;
+        }
+        
+        .btn-edit, .btn-delete {
+          padding: 6px 12px;
+          font-size: 0.75rem;
+        }
+        
+        .max-w-xs {
+          max-width: 8rem;
+        }
+        
+        .flex.gap-2 {
+          flex-direction: column;
+          gap: 0.25rem;
+        }
+        
+        .status-badge {
+          font-size: 0.625rem;
+          padding: 0.125rem 0.5rem;
+        }
+      }
+      
+      @media (max-width: 640px) {
+        .flex.flex-wrap.gap-3 {
+          flex-direction: column;
+          gap: 0.5rem;
+        }
+        
+        .grid.grid-cols-1.md\\:grid-cols-2.lg\\:grid-cols-4 {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 1rem;
+        }
+        
+        .grid.grid-cols-1.md\\:grid-cols-3.lg\\:grid-cols-5 {
+          grid-template-columns: 1fr;
+          gap: 1rem;
+        }
+      }
     </style>
   </head>
 
@@ -125,26 +293,23 @@
         <div class="liquid-glass-card p-6">
           <div class="flex justify-between items-center">
             <div>
-              <h1 class="text-3xl font-bold text-gray-800 mb-2">HydroCav Admin Dashboard</h1>
-              <p class="text-gray-700">Manage contact submissions and business data</p>
+              <h1 class="text-3xl font-bold text-slate-800 mb-2">HydroCav Admin Dashboard</h1>
+              <p class="text-slate-600">Manage contact submissions and business data</p>
             </div>
-            <div class="flex space-x-4">
-              <button id="email-settings-btn" class="liquid-glass-button px-4 py-2 text-gray-800 hover:text-gray-900">
+            <div class="flex flex-wrap gap-3">
+              <button id="email-settings-btn" class="liquid-glass-button px-4 py-2">
                 Email Settings
               </button>
-              <button id="export-data-btn" class="liquid-glass-button px-4 py-2 text-gray-800 hover:text-gray-900">
+              <button id="export-data-btn" class="liquid-glass-button px-4 py-2">
                 Export CSV
               </button>
-              <button id="refresh-data-btn" class="liquid-glass-button px-4 py-2 text-gray-800 hover:text-gray-900">
+              <button id="refresh-data-btn" class="liquid-glass-button px-4 py-2">
                 Refresh
               </button>
-              <button
-                id="logout-btn-header"
-                class="liquid-glass-button px-4 py-2 text-gray-800 hover:text-gray-900 bg-red-500/20"
-              >
+              <button id="logout-btn-header" class="liquid-glass-button btn-delete px-4 py-2">
                 Logout
               </button>
-              <a href="index.html" class="liquid-glass-button px-4 py-2 text-gray-800 hover:text-gray-900 inline-block">
+              <a href="index.html" class="liquid-glass-button px-4 py-2 inline-block">
                 Back to Site
               </a>
             </div>
@@ -156,20 +321,20 @@
       <div class="max-w-7xl mx-auto mb-8">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <div class="liquid-glass-card p-6 text-center">
-            <div class="text-3xl font-bold text-gray-800 mb-2" id="total-submissions">-</div>
-            <div class="text-gray-700">Total Submissions</div>
+            <div class="text-3xl font-bold text-slate-800 mb-2" id="total-submissions">-</div>
+            <div class="text-slate-600 font-medium">Total Submissions</div>
           </div>
           <div class="liquid-glass-card p-6 text-center">
-            <div class="text-3xl font-bold text-gray-800 mb-2" id="new-submissions">-</div>
-            <div class="text-gray-700">New</div>
+            <div class="text-3xl font-bold text-slate-800 mb-2" id="new-submissions">-</div>
+            <div class="text-slate-600 font-medium">New</div>
           </div>
           <div class="liquid-glass-card p-6 text-center">
-            <div class="text-3xl font-bold text-gray-800 mb-2" id="contacted-submissions">-</div>
-            <div class="text-gray-700">Contacted</div>
+            <div class="text-3xl font-bold text-slate-800 mb-2" id="contacted-submissions">-</div>
+            <div class="text-slate-600 font-medium">Contacted</div>
           </div>
           <div class="liquid-glass-card p-6 text-center">
-            <div class="text-3xl font-bold text-gray-800 mb-2" id="qualified-submissions">-</div>
-            <div class="text-gray-700">Qualified</div>
+            <div class="text-3xl font-bold text-slate-800 mb-2" id="qualified-submissions">-</div>
+            <div class="text-slate-600 font-medium">Qualified</div>
           </div>
         </div>
       </div>
@@ -179,7 +344,7 @@
         <div class="liquid-glass-card p-6">
           <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
             <div>
-              <label class="block text-gray-800/80 text-sm mb-2">Status</label>
+              <label class="block text-slate-700 text-sm font-medium mb-2">Status</label>
               <select id="status-filter" class="w-full p-2 rounded-lg border border-gray-300 bg-white text-gray-800">
                 <option value="">All Status</option>
                 <option value="new">New</option>
@@ -189,7 +354,7 @@
               </select>
             </div>
             <div>
-              <label class="block text-gray-800/80 text-sm mb-2">Priority</label>
+              <label class="block text-slate-700 text-sm font-medium mb-2">Priority</label>
               <select id="priority-filter" class="w-full p-2 rounded-lg border border-gray-300 bg-white text-gray-800">
                 <option value="">All Priority</option>
                 <option value="urgent">Urgent</option>
@@ -199,7 +364,7 @@
               </select>
             </div>
             <div>
-              <label class="block text-gray-800/80 text-sm mb-2">Date From</label>
+              <label class="block text-slate-700 text-sm font-medium mb-2">Date From</label>
               <input
                 type="date"
                 id="date-from"
@@ -207,7 +372,7 @@
               />
             </div>
             <div>
-              <label class="block text-gray-800/80 text-sm mb-2">Date To</label>
+              <label class="block text-slate-700 text-sm font-medium mb-2">Date To</label>
               <input
                 type="date"
                 id="date-to"
@@ -215,7 +380,7 @@
               />
             </div>
             <div class="flex items-end">
-              <button id="apply-filters-btn" class="liquid-glass-button w-full p-2 text-gray-800">Apply Filters</button>
+              <button id="apply-filters-btn" class="liquid-glass-button w-full p-2">Apply Filters</button>
             </div>
           </div>
         </div>
@@ -224,22 +389,29 @@
       <!-- Submissions Table -->
       <div class="max-w-7xl mx-auto">
         <div class="liquid-glass-card p-6">
+          <div class="mb-4 flex justify-between items-center">
+            <h3 class="text-lg font-semibold text-slate-800">Contact Submissions</h3>
+            <div class="text-sm text-slate-600 flex items-center">
+              <span class="mr-2">💡</span>
+              Click any row to view full contact details
+            </div>
+          </div>
           <div class="overflow-x-auto">
-            <table class="w-full">
+            <table class="admin-table w-full">
               <thead>
-                <tr class="border-b border-white/20">
-                  <th class="text-left py-3 px-4 text-gray-800 font-semibold">Date</th>
-                  <th class="text-left py-3 px-4 text-gray-800 font-semibold">Name</th>
-                  <th class="text-left py-3 px-4 text-gray-800 font-semibold">Email</th>
-                  <th class="text-left py-3 px-4 text-gray-800 font-semibold">Company</th>
-                  <th class="text-left py-3 px-4 text-gray-800 font-semibold">Status</th>
-                  <th class="text-left py-3 px-4 text-gray-800 font-semibold">Priority</th>
-                  <th class="text-left py-3 px-4 text-gray-800 font-semibold">Actions</th>
+                <tr>
+                  <th class="text-left">Date</th>
+                  <th class="text-left">Name</th>
+                  <th class="text-left">Email</th>
+                  <th class="text-left">Company</th>
+                  <th class="text-left">Status</th>
+                  <th class="text-left">Priority</th>
+                  <th class="text-left">Actions</th>
                 </tr>
               </thead>
               <tbody id="submissions-table">
                 <tr>
-                  <td colspan="7" class="text-center py-8 text-gray-800/80">Loading submissions...</td>
+                  <td colspan="7" class="text-center py-8">Loading submissions...</td>
                 </tr>
               </tbody>
             </table>
@@ -250,8 +422,8 @@
       <!-- Pagination -->
       <div class="max-w-7xl mx-auto mt-6">
         <div class="liquid-glass-card p-4">
-          <div class="flex justify-between items-center text-gray-800">
-            <div id="pagination-info">Showing 0 of 0 entries</div>
+          <div class="flex justify-between items-center text-slate-700">
+            <div id="pagination-info" class="font-medium">Showing 0 of 0 entries</div>
             <div class="flex space-x-2" id="pagination">
               <!-- Pagination buttons will be inserted here -->
             </div>
@@ -265,27 +437,43 @@
       <div class="liquid-glass-card max-w-md w-full mx-4">
         <div class="p-6">
           <h2 class="text-2xl font-bold text-gray-800 mb-6 text-center">Admin Login</h2>
+          <div class="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4 text-sm text-blue-700">
+            <div class="font-semibold mb-2">🔐 New Admin Setup</div>
+            <div class="space-y-1">
+              <div><strong>Step 1:</strong> Click "Sign Up" to create your admin account</div>
+              <div><strong>Step 2:</strong> Check your email for a confirmation link</div>
+              <div><strong>Step 3:</strong> Click the link, then return here to login</div>
+            </div>
+          </div>
+          
+          <div id="troubleshoot-section" class="bg-yellow-50 border border-yellow-200 rounded-lg p-3 mb-4 text-sm text-yellow-700 hidden">
+            <div class="font-semibold mb-2">⚠️ Having Login Issues?</div>
+            <div class="mb-2">If you're stuck in a login loop, you may need to complete email verification.</div>
+            <button onclick="showTroubleshootingHelp()" class="underline text-yellow-800 hover:text-yellow-900 font-medium">
+              View detailed help →
+            </button>
+          </div>
 
           <form id="auth-form" class="space-y-4">
             <div>
-              <label class="block text-gray-800/80 text-sm mb-2">Email</label>
+              <label class="block text-slate-700 text-sm font-medium mb-2">Email</label>
               <input
                 type="email"
                 id="auth-email"
                 required
-                class="w-full p-3 rounded-lg border border-gray-300 bg-white text-gray-800 placeholder-white/50"
+                class="w-full p-3 rounded-lg border border-gray-300 bg-white text-gray-800 placeholder-gray-400"
                 placeholder="Enter your email"
               />
             </div>
 
             <div>
-              <label class="block text-gray-800/80 text-sm mb-2">Password</label>
+              <label class="block text-slate-700 text-sm font-medium mb-2">Password</label>
               <input
                 type="password"
                 id="auth-password"
                 required
-                class="w-full p-3 rounded-lg border border-gray-300 bg-white text-gray-800 placeholder-white/50"
-                placeholder="Enter your password"
+                class="w-full p-3 rounded-lg border border-gray-300 bg-white text-gray-800 placeholder-gray-400"
+                placeholder="Enter your password (min 6 chars)"
               />
             </div>
 
@@ -319,12 +507,38 @@
       </div>
     </div>
 
-    <!-- Submission Detail Modal -->
-    <div id="submission-modal" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm">
+    <!-- Contact Detail Modal -->
+    <div id="contact-detail-modal" class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm">
       <div class="flex items-center justify-center min-h-screen p-4">
-        <div class="liquid-glass-card max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-          <div class="p-6" id="modal-content">
-            <!-- Modal content will be inserted here -->
+        <div class="liquid-glass-card max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+          <div class="p-6">
+            <!-- Modal Header -->
+            <div class="flex justify-between items-center mb-6 pb-4 border-b border-white/20">
+              <h3 class="text-2xl font-bold text-slate-800">Contact Details</h3>
+              <button onclick="closeContactDetail()" class="liquid-glass-button px-4 py-2 text-sm hover:bg-red-500/20">
+                ✕ Close
+              </button>
+            </div>
+            
+            <!-- Contact Information Grid -->
+            <div id="contact-detail-content" class="space-y-6">
+              <!-- Content will be dynamically inserted here -->
+            </div>
+            
+            <!-- Modal Footer Actions -->
+            <div class="flex justify-between items-center mt-8 pt-4 border-t border-white/20">
+              <div class="flex gap-3">
+                <button onclick="editContactFromDetail()" class="liquid-glass-button btn-edit px-4 py-2">
+                  ✏️ Edit Contact
+                </button>
+                <button onclick="deleteContactFromDetail()" class="liquid-glass-button btn-delete px-4 py-2">
+                  🗑️ Delete Contact
+                </button>
+              </div>
+              <button onclick="closeContactDetail()" class="liquid-glass-button px-6 py-2">
+                Back to List
+              </button>
+            </div>
           </div>
         </div>
       </div>

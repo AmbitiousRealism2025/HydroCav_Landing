@@ -54,19 +54,31 @@ document.addEventListener('DOMContentLoaded', () => {
   initializeAdminDashboard();
 });
 
-// Authentication functions - TEMPORARILY DISABLED FOR TESTING
+// Authentication functions - RESTORED
 async function checkAuthStatus() {
   try {
-    console.log('🔍 Auth disabled for testing - showing dashboard directly');
+    console.log('🔍 Checking authentication status...');
     
-    // Skip authentication for now - go directly to dashboard
-    currentUser = { 
-      email: 'testing@hydrocav.com',
-      id: 'test-user-id'
-    };
+    // Check if user is already logged in
+    const { data: { session }, error } = await supabaseClient.auth.getSession();
     
-    showDashboard();
-    await loadSubmissions();
+    if (error) {
+      console.error('Session check error:', error);
+      showLoginForm();
+      return;
+    }
+    
+    if (session && session.user) {
+      // User is authenticated
+      currentUser = session.user;
+      console.log('✅ User authenticated:', currentUser.email);
+      showDashboard();
+      await loadSubmissions();
+    } else {
+      // No valid session, show login form
+      console.log('📝 No valid session, showing login form');
+      showLoginForm();
+    }
   } catch (error) {
     console.error('❌ Auth status check failed:', error);
     showLoginForm();
@@ -143,16 +155,41 @@ async function handleLogin(event) {
     if (error) {
       console.error('Login failed:', error);
       
-      // If user doesn't exist, offer to create account
+      // Handle specific error cases
       if (error.message.includes('Invalid login credentials') || error.message.includes('User not found')) {
         const createAccount = confirm(`No account found for ${sanitizedEmail}. Create new admin account?`);
         if (createAccount) {
           await createAdminAccount(sanitizedEmail, sanitizedPassword);
           return;
         }
+      } else if (error.message.includes('Email not confirmed')) {
+        const confirmMessage = `📧 EMAIL VERIFICATION REQUIRED\n\n` +
+          `Your admin account (${sanitizedEmail}) exists but needs verification.\n\n` +
+          `📋 TO COMPLETE LOGIN:\n` +
+          `1. Check your email for "Confirm your signup"\n` +
+          `2. Click the confirmation link in the email\n` +
+          `3. Return here and try logging in again\n\n` +
+          `🔍 CAN'T FIND THE EMAIL?\n` +
+          `• Check spam, junk, and promotions folders\n` +
+          `• Look for emails from "noreply@supabase.io"\n` +
+          `• Links expire after 24 hours\n\n` +
+          `💡 If expired, click "Sign Up" to create account again`;
+        alert(confirmMessage);
+        showError(`Email verification required for ${sanitizedEmail}`);
+        return;
+      } else if (error.message.includes('signup') || error.message.includes('confirm')) {
+        showError(`Account needs email verification. Check your email (${sanitizedEmail}) and click the confirmation link.`);
+        return;
       }
 
+      // Generic error handling
       showError(`Login failed: ${error.message}`);
+      
+      // Show troubleshoot section for login failures
+      const troubleshootSection = document.getElementById('troubleshoot-section');
+      if (troubleshootSection) {
+        troubleshootSection.classList.remove('hidden');
+      }
       return;
     }
 
@@ -183,40 +220,110 @@ async function createAdminAccount(email, password) {
     showLoading(true);
     console.log('Creating admin account for:', email);
 
+    // Try to sign up the user
     const { data, error } = await supabaseClient.auth.signUp({
       email: email,
       password: password,
       options: {
-        emailRedirectTo: undefined // Disable email confirmation for admin accounts
+        data: {
+          admin_role: true, // Mark as admin user
+          role: 'admin'
+        }
       }
     });
 
     if (error) {
+      if (error.message.includes('User already registered')) {
+        // Account exists but may need confirmation
+        const existingAccountMessage = `⚠️ ACCOUNT ALREADY EXISTS\n\n` +
+          `An admin account for ${email} already exists.\n\n` +
+          `📋 NEXT STEPS:\n` +
+          `1. Try clicking "Login" instead of "Sign Up"\n` +
+          `2. If login fails, check your email for an unclicked confirmation link\n` +
+          `3. Confirmation emails are from "noreply@supabase.io"\n` +
+          `4. Check spam/junk folders if needed\n\n` +
+          `💡 If you never received a confirmation email, the original account creation may have failed. Try using a different email address.`;
+        alert(existingAccountMessage);
+        showError(`Admin account for ${email} already exists. Try logging in instead.`);
+        return;
+      }
       showError(`Account creation failed: ${error.message}`);
       return;
     }
 
+    console.log('Signup response:', data);
+
     if (data.user) {
-      // Check if user is confirmed (some Supabase setups require email confirmation)
       if (data.session) {
-        // User is automatically logged in
+        // User is automatically logged in (email confirmation disabled)
         currentUser = data.user;
-        showSuccess(`Admin account created and logged in successfully!`);
+        showSuccess(`✅ Admin account created and logged in successfully!`);
         showDashboard();
         await loadSubmissions();
       } else {
-        // User needs to confirm email or manually login
-        showSuccess(`Admin account created! Please login with: ${email}`);
-        // Clear the form for login
-        document.getElementById('auth-email').value = email;
-        document.getElementById('auth-password').value = '';
+        // Account created but needs email confirmation
+        if (data.user.email_confirmed_at) {
+          // User is confirmed but no session - try to sign in
+          console.log('User confirmed, attempting login...');
+          await attemptLoginAfterSignup(email, password);
+        } else {
+          // Email confirmation required - provide clear next steps
+          const message = `🎉 ADMIN ACCOUNT CREATED SUCCESSFULLY!\n\n` +
+            `📧 EMAIL CONFIRMATION REQUIRED\n` +
+            `Account: ${email}\n\n` +
+            `📋 NEXT STEPS (Please complete in order):\n` +
+            `1. Check your email inbox for "Confirm your signup"\n` +
+            `2. Look in spam/junk folder if not in inbox\n` +
+            `3. Click the blue "Confirm your account" button in the email\n` +
+            `4. Return to this page and click "Login"\n` +
+            `5. Enter your email and password to access the admin dashboard\n\n` +
+            `⏰ IMPORTANT: Confirmation links expire after 24 hours\n` +
+            `🔄 If expired, you'll need to create the account again`;
+          
+          alert(message);
+          showSuccess(`Admin account created! Please check your email (${email}) to confirm, then return here to login.`);
+          
+          // Clear password but keep email for easy login
+          document.getElementById('auth-password').value = '';
+          
+          // Show the help section automatically after account creation
+          const troubleshootSection = document.getElementById('troubleshoot-section');
+          if (troubleshootSection) {
+            troubleshootSection.classList.remove('hidden');
+          }
+        }
       }
     }
   } catch (error) {
     console.error('Account creation error:', error);
-    showError('Failed to create admin account');
+    showError('Failed to create admin account. Please try again.');
   } finally {
     showLoading(false);
+  }
+}
+
+// Helper function to attempt login after signup
+async function attemptLoginAfterSignup(email, password) {
+  try {
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
+      email: email,
+      password: password,
+    });
+
+    if (error) {
+      console.error('Post-signup login failed:', error);
+      showSuccess(`Account created! Please try logging in now with: ${email}`);
+      return;
+    }
+
+    // Successful login
+    currentUser = data.user;
+    showSuccess(`✅ Account created and logged in successfully!`);
+    showDashboard();
+    await loadSubmissions();
+  } catch (error) {
+    console.error('Post-signup login error:', error);
+    showSuccess(`Account created! Please try logging in now with: ${email}`);
   }
 }
 
@@ -265,6 +372,24 @@ async function handleSignup(event) {
 }
 
 // Logout function
+// Handle signup button click
+async function handleSignupClick() {
+  const email = document.getElementById('auth-email').value.trim();
+  const password = document.getElementById('auth-password').value;
+  
+  if (!email || !password) {
+    showError('Please fill in both email and password');
+    return;
+  }
+  
+  if (password.length < 6) {
+    showError('Password must be at least 6 characters long');
+    return;
+  }
+  
+  await createAdminAccount(email, password);
+}
+
 async function handleLogout() {
   try {
     await supabaseClient.auth.signOut();
@@ -360,39 +485,32 @@ function updateSubmissionsDisplay() {
   tbody.innerHTML = pageSubmissions
     .map(
       submission => `
-    <tr class="hover:bg-gray-50" data-id="${submission.id}">
-      <td class="px-6 py-4 whitespace-nowrap">
-        <div class="text-sm font-medium text-gray-900">${escapeHtml(submission.name)}</div>
-        <div class="text-sm text-gray-500">${escapeHtml(submission.email)}</div>
+    <tr data-contact-id="${submission.id}" class="contact-row cursor-pointer hover:bg-white/10 transition-colors">
+      <td>${new Date(submission.submitted_at).toLocaleDateString()}</td>
+      <td>
+        <div class="font-medium">${escapeHtml(submission.name)}</div>
       </td>
-      <td class="px-6 py-4 whitespace-nowrap">
-        <div class="text-sm text-gray-900">${escapeHtml(submission.company || 'N/A')}</div>
+      <td>
+        <div class="max-w-xs truncate" title="${escapeHtml(submission.email)}">${escapeHtml(submission.email)}</div>
       </td>
-      <td class="px-6 py-4">
-        <div class="text-sm text-gray-900 max-w-xs truncate" title="${escapeHtml(submission.message)}">
-          ${escapeHtml(submission.message)}
+      <td>
+        <div class="max-w-xs truncate" title="${escapeHtml(submission.company || 'N/A')}">${escapeHtml(submission.company || 'N/A')}</div>
+      </td>
+      <td>
+        <span class="status-badge status-${submission.status}">${submission.status}</span>
+      </td>
+      <td>
+        <span class="status-badge priority-${submission.priority}">${submission.priority}</span>
+      </td>
+      <td class="action-buttons">
+        <div class="flex gap-2">
+          <button onclick="editSubmission('${submission.id}')" class="liquid-glass-button btn-edit px-3 py-1 text-xs">
+            Edit
+          </button>
+          <button onclick="deleteSubmission('${submission.id}')" class="liquid-glass-button btn-delete px-3 py-1 text-xs">
+            Delete
+          </button>
         </div>
-      </td>
-      <td class="px-6 py-4 whitespace-nowrap">
-        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-${getStatusColor(submission.status)}-100 text-${getStatusColor(submission.status)}-800">
-          ${submission.status}
-        </span>
-      </td>
-      <td class="px-6 py-4 whitespace-nowrap">
-        <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-${getPriorityColor(submission.priority)}-100 text-${getPriorityColor(submission.priority)}-800">
-          ${submission.priority}
-        </span>
-      </td>
-      <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-        ${new Date(submission.submitted_at).toLocaleDateString()}
-      </td>
-      <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-        <button onclick="editSubmission('${submission.id}')" class="text-blue-600 hover:text-blue-900 mr-3">
-          Edit
-        </button>
-        <button onclick="deleteSubmission('${submission.id}')" class="text-red-600 hover:text-red-900">
-          Delete
-        </button>
       </td>
     </tr>
   `
@@ -400,6 +518,56 @@ function updateSubmissionsDisplay() {
     .join('');
 
   updatePagination();
+  
+  // Set up click handlers after table is populated
+  setupTableClickHandlers();
+}
+
+// Separate function to set up table click handlers
+function setupTableClickHandlers() {
+  // Remove any existing listeners first
+  const submissionsTable = document.getElementById('submissions-table');
+  if (!submissionsTable) {
+    console.error('❌ submissions-table element not found');
+    return;
+  }
+  
+  console.log('✅ Setting up click handler for submissions table');
+  
+  // Remove existing event listener if any
+  submissionsTable.removeEventListener('click', handleTableClick);
+  
+  // Add the click handler
+  submissionsTable.addEventListener('click', handleTableClick);
+}
+
+// Separate click handler function
+function handleTableClick(event) {
+  console.log('🖱️ Table click detected, target:', event.target);
+  
+  // Find the closest contact row
+  const contactRow = event.target.closest('.contact-row');
+  console.log('📍 Found contact row:', contactRow);
+  
+  if (contactRow) {
+    // Don't trigger if clicking on action buttons
+    const actionButtons = event.target.closest('.action-buttons');
+    console.log('🔘 Clicked on action buttons?', !!actionButtons);
+    
+    if (!actionButtons) {
+      const contactId = contactRow.dataset.contactId;
+      console.log('🆔 Contact ID from dataset:', contactId);
+      
+      if (contactId) {
+        console.log('✅ Calling showContactDetail with ID:', contactId);
+        showContactDetail(contactId);
+      } else {
+        console.error('❌ No contact ID found in dataset');
+      }
+    }
+  } else {
+    console.log('⚠️ No contact row found');
+  }
 }
 
 function updatePagination() {
@@ -775,7 +943,7 @@ function showSuccess(message) {
 function setupEventListeners() {
   // Auth forms
   document.getElementById('auth-form')?.addEventListener('submit', handleLogin);
-  // No signup form in current HTML structure
+  document.getElementById('signup-btn')?.addEventListener('click', handleSignupClick);
 
   // Logout button
   document.getElementById('logout-btn')?.addEventListener('click', handleLogout);
@@ -862,14 +1030,200 @@ function applyFilters() {
 // Export global functions for HTML onclick handlers
 window.handleLogin = handleLogin;
 window.handleSignup = handleSignup;
+
+// Show troubleshooting help
+function showTroubleshootingHelp() {
+  const helpMessage = `🔧 ADMIN LOGIN TROUBLESHOOTING GUIDE\n\n` +
+    `❌ PROBLEM: "Invalid login credentials" error loop\n` +
+    `🎯 CAUSE: Your admin account needs email verification\n\n` +
+    `✅ STEP-BY-STEP SOLUTION:\n\n` +
+    `1️⃣ CHECK YOUR EMAIL\n` +
+    `   • Look for email from "noreply@supabase.io" or your domain\n` +
+    `   • Subject line: "Confirm your signup" or similar\n` +
+    `   • Check spam, junk, and promotions folders\n\n` +
+    `2️⃣ CLICK THE CONFIRMATION LINK\n` +
+    `   • Look for a blue "Confirm your account" button\n` +
+    `   • Must click within 24 hours of account creation\n` +
+    `   • You'll see a "Email confirmed" success page\n\n` +
+    `3️⃣ RETURN TO LOGIN PAGE\n` +
+    `   • Come back to this admin login page\n` +
+    `   • Enter your EXACT email and password\n` +
+    `   • Click "Login" (not "Sign Up")\n\n` +
+    `🚨 COMMON ISSUES:\n` +
+    `• Email not arriving? Check spam folder\n` +
+    `• Link expired? Create account again with "Sign Up"\n` +
+    `• Wrong password? Password is case-sensitive\n` +
+    `• Still stuck? Clear browser cache and try again\n\n` +
+    `💡 TIP: Keep this tab open while checking email`;
+  
+  alert(helpMessage);
+}
+
+// Contact Detail Modal Functions
+let currentContactId = null;
+
+function showContactDetail(contactId) {
+  console.log('🔍 showContactDetail called with ID:', contactId);
+  console.log('📊 Current submissions array:', submissions);
+  
+  // Find the contact in our submissions array
+  const contact = submissions.find(sub => sub.id === contactId);
+  console.log('📋 Found contact:', contact);
+  
+  if (!contact) {
+    console.error('❌ Contact not found for ID:', contactId);
+    showError('Contact not found');
+    return;
+  }
+  
+  currentContactId = contactId;
+  
+  // Populate the modal with contact details
+  const content = document.getElementById('contact-detail-content');
+  if (!content) {
+    console.error('Contact detail content element not found');
+    return;
+  }
+  
+  content.innerHTML = `
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Basic Information -->
+      <div class="liquid-glass-card p-4">
+        <h4 class="text-lg font-semibold text-slate-800 mb-4 flex items-center">
+          👤 Contact Information
+        </h4>
+        <div class="space-y-3">
+          <div>
+            <label class="block text-sm font-medium text-slate-600 mb-1">Full Name</label>
+            <div class="text-slate-800 font-medium">${escapeHtml(contact.name || 'N/A')}</div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-600 mb-1">Email Address</label>
+            <div class="text-slate-800">${escapeHtml(contact.email || 'N/A')}</div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-600 mb-1">Company</label>
+            <div class="text-slate-800">${escapeHtml(contact.company || 'Not provided')}</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Status & Priority -->
+      <div class="liquid-glass-card p-4">
+        <h4 class="text-lg font-semibold text-slate-800 mb-4 flex items-center">
+          📊 Status & Priority
+        </h4>
+        <div class="space-y-3">
+          <div>
+            <label class="block text-sm font-medium text-slate-600 mb-1">Current Status</label>
+            <span class="status-badge status-${contact.status}">${contact.status || 'new'}</span>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-600 mb-1">Priority Level</label>
+            <span class="status-badge priority-${contact.priority}">${contact.priority || 'normal'}</span>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-600 mb-1">Submission Date</label>
+            <div class="text-slate-800">${new Date(contact.submitted_at).toLocaleString()}</div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Message -->
+      <div class="md:col-span-2 liquid-glass-card p-4">
+        <h4 class="text-lg font-semibold text-slate-800 mb-4 flex items-center">
+          💬 Message
+        </h4>
+        <div class="bg-white/20 rounded-lg p-4 min-h-[100px]">
+          <div class="text-slate-800 whitespace-pre-wrap">${escapeHtml(contact.message || 'No message provided')}</div>
+        </div>
+      </div>
+      
+      <!-- Technical Details -->
+      <div class="md:col-span-2 liquid-glass-card p-4">
+        <h4 class="text-lg font-semibold text-slate-800 mb-4 flex items-center">
+          🔧 Technical Details
+        </h4>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+          <div>
+            <label class="block text-sm font-medium text-slate-600 mb-1">Contact ID</label>
+            <div class="text-slate-800 font-mono">${contact.id}</div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-600 mb-1">Created At</label>
+            <div class="text-slate-800">${new Date(contact.created_at || contact.submitted_at).toLocaleString()}</div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-600 mb-1">Last Updated</label>
+            <div class="text-slate-800">${new Date(contact.updated_at || contact.submitted_at).toLocaleString()}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  // Show the modal
+  const modal = document.getElementById('contact-detail-modal');
+  if (modal) {
+    modal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden'; // Prevent background scrolling
+  }
+}
+
+function closeContactDetail() {
+  const modal = document.getElementById('contact-detail-modal');
+  if (modal) {
+    modal.classList.add('hidden');
+    document.body.style.overflow = ''; // Restore scrolling
+  }
+  currentContactId = null;
+}
+
+function editContactFromDetail() {
+  if (currentContactId) {
+    closeContactDetail();
+    editSubmission(currentContactId);
+  }
+}
+
+function deleteContactFromDetail() {
+  if (currentContactId) {
+    const confirmDelete = confirm('Are you sure you want to delete this contact? This action cannot be undone.');
+    if (confirmDelete) {
+      closeContactDetail();
+      deleteSubmission(currentContactId);
+    }
+  }
+}
+
+// Close modal when clicking outside of it
+document.addEventListener('click', function(event) {
+  const modal = document.getElementById('contact-detail-modal');
+  if (modal && event.target === modal) {
+    closeContactDetail();
+  }
+});
+
+// Close modal with Escape key
+document.addEventListener('keydown', function(event) {
+  if (event.key === 'Escape') {
+    closeContactDetail();
+  }
+});
+
 window.handleLogout = handleLogout;
 window.editSubmission = editSubmission;
 window.deleteSubmission = deleteSubmission;
 window.changePage = changePage;
 window.filterSubmissions = filterSubmissions;
 window.exportSubmissions = exportSubmissions;
+window.showTroubleshootingHelp = showTroubleshootingHelp;
 window.loadSubmissions = loadSubmissions;
 window.showEmailSettings = showEmailSettings;
 window.exportData = exportData;
 window.refreshData = refreshData;
+window.showContactDetail = showContactDetail;
+window.closeContactDetail = closeContactDetail;
+window.editContactFromDetail = editContactFromDetail;
+window.deleteContactFromDetail = deleteContactFromDetail;
 window.applyFilters = applyFilters;

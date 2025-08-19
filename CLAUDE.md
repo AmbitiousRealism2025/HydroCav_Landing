@@ -235,6 +235,49 @@ npm run validate          # Full validation with coverage
 
 ### **🎯 PHASE VII: CRITICAL FIXES & PRODUCTION READINESS ✅ COMPLETED**
 
+## **📋 KNOWN ISSUES & FUTURE ENHANCEMENTS**
+
+### **🐛 Known Bugs (For Future Resolution)**
+
+#### **Bug 1: Contact Detail Popup Click Handler**
+- **Issue:** Table rows show click instruction but clicking doesn't open contact detail popup
+- **Status:** Modal HTML and JavaScript functions implemented but click events not triggering
+- **Impact:** Low - Edit/Delete buttons still work, full contact info visible in table
+- **Location:** `admin.html` modal, `admin-dashboard.js` click handlers
+- **Notes:** Event delegation timing issue - handlers set up but not responding to clicks
+
+#### **Bug 2: Pagination Count Display**
+- **Issue:** Shows "Showing 0 of 0 entries" even when contacts are displayed
+- **Status:** Page numbering works correctly, only entry count display is wrong
+- **Impact:** Low - cosmetic issue, doesn't affect functionality
+- **Location:** `updatePagination()` function in `admin-dashboard.js`
+- **Evidence:** Table shows contacts correctly, pagination shows "Page 1 of 1" correctly
+
+#### **Debugging Info Available**
+- **Console logging:** Extensive debug output implemented for contact detail feature
+- **Browser tools:** Check F12 console for "Real submissions loaded" and click event traces
+- **Data verification:** Console shows correct submission count and data structure
+
+### **🚀 Future Enhancement Opportunities**
+
+#### **Contact Management Enhancements**
+- **Bulk actions:** Select multiple contacts for bulk status changes
+- **Contact notes:** Add internal notes/comments to contact records  
+- **Email integration:** Direct email composition from contact details
+- **Export options:** Export individual contact details or filtered subsets
+
+#### **UI/UX Improvements**
+- **Quick preview:** Hover tooltip showing contact message preview
+- **Advanced filtering:** Filter by date ranges, multiple statuses
+- **Sort options:** Sortable columns (date, name, company, status)
+- **Responsive table:** Better mobile table layout with card view
+
+### **🔧 Technical Debt**
+- **Event handling:** Replace inline onclick with modern event delegation
+- **Error boundaries:** Add comprehensive error handling for all admin functions
+- **Loading states:** Add skeleton loaders for better perceived performance
+- **Accessibility:** Enhanced keyboard navigation and screen reader support
+
 #### Phase 7A: Critical Bug Fixes ✅ COMPLETED
 **Production-Critical Issues Resolved:**
 - **✅ Admin Authentication Loop:** Fixed infinite login loop preventing admin access
