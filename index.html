@@ -33,7 +33,9 @@
     
     <!-- Load Security Modules -->
     <!-- Application Initialization - PHASE 5: Extracted for CSP compliance -->
-    <script type="module" src="assets/js/app-init.js"></script>
+    <!-- PHASE VII: TEMPORARILY DISABLED - Module conflicts with bubble animations -->
+    <!-- TODO: Implement non-conflicting loading strategy in future release -->
+    <!-- <script type="module" src="assets/js/app-init.js"></script> -->
 </head>
 <body id="top">
 
@@ -435,14 +437,16 @@
 
 <!-- ====================================================================== -->
 
+<!-- PHASE VII: TEMPORARILY DISABLED - Monitoring scripts conflict with UI animations -->
+<!-- TODO: Implement non-conflicting loading strategy in future release -->
 <!-- Monitoring Infrastructure Scripts -->
-<script src="assets/js/error-tracking.js"></script>
-<script src="assets/js/performance-monitoring.js"></script>
-<script src="assets/js/health-monitoring.js"></script>
-<script src="assets/js/monitoring-alerts.js"></script>
+<!-- <script src="assets/js/error-tracking.js"></script> -->
+<!-- <script src="assets/js/performance-monitoring.js"></script> -->
+<!-- <script src="assets/js/health-monitoring.js"></script> -->
+<!-- <script src="assets/js/monitoring-alerts.js"></script> -->
 
 <!-- Initialize Monitoring Systems -->
-<script src="assets/js/monitoring-init.js"></script>
+<!-- <script src="assets/js/monitoring-init.js"></script> -->
 
 </body>
 </html>
